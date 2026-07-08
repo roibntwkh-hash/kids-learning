@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>快樂學習樂園 · KSSR</title>
+<style>
+  :root{ --bg:#FFF7EF; --ink:#243248; --card:#fff; --line:#F0E2D2;
+    --tang:#FF8A3D; --mint:#2FBF8F; --coral:#FF5D6C; --lemon:#FFCB3D; --sky:#6FB4FF; --grape:#B48CF2;
+    --grey:#7A6A58; }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font-family:'ui-rounded','Hiragino Maru Gothic ProN','PingFang TC','Microsoft JhengHei',system-ui,sans-serif;}
+  .wrap{max-width:540px;margin:0 auto;padding:14px 14px 100px;}
+  button{font-family:inherit;}
+  .screen{display:none;} .screen.on{display:block;animation:pop .22s ease;}
+  @keyframes pop{from{opacity:.3;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.screen{animation:none}}
+
+  .topbar{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .topbar .m{font-size:30px}
+  .topbar h1{font-size:19px;margin:0;font-weight:800}
+  .topbar h1 small{display:block;font-size:11px;color:var(--grey);letter-spacing:1px;font-weight:700}
+  .who{margin-left:auto;display:flex;gap:6px;align-items:center}
+  .whoBtn{background:#fff;border:2px solid var(--line);border-radius:999px;padding:5px 10px;font-weight:800;font-size:13px;cursor:pointer}
+  .star{background:#fff;border:2px solid var(--line);border-radius:999px;padding:5px 12px;font-weight:800;font-size:14px}
+
+  .card{background:var(--card);border:3px solid var(--line);border-radius:22px;padding:16px;margin-bottom:12px;box-shadow:0 3px 0 rgba(180,150,110,.10)}
+  .big{width:100%;min-height:58px;border:none;border-radius:18px;color:#fff;font-size:17px;font-weight:800;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.15);margin-top:10px}
+  .big:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.15)}
+  .ghost{min-height:48px;background:#fff;border:2px solid var(--line);border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;color:var(--ink);padding:8px 14px}
+  .lbl{font-size:12.5px;color:var(--grey);line-height:1.7}
+
+  /* who screen */
+  .kidPick{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+  .kid{flex:1;min-width:130px;background:#fff;border:3px solid var(--line);border-radius:22px;padding:18px 10px;text-align:center;cursor:pointer}
+  .kid:active{transform:scale(.97)}
+  .kid .e{font-size:52px} .kid .n{font-weight:800;font-size:17px;margin-top:4px}
+  .kid .s{font-size:12px;color:var(--grey);margin-top:2px}
+
+  /* pack card */
+  .pk{display:flex;align-items:center;gap:12px}
+  .pk .e{font-size:34px}
+  .pk .t{font-weight:800;font-size:16px} .pk .s{font-size:12px;color:var(--grey)}
+  .pk .acc{margin-left:auto;font-size:12.5px;font-weight:800}
+
+  /* teach */
+  .point{background:#FFF9F0;border:2px solid var(--line);border-radius:16px;padding:12px 14px;margin-top:10px}
+  .point .r{font-weight:800;font-size:15.5px;line-height:1.6}
+  .point .ex{margin-top:6px;font-size:16px;color:#0B6E4F;font-weight:800}
+  .worked{border-left:6px solid var(--lemon);padding-left:12px;margin-top:12px}
+
+  /* quiz */
+  .qtop{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .bar{display:flex;gap:4px;margin-bottom:10px}
+  .bar i{flex:1;height:9px;border-radius:99px;background:#EFE3D3}
+  .qtext{font-size:23px;font-weight:800;line-height:1.5}
+  .opt{width:100%;min-height:62px;text-align:left;padding:12px 16px;margin-top:10px;background:#fff;
+    border:3px solid var(--line);border-radius:18px;font-size:19px;font-weight:800;cursor:pointer;color:var(--ink)}
+  .opt .k{color:var(--grey);margin-right:10px}
+  .opt.ok{border-color:var(--mint);background:#EAFBF4}
+  .opt.no{border-color:var(--coral);background:#FFF0F1}
+  .fb{margin-top:12px;padding:11px 13px;border-radius:14px;font-size:14.5px;line-height:1.65}
+  .idk{margin-top:10px;background:#FFF3E4;border:2px dashed #FFC98F;color:#8A4B00;border-radius:14px;
+    width:100%;min-height:46px;font-weight:800;font-size:14px;cursor:pointer}
+  .idk.flagged{background:#FFE7C4;border-style:solid}
+
+  /* result */
+  .result{text-align:center;padding:26px 16px}
+  .result .b{font-size:58px} .result h2{margin:8px 0 2px;font-size:22px}
+
+  /* nav */
+  .nav{position:fixed;left:0;right:0;bottom:0;display:flex;gap:6px;justify-content:center;
+    padding:9px 10px calc(9px + env(safe-area-inset-bottom));background:rgba(255,247,239,.96);border-top:2px solid var(--line);z-index:5}
+  .nav button{flex:1;max-width:130px;min-height:54px;border:none;border-radius:15px;font-size:13px;font-weight:800;cursor:pointer;background:#fff;color:var(--ink);box-shadow:inset 0 0 0 2px var(--line)}
+  .nav button.on{background:var(--ink);color:#fff;box-shadow:none}
+
+  textarea{width:100%;min-height:120px;border:2px solid var(--line);border-radius:14px;padding:10px;font-family:inherit;font-size:13px}
+  input[type=text]{width:100%;border:2px solid var(--line);border-radius:12px;padding:10px;font-family:inherit;font-size:15px;font-weight:700}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;background:#FFF9F0;border:2px solid var(--line);cursor:pointer}
+  .chip.sel{background:var(--tang);color:#fff;border-color:var(--tang)}
+  .warn{display:none;background:#FFF3E4;border:2px solid #FFC98F;border-radius:14px;padding:10px 12px;font-size:12.5px;color:#8A4B00;margin-bottom:10px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <span class="m">🦉</span>
+    <h1>快樂學習樂園<small id="subhead">KSSR · 英文＋數學</small></h1>
+    <div class="who" id="whoBox"></div>
+  </div>
+  <div class="warn" id="lsWarn">⚠️ 這個環境無法儲存進度（可能是無痕模式或預覽視窗）。把檔案放到網站或用一般瀏覽器開啟，進度就會記住。</div>
+
+  <div id="app"></div>
+</div>
+
+<div class="nav" id="nav" style="display:none">
+  <button data-tab="home" onclick="setTab('home')">🏠 練習</button>
+  <button data-tab="wrong" onclick="setTab('wrong')">📌 錯題</button>
+  <button data-tab="stats" onclick="setTab('stats')">📊 成績</button>
+  <button data-tab="settings" onclick="setTab('settings')">⚙️ 設定</button>
+</div>
+
+<script>
+/* ============================================================
+   快樂學習樂園 · 純網頁版
+   - 進度：localStorage（分兩個小孩）
+   - 流程：先教學 → 再出題
+   - 題庫：可匯入 JSON、可匯出錯題與不懂的地方
+   ============================================================ */
+
+/* ---------- 內建題庫（外殼與內容分離；匯入的題庫會併進來） ---------- */
+const BUILTIN = [
+  { id:"en2", subj:"英文", year:"Y2", icon:"🔤", color:"var(--sky)", title:"English Year 2", sub:"句型套用 · A1 Low",
+    teach:{ intro:"這一關學「一個東西怎麼說」和「東西在哪裡」。跟著唸唸看，你一定做得到！",
+      points:[
+        {r:"a / an：一個東西。子音前用 a，母音(a e i o u)前用 an。", ex:"a ball ／ an apple", tts:"a ball. an apple."},
+        {r:"this / these：近的一個用 this，很多個用 these。", ex:"This is a cat. These are cats.", tts:"This is a cat. These are cats."},
+        {r:"位置：in 裡面、on 上面、under 下面。", ex:"The cat is in the box.", tts:"The cat is in the box."},
+      ],
+      worked:[
+        {q:"This is ___ orange.", opts:["a","an","the"], ans:1, why:"orange 母音開頭，用 an。", tts:"This is an orange."},
+        {q:"The book is ___ the table.", opts:["on","in","under"], ans:0, why:"在桌「上」用 on。", tts:"The book is on the table."},
+      ]},
+    bank:[
+      {q:"This is ___ apple.", opts:["a","an","the"], ans:1, why:"apple 母音開頭，用 an。", tts:"This is an apple."},
+      {q:"I ___ football on Saturdays.", opts:["play","plays","playing"], ans:0, why:"主詞 I，用原形 play。", tts:"I play football on Saturdays."},
+      {q:"___ are my books.", opts:["This","These","It"], ans:1, why:"books 複數，用 These。", tts:"These are my books."},
+      {q:"I like ___.", opts:["cat","cats","a cats"], ans:1, why:"喜歡某類東西用複數 cats。", tts:"I like cats."},
+      {q:"The cat is ___ the box.", opts:["in","at","of"], ans:0, why:"在盒子「裡」用 in。", tts:"The cat is in the box."},
+      {q:"I ___ like durian.", opts:["don't","doesn't","not"], ans:0, why:"I 的否定用 don't。", tts:"I don't like durian."},
+      {q:"Today is Monday. Tomorrow is ___.", opts:["Sunday","Tuesday","Friday"], ans:1, why:"星期一的隔天是 Tuesday。", tts:"Tomorrow is Tuesday."},
+      {q:"She is ___ mother.", opts:["my","me","I"], ans:0, why:"「我的」用 my。", tts:"She is my mother."},
+      {q:"This is ___ ball.", opts:["a","an","—"], ans:0, why:"ball 子音開頭，用 a。", tts:"This is a ball."},
+      {q:"The book is ___ the table.", opts:["on","in","under"], ans:0, why:"在桌「上」用 on。", tts:"The book is on the table."},
+      {q:"I have two ___.", opts:["pencil","pencils","pencilses"], ans:1, why:"two 後面用複數。", tts:"I have two pencils."},
+      {q:"___ name is Ali.", opts:["His","He","Him"], ans:0, why:"「他的」用 His。", tts:"His name is Ali."},
+      {q:"I can see ___ elephant.", opts:["a","an","two"], ans:1, why:"elephant 母音開頭，用 an。", tts:"I can see an elephant."},
+      {q:"Is this your bag? Yes, it ___.", opts:["is","are","am"], ans:0, why:"it 配 is。", tts:"Yes, it is."},
+      {q:"The dog is ___ the chair.", opts:["under","in","on"], ans:0, why:"在椅子「下」用 under。", tts:"The dog is under the chair."},
+    ]},
+
+  { id:"en3", subj:"英文", year:"Y3", icon:"✏️", color:"var(--grape)", title:"English Year 3", sub:"明示文法起步 · A1 Mid",
+    teach:{ intro:"這一關學「他／她怎麼做」和「會不會」。準備好了嗎？我們一步一步來！",
+      points:[
+        {r:"他／她＋動詞加 -s／-es：She goes. He likes.", ex:"She goes to school.", tts:"She goes to school."},
+        {r:"can 會／can't 不會，後面動詞不變。", ex:"I can swim. She can't fly.", tts:"I can swim. She can not fly."},
+        {r:"there is（一個）／ there are（很多）。", ex:"There are three birds.", tts:"There are three birds."},
+        {r:"比較：短形容詞加 -er，配 than。", ex:"He is taller than me.", tts:"He is taller than me."},
+      ],
+      worked:[
+        {q:"She ___ to school every day.", opts:["go","goes","going"], ans:1, why:"She 第三人稱，加 -es。", tts:"She goes to school every day."},
+        {q:"There ___ two cats.", opts:["is","are","am"], ans:1, why:"two cats 複數，用 are。", tts:"There are two cats."},
+      ]},
+    bank:[
+      {q:"She ___ to school every day.", opts:["go","goes","going"], ans:1, why:"第三人稱單數加 -es。", tts:"She goes to school every day."},
+      {q:"I ___ swim.", opts:["can","cans","canning"], ans:0, why:"can 不變化。", tts:"I can swim."},
+      {q:"There ___ three birds.", opts:["is","are","am"], ans:1, why:"three birds 複數，用 are。", tts:"There are three birds."},
+      {q:"He ___ like spicy food.", opts:["don't","doesn't","isn't"], ans:1, why:"He 的否定用 doesn't。", tts:"He doesn't like spicy food."},
+      {q:"___ you like ice cream?", opts:["Do","Does","Is"], ans:0, why:"you 的問句用 Do。", tts:"Do you like ice cream?"},
+      {q:"My brother is ___ than me.", opts:["tall","taller","tallest"], ans:1, why:"than 比較用 -er。", tts:"My brother is taller than me."},
+      {q:"There ___ a cat under the chair.", opts:["is","are","be"], ans:0, why:"a cat 單數，用 is。", tts:"There is a cat under the chair."},
+      {q:"We went to the zoo ___ Saturday.", opts:["on","in","at"], ans:0, why:"星期幾前用 on。", tts:"We went to the zoo on Saturday."},
+      {q:"___ is your birthday?", opts:["When","Who","What"], ans:0, why:"問時間用 When。", tts:"When is your birthday?"},
+      {q:"The children ___ playing now.", opts:["is","are","am"], ans:1, why:"children 複數，用 are。", tts:"The children are playing now."},
+      {q:"Ali ___ two cats.", opts:["have","has","haves"], ans:1, why:"第三人稱用 has。", tts:"Ali has two cats."},
+      {q:"I get up ___ 7 o'clock.", opts:["at","on","in"], ans:0, why:"幾點鐘前用 at。", tts:"I get up at seven o'clock."},
+      {q:"This is the ___ mango!", opts:["sweet","sweeter","sweetest"], ans:2, why:"the＋最高級 -est。", tts:"This is the sweetest mango!"},
+      {q:"She can sing, ___ she can't dance.", opts:["but","so","or"], ans:0, why:"前後相反用 but。", tts:"She can sing, but she can not dance."},
+      {q:"___ many pupils are there?", opts:["How","What","Why"], ans:0, why:"問數量用 How many。", tts:"How many pupils are there?"},
+    ]},
+
+  { id:"ma2", subj:"數學", year:"Y2", icon:"🔢", color:"var(--tang)", title:"Mathematics Year 2", sub:"1000 內 · 乘除入門 · RM",
+    teach:{ intro:"這一關學 1000 以內的加減，還有乘法和除法的祕密！一起變成小數學家！",
+      points:[
+        {r:"位值：數字站的位置不同。456 → 4 百、5 十、6 個。"},
+        {r:"乘法就是「幾個幾」：4 × 5 = 4 個 5 = 20。"},
+        {r:"除法就是「平分」：10 ÷ 2 = 分成 2 份，每份 5。"},
+        {r:"錢幣用 RM（令吉）。買東西＝減法。"},
+      ],
+      worked:[
+        {q:"3 × 5 = ?", opts:["15","8","35"], ans:0, why:"3 個 5 相加＝15。"},
+        {q:"小明有 RM8，買筆 RM3，剩多少？", opts:["RM5","RM11","RM3"], ans:0, why:"8 − 3 = 5。"},
+      ]},
+    bank:[
+      {q:"345 + 123 = ?", opts:["468","478","458"], ans:0, why:"5+3=8、4+2=6、3+1=4。"},
+      {q:"500 − 250 = ?", opts:["350","250","150"], ans:1, why:"500 減 250 剩 250。"},
+      {q:"4 × 5 = ?", opts:["20","25","15"], ans:0, why:"4 個 5＝20。"},
+      {q:"10 ÷ 2 = ?", opts:["5","2","8"], ans:0, why:"分成 2 份，每份 5。"},
+      {q:"小美有 RM5，買麵包 RM2，剩多少？", opts:["RM3","RM2","RM7"], ans:0, why:"5 − 2 = 3。"},
+      {q:"2, 4, 6, ___, 10", opts:["7","8","9"], ans:1, why:"每次加 2，是 8。"},
+      {q:"蛋糕平分 2 份，每份是？", opts:["1/2","1/3","2/2"], ans:0, why:"二分之一 (1/2)。"},
+      {q:"4/10 寫成小數是？", opts:["0.4","4.0","0.04"], ans:0, why:"十分之四＝0.4。"},
+      {q:"分針指 12、時針指 3，幾點？", opts:["3 點","12 點","6 點"], ans:0, why:"整點 3 點。"},
+      {q:"700 + 200 = ?", opts:["900","500","920"], ans:0, why:"7 百加 2 百＝9 百。"},
+      {q:"5 × 10 = ?", opts:["15","50","510"], ans:1, why:"乘 10 加一個 0＝50。"},
+      {q:"20 ÷ 4 = ?", opts:["5","4","6"], ans:0, why:"4×5=20。"},
+      {q:"RM10 買 RM4 玩具，找回多少？", opts:["RM6","RM4","RM14"], ans:0, why:"10 − 4 = 6。"},
+      {q:"哪個比較長？", opts:["1 m","1 cm","一樣長"], ans:0, why:"1 m＝100 cm，較長。"},
+      {q:"456 的百位數字是？", opts:["4","5","6"], ans:0, why:"4 在百位。"},
+    ]},
+
+  { id:"ma3", subj:"數學", year:"Y3", icon:"🧮", color:"var(--mint)", title:"Mathematics Year 3", sub:"10,000 內 · 混合運算 · 分數小數",
+    teach:{ intro:"這一關學更大的數、混合運算，還有分數和小數！你已經很棒了，繼續加油！",
+      points:[
+        {r:"混合運算（只有 + −）：由左到右算。"},
+        {r:"同分母分數：分母不變，分子相加減。1/4 + 2/4 = 3/4。"},
+        {r:"小數加減：小數點對齊。0.5 + 0.3 = 0.8。"},
+        {r:"單位換算：1 m = 100 cm，1 kg = 1000 g。"},
+      ],
+      worked:[
+        {q:"100 − 20 + 5 = ?", opts:["85","75","125"], ans:0, why:"由左到右：80，再+5=85。"},
+        {q:"2/5 + 1/5 = ?", opts:["3/5","3/10","1/5"], ans:0, why:"同分母，分子 2+1=3。"},
+      ]},
+    bank:[
+      {q:"3456 + 1234 = ?", opts:["4690","4680","4590"], ans:0, why:"逐位相加＝4690。"},
+      {q:"5000 − 1250 = ?", opts:["3750","3850","4250"], ans:0, why:"5000−1250=3750。"},
+      {q:"6 × 7 = ?", opts:["42","36","48"], ans:0, why:"六七四十二。"},
+      {q:"45 ÷ 9 = ?", opts:["5","6","4"], ans:0, why:"9×5=45。"},
+      {q:"2345 四捨五入到百位？", opts:["2300","2400","2350"], ans:0, why:"十位 4 捨去→2300。"},
+      {q:"1/4 + 2/4 = ?", opts:["3/4","3/8","2/4"], ans:0, why:"分子 1+2=3→3/4。"},
+      {q:"0.5 + 0.3 = ?", opts:["0.8","0.53","8.0"], ans:0, why:"5+3 個 0.1＝0.8。"},
+      {q:"RM10 − RM3.50 = ?", opts:["RM6.50","RM7.50","RM6.00"], ans:0, why:"10.00−3.50=6.50。"},
+      {q:"2 kg = ? g", opts:["2000 g","200 g","20 g"], ans:0, why:"1 kg=1000 g。"},
+      {q:"RM5 + RM5 − RM3 = ?", opts:["RM7","RM13","RM8"], ans:0, why:"左到右：10−3=7。"},
+      {q:"1 小時 = ? 分鐘", opts:["60","100","30"], ans:0, why:"1 hour=60 min。"},
+      {q:"100 − 25 + 10 = ?", opts:["85","65","75"], ans:0, why:"75，再+10=85。"},
+      {q:"1 m = ? cm", opts:["100","10","1000"], ans:0, why:"1 米=100 厘米。"},
+      {q:"7008 的十位數字是？", opts:["0","7","8"], ans:0, why:"十位是 0。"},
+      {q:"3/5 − 1/5 = ?", opts:["2/5","2/10","4/5"], ans:0, why:"分子 3−1=2→2/5。"},
+    ]},
+];
+
+/* ---------- 儲存層（try/catch，無 localStorage 時退回記憶體） ---------- */
+let LS_OK=true, MEM={};
+try{ localStorage.setItem("__t","1"); localStorage.removeItem("__t"); }catch(e){ LS_OK=false; }
+if(!LS_OK) document.getElementById("lsWarn").style.display="block";
+function lsGet(k){ try{ return LS_OK? localStorage.getItem(k) : (MEM[k]??null);}catch(e){ return MEM[k]??null; } }
+function lsSet(k,v){ try{ LS_OK? localStorage.setItem(k,v) : (MEM[k]=v);}catch(e){ MEM[k]=v; } }
+
+/* ---------- 小孩 ---------- */
+function getChildren(){
+  const raw=lsGet("lh-children");
+  if(raw){ try{ return JSON.parse(raw);}catch(e){} }
+  const def=[{id:"c1",name:"小孩一",emoji:"👦"},{id:"c2",name:"小孩二",emoji:"👧"}];
+  lsSet("lh-children",JSON.stringify(def)); return def;
+}
+function setChildren(list){ lsSet("lh-children",JSON.stringify(list)); }
+let CHILDREN=getChildren();
+let CUR=lsGet("lh-current")||null;
+
+const emptyProg=()=>({stars:0,packs:{},wrong:[],notes:[]});
+function progKey(id){ return "lh-prog-"+id; }
+function loadProg(id){ const raw=lsGet(progKey(id)); if(raw){try{return JSON.parse(raw);}catch(e){}} return emptyProg(); }
+function saveProg(){ if(CUR&&PROG) lsSet(progKey(CUR),JSON.stringify(PROG)); }
+let PROG=null;
+
+/* ---------- 自訂（匯入）題庫 ---------- */
+function getCustom(){ const raw=lsGet("lh-custom"); if(raw){try{return JSON.parse(raw);}catch(e){}} return []; }
+function setCustom(list){ lsSet("lh-custom",JSON.stringify(list)); }
+function allPacks(){ return [...BUILTIN, ...getCustom()]; }
+function packById(id){ return allPacks().find(p=>p.id===id); }
+
+/* ---------- 語音 ---------- */
+function speak(t,rate=0.9){ try{ if(!("speechSynthesis"in window))return; speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(t); u.lang="en-GB"; u.rate=rate; u.pitch=1.1;
+  const v=speechSynthesis.getVoices().find(x=>/en[-_]GB/i.test(x.lang)); if(v)u.voice=v; speechSynthesis.speak(u);}catch(e){} }
+if("speechSynthesis"in window){ speechSynthesis.onvoiceschanged=()=>{}; }
+
+/* ---------- 正向回饋語 ---------- */
+const YAY=["太棒了！","做得好！","你好厲害！","答對囉！","繼續保持！","真聰明！"];
+const OOPS=["差一點點，再看看！","沒關係，我們再想想～","再試一次會更好！","動動腦，你可以的！"];
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+
+/* ---------- 狀態 ---------- */
+let TAB="home";
+let SCREEN="who";     // who | home | learn | quiz | result
+let LEARNPACK=null;
+let SESSION=null;     // {packId,qs,idx,correct,mode,picked,flagged}
+
+/* ---------- 工具 ---------- */
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function sattr(s){return JSON.stringify(String(s)).replace(/"/g,"&quot;");} // 安全放進雙引號屬性
+function download(name,text){ try{ const b=new Blob([text],{type:"application/json;charset=utf-8"});
+  const u=URL.createObjectURL(b); const a=document.createElement("a"); a.href=u; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),1500);}catch(e){ alert("下載失敗，請改用「複製」按鈕。"); } }
+
+/* ============ 導覽 ============ */
+function setTab(t){ TAB=t; SCREEN="home"; SESSION=null; render(); }
+function goHome(){ SCREEN="home"; SESSION=null; render(); }
+
+function chooseChild(id){ CUR=id; lsSet("lh-current",id); PROG=loadProg(id); SCREEN="home"; TAB="home"; render(); }
+
+/* ============ 教學 → 練習 ============ */
+function openLearn(pid){ LEARNPACK=pid; SCREEN="learn"; render(); }
+function startBank(pid){ const p=packById(pid); if(!p)return;
+  SESSION={packId:pid, qs:shuffle(p.bank).slice(0,8), idx:0, correct:0, mode:"題庫練習", picked:null, flagged:false};
+  SCREEN="quiz"; render(); }
+function startWrong(){ if(!PROG.wrong.length)return;
+  SESSION={packId:null, qs:shuffle(PROG.wrong).slice(0,8), idx:0, correct:0, mode:"錯題重練", picked:null, flagged:false};
+  SCREEN="quiz"; TAB="home"; render(); }
+
+function choose(i){
+  if(!SESSION||SESSION.picked!==null)return;
+  SESSION.picked=i; SESSION.flagged=false;
+  const q=SESSION.qs[SESSION.idx];
+  const pid=SESSION.packId||q.packId||"misc";
+  const ok=i===q.ans;
+  PROG.packs[pid]=PROG.packs[pid]||{done:0,correct:0};
+  PROG.packs[pid].done++;
+  if(ok){ PROG.stars++; PROG.packs[pid].correct++; PROG.wrong=PROG.wrong.filter(w=>w.q!==q.q); speak(pick(["Well done!","Good job!","Excellent!"])); }
+  else{ if(!PROG.wrong.find(w=>w.q===q.q)) PROG.wrong.push({...q,packId:pid}); }
+  if(ok)SESSION.correct++;
+  saveProg(); render();
+}
+function flagIDK(){
+  if(!SESSION)return;
+  const q=SESSION.qs[SESSION.idx];
+  const pid=SESSION.packId||q.packId||"misc";
+  if(!PROG.notes.find(n=>n.q===q.q)){ PROG.notes.push({q:q.q, ans:q.opts[q.ans], why:q.why, packId:pid, when:Date.now()}); saveProg(); }
+  SESSION.flagged=true; render();
+}
+function nextQ(){
+  if(!SESSION)return;
+  if(SESSION.idx+1<SESSION.qs.length){ SESSION.idx++; SESSION.picked=null; SESSION.flagged=false; SCREEN="quiz"; }
+  else SCREEN="result";
+  render();
+}
+
+/* ============ 匯入 / 匯出 ============ */
+function doImport(){
+  const ta=document.getElementById("impText");
+  let raw=ta.value.trim(); if(!raw){ alert("請先貼上題庫 JSON。"); return; }
+  let data; try{ data=JSON.parse(raw);}catch(e){ alert("格式錯誤：不是有效的 JSON。"); return; }
+  const packs=Array.isArray(data)?data:[data];
+  const cur=getCustom(); let added=0;
+  for(const p of packs){
+    if(!p || !Array.isArray(p.bank) || !p.bank.length){ continue; }
+    const clean={ id:p.id||("cust-"+Date.now()+"-"+added), subj:p.subj||"自訂", year:p.year||"", icon:p.icon||"🌟",
+      color:p.color||"var(--lemon)", title:p.title||"匯入題庫", sub:p.sub||"", teach:p.teach||null,
+      bank:p.bank.filter(q=>q&&q.q&&Array.isArray(q.opts)&&q.opts.length>=2&&typeof q.ans==="number") };
+    if(clean.bank.length){ const idx=cur.findIndex(x=>x.id===clean.id); if(idx>=0)cur[idx]=clean; else cur.push(clean); added++; }
+  }
+  if(!added){ alert("沒有匯入任何題目，請檢查格式。"); return; }
+  setCustom(cur); alert("成功匯入 "+added+" 個題庫包！"); render();
+}
+function importFile(ev){
+  const f=ev.target.files[0]; if(!f)return;
+  const r=new FileReader(); r.onload=()=>{ document.getElementById("impText").value=r.result; }; r.readAsText(f);
+}
+function sampleJSON(){
+  const s=[{ id:"cust-science2", subj:"科學", year:"Y2", icon:"🔬", title:"Science Year 2",
+    sub:"範例：可自行修改", teach:{intro:"教學說明放這裡。", points:[{r:"規則或概念。", ex:"例子"}], worked:[{q:"示範題？",opts:["對","錯","不知道"],ans:0,why:"因為…"}]},
+    bank:[{q:"植物需要什麼才能生長？",opts:["陽光","黑暗","噪音"],ans:0,why:"植物需要陽光。"},
+          {q:"我們用哪個器官看東西？",opts:["眼睛","耳朵","鼻子"],ans:0,why:"用眼睛看。"}]}];
+  download("題庫範例.json", JSON.stringify(s,null,2));
+}
+function exportWrong(){
+  const kid=CHILDREN.find(c=>c.id===CUR);
+  const out={ child:kid?kid.name:CUR, exportedAt:new Date().toLocaleString("zh-TW"),
+    wrongCount:PROG.wrong.length, notesCount:PROG.notes.length,
+    錯題:PROG.wrong.map(w=>({題目:w.q, 正解:w.opts?w.opts[w.ans]:"", 說明:w.why})),
+    不懂的地方:PROG.notes.map(n=>({題目:n.q, 正解:n.ans, 說明:n.why})) };
+  download((kid?kid.name:"孩子")+"_錯題與不懂_"+Date.now()+".json", JSON.stringify(out,null,2));
+}
+function renameChild(id){
+  const c=CHILDREN.find(x=>x.id===id); if(!c)return;
+  const nv=prompt("輸入名字：",c.name); if(nv&&nv.trim()){ c.name=nv.trim(); setChildren(CHILDREN); render(); }
+}
+function resetChild(){
+  if(!confirm("確定清除「"+(CHILDREN.find(c=>c.id===CUR)?.name)+"」的所有進度？此動作無法復原。"))return;
+  PROG=emptyProg(); saveProg(); render();
+}
+function clearCustom(){ if(!confirm("移除所有匯入的題庫？"))return; setCustom([]); render(); }
+
+/* ============ 畫面渲染 ============ */
+const app=()=>document.getElementById("app");
+function renderWho(){
+  document.getElementById("whoBox").innerHTML="";
+  document.getElementById("nav").style.display="none";
+  app().innerHTML=`
+    <div class="card" style="text-align:center">
+      <div style="font-size:44px">🦉</div>
+      <h2 style="margin:6px 0 2px">今天是誰要學習呢？</h2>
+      <div class="lbl">每個小孩的星星、錯題、成績都分開記錄</div>
+    </div>
+    <div class="kidPick">
+      ${CHILDREN.map(c=>{const pr=loadProg(c.id);
+        return `<button class="kid" onclick="chooseChild('${c.id}')">
+          <div class="e">${c.emoji}</div><div class="n">${esc(c.name)}</div>
+          <div class="s">⭐ ${pr.stars}　📌 ${pr.wrong.length}</div></button>`;}).join("")}
+    </div>
+    <button class="ghost" style="width:100%;margin-top:12px" onclick="(function(){renameChild('c1');})()">✏️ 改第一個小孩名字</button>
+    <button class="ghost" style="width:100%;margin-top:8px" onclick="(function(){renameChild('c2');})()">✏️ 改第二個小孩名字</button>`;
+}
+function topWho(){
+  const c=CHILDREN.find(x=>x.id===CUR);
+  document.getElementById("whoBox").innerHTML=
+    `<span class="star">⭐ ${PROG.stars}</span>
+     <button class="whoBtn" onclick="SCREEN='who';render()">${c?c.emoji+" "+esc(c.name):"選人"} ⇄</button>`;
+}
+function renderHome(){
+  topWho(); document.getElementById("nav").style.display="flex";
+  document.getElementById("subhead").textContent="KSSR · "+(CHILDREN.find(c=>c.id===CUR)?.name||"");
+  app().innerHTML = allPacks().map(p=>{
+    const s=PROG.packs[p.id]; const a=s&&s.done?Math.round(100*s.correct/s.done):null;
+    return `<div class="card" style="border-bottom:6px solid ${p.color}">
+      <div class="pk"><span class="e">${p.icon}</span>
+        <div><div class="t">${esc(p.subj)} ${esc(p.year)}</div><div class="s">${esc(p.sub||"")}</div></div>
+        ${a!==null?`<div class="acc" style="color:${a>=70?'var(--mint)':'var(--tang)'}">答對率 ${a}%</div>`:""}</div>
+      <button class="big" style="background:${p.color}" onclick="openLearn('${p.id}')">📖 先學一下，再練習</button>
+      <button class="ghost" style="width:100%;margin-top:8px" onclick="startBank('${p.id}')">⚡ 我學會了，直接練習</button>
+    </div>`;
+  }).join("") + `<div class="lbl" style="margin-top:4px">💡 建議先按「先學一下」看規則和例句，再開始練習。英文可點 🔊 聽發音。</div>`;
+  setNav();
+}
+function renderLearn(){
+  const p=packById(LEARNPACK); if(!p||!p.teach){ startBank(LEARNPACK); return; }
+  topWho(); document.getElementById("nav").style.display="none";
+  const t=p.teach;
+  app().innerHTML=`
+    <div class="qtop"><button class="ghost" onclick="goHome()">← 回家</button>
+      <div style="font-weight:800">${p.icon} ${esc(p.title)}</div></div>
+    <div class="card">
+      <div style="font-size:15.5px;font-weight:800;line-height:1.6">🦉 ${esc(t.intro)}</div>
+      ${t.points.map(pt=>`<div class="point"><div class="r">${esc(pt.r)}</div>
+        ${pt.ex?`<div class="ex">${esc(pt.ex)} ${pt.tts?`<button class="chip" onclick="speak(${sattr(pt.tts)})">🔊 聽</button>`:""}</div>`:""}</div>`).join("")}
+    </div>
+    <div class="card">
+      <div style="font-weight:800;font-size:16px;margin-bottom:4px">👀 一起看兩題範例</div>
+      ${t.worked.map(w=>`<div class="worked">
+        <div style="font-weight:800;font-size:16px">${esc(w.q)}</div>
+        <div class="lbl" style="margin-top:4px">✔ 答案：<b>${esc(w.opts[w.ans])}</b>　${esc(w.why)}
+        ${w.tts?` <button class="chip" onclick="speak(${sattr(w.tts)})">🔊</button>`:""}</div>
+      </div>`).join("")}
+    </div>
+    <button class="big" style="background:var(--mint)" onclick="startBank('${p.id}')">✅ 我懂了，開始練習！</button>`;
+}
+function renderQuiz(){
+  topWho(); document.getElementById("nav").style.display="none";
+  const q=SESSION.qs[SESSION.idx]; const picked=SESSION.picked;
+  app().innerHTML=`
+    <div class="qtop"><button class="ghost" onclick="goHome()">← 離開</button>
+      <div style="font-weight:800;font-size:15px">${esc(SESSION.mode)}</div>
+      <div style="margin-left:auto;font-size:13px;color:var(--grey);font-weight:800">${SESSION.idx+1} / ${SESSION.qs.length}</div></div>
+    <div class="bar">${SESSION.qs.map((_,i)=>`<i style="background:${i<SESSION.idx?'var(--lemon)':i===SESSION.idx?'var(--tang)':'#EFE3D3'}"></i>`).join("")}</div>
+    <div class="card">
+      <div class="qtext">${esc(q.q)}</div>
+      ${q.tts?`<button class="ghost" style="margin-top:8px" onclick="speak(${sattr(q.tts)})">🔊 聽整句</button>`:""}
+      ${["a","b","c","d"].slice(0,q.opts.length).map((lb,i)=>{
+        let cls=""; if(picked!==null){ if(i===q.ans)cls="ok"; else if(i===picked)cls="no"; }
+        return `<button class="opt ${cls}" onclick="choose(${i})"><span class="k">${lb}.</span>${esc(q.opts[i])}</button>`;}).join("")}
+      ${picked!==null?`<div class="fb" style="background:${picked===q.ans?'#EAFBF4':'#FFF6E8'}">
+        ${picked===q.ans?"✅ "+pick(YAY):"💡 "+pick(OOPS)+"　正解："+esc(q.opts[q.ans])+"。"}　${esc(q.why||"")}</div>`:""}
+      ${picked!==null?`<button class="idk ${SESSION.flagged?'flagged':''}" onclick="flagIDK()">${SESSION.flagged?"👌 已記下「這題我不懂」":"🤔 這題我不懂（記給爸媽看）"}</button>`:""}
+      ${picked!==null?`<button class="big" style="background:var(--ink)" onclick="nextQ()">${SESSION.idx+1<SESSION.qs.length?"下一題 ▶":"看成績 🏁"}</button>`:""}
+    </div>`;
+}
+function renderResult(){
+  topWho(); document.getElementById("nav").style.display="none";
+  const c=SESSION.correct, n=SESSION.qs.length; const perfect=c===n;
+  const emo=perfect?"🏆":c>=n*0.7?"🌟":"💪";
+  speak(perfect?"Excellent! You are a star!":"Good job!");
+  app().innerHTML=`<div class="card result">
+    <div class="b">${emo}</div>
+    <h2>${perfect?"全對！你太厲害了！":c>=n*0.7?"做得很好！":"完成了，你很努力！"}</h2>
+    <div class="lbl" style="margin-bottom:14px">答對 ${c} / ${n} 題（${esc(SESSION.mode)}）</div>
+    ${SESSION.packId?`<button class="big" style="background:var(--tang)" onclick="startBank('${SESSION.packId}')">🔁 再練一輪</button>`:""}
+    ${SESSION.packId?`<button class="big" style="background:var(--sky)" onclick="openLearn('${SESSION.packId}')">📖 再看一次教學</button>`:""}
+    <button class="big" style="background:var(--ink)" onclick="goHome()">🏠 回首頁</button></div>`;
+}
+function renderWrong(){
+  topWho(); document.getElementById("nav").style.display="flex";
+  app().innerHTML=`
+    <div class="card">
+      <div style="font-weight:800;font-size:17px">📌 錯題本（${PROG.wrong.length}）</div>
+      <div class="lbl" style="margin:4px 0 8px">答對後會自動移除。可匯出給爸媽或老師看。</div>
+      ${PROG.wrong.length?`<button class="big" style="background:var(--coral)" onclick="startWrong()">🔁 錯題重練（最多 8 題）</button>`:`<div style="font-weight:800;color:var(--mint)">目前沒有錯題，太棒了！🎉</div>`}
+      <div class="row" style="margin-top:8px">
+        <button class="ghost" style="flex:1" onclick="exportWrong()">📤 匯出錯題＋不懂的地方</button>
+      </div>
+    </div>
+    ${PROG.notes.length?`<div class="card"><div style="font-weight:800">🤔 標記「不懂」的題目（${PROG.notes.length}）</div>
+      ${PROG.notes.slice(0,30).map(n=>`<div class="lbl" style="padding:6px 0;border-bottom:1px solid var(--line)"><b>${esc(n.q)}</b><br>✔ ${esc(n.ans||"")}　${esc(n.why||"")}</div>`).join("")}</div>`:""}
+    ${PROG.wrong.slice(0,30).map(w=>`<div class="card" style="padding:10px 14px"><b style="font-size:14.5px">${esc(w.q)}</b>
+      <div class="lbl" style="margin-top:2px">✔ ${esc(w.opts?w.opts[w.ans]:"")}　｜　${esc(w.why||"")}</div></div>`).join("")}`;
+  setNav();
+}
+function renderStats(){
+  topWho(); document.getElementById("nav").style.display="flex";
+  app().innerHTML=`<div class="card">
+    <div style="font-weight:800;font-size:17px;margin-bottom:6px">📊 家長成績表</div>
+    ${allPacks().map(p=>{ const s=PROG.packs[p.id]; const a=s&&s.done?Math.round(100*s.correct/s.done):null;
+      return `<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)">
+        <span style="font-size:22px">${p.icon}</span>
+        <div style="flex:1;font-weight:700;font-size:14.5px">${esc(p.subj)} ${esc(p.year)}</div>
+        <div class="lbl">${s?s.correct+"/"+s.done+" 題":"尚未練習"}</div>
+        ${a!==null?`<div style="font-weight:800;font-size:14px;color:${a>=70?'var(--mint)':'var(--tang)'}">${a}%</div>`:""}</div>`;}).join("")}
+    <div class="lbl" style="margin-top:10px">📖 教學法提醒：答對率 <b>低於 70%</b> 請退回「先學一下」陪孩子讀；<b>高於 90%</b> 可挑戰新題庫。每次 10–15 分鐘最理想。</div>
+  </div>`;
+  setNav();
+}
+function renderSettings(){
+  topWho(); document.getElementById("nav").style.display="flex";
+  const custom=getCustom();
+  app().innerHTML=`
+    <div class="card">
+      <div style="font-weight:800;font-size:17px">📥 匯入題庫</div>
+      <div class="lbl" style="margin:4px 0 8px">貼上 JSON，或選擇檔案。格式：每包含 title、bank（每題有 q、opts、ans、why）。</div>
+      <input type="file" accept=".json,application/json" onchange="importFile(event)" style="margin-bottom:8px">
+      <textarea id="impText" placeholder='貼上題庫 JSON…'></textarea>
+      <div class="row" style="margin-top:8px">
+        <button class="big" style="flex:1;background:var(--mint)" onclick="doImport()">✅ 匯入</button>
+        <button class="ghost" style="flex:1" onclick="sampleJSON()">⬇️ 下載範例格式</button>
+      </div>
+      ${custom.length?`<div class="lbl" style="margin-top:10px">已匯入 ${custom.length} 包：${custom.map(c=>esc(c.title)).join("、")}
+        <button class="ghost" style="width:100%;margin-top:6px" onclick="clearCustom()">🗑️ 移除所有匯入題庫</button></div>`:""}
+    </div>
+    <div class="card">
+      <div style="font-weight:800;font-size:17px">👦👧 小孩</div>
+      ${CHILDREN.map(c=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0">
+        <span style="font-size:22px">${c.emoji}</span><b style="flex:1">${esc(c.name)}</b>
+        <button class="chip" onclick="renameChild('${c.id}')">改名</button></div>`).join("")}
+      <button class="ghost" style="width:100%;margin-top:8px" onclick="resetChild()">🧹 清除目前小孩的進度</button>
+    </div>
+    <div class="lbl">🔒 所有資料只存在這台裝置的瀏覽器，不會上傳。換裝置或清除瀏覽器資料會消失，重要進度請用「📤 匯出」備份。</div>`;
+  setNav();
+}
+function setNav(){ document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.tab===TAB)); }
+
+function render(){
+  if(SCREEN==="who"||!CUR){ if(!CUR&&SCREEN!=="who")SCREEN="who"; if(SCREEN==="who"){renderWho();return;} }
+  if(!PROG&&CUR)PROG=loadProg(CUR);
+  if(SCREEN==="learn"){renderLearn();return;}
+  if(SCREEN==="quiz"){renderQuiz();return;}
+  if(SCREEN==="result"){renderResult();return;}
+  // home-level tabs
+  if(TAB==="home")renderHome();
+  else if(TAB==="wrong")renderWrong();
+  else if(TAB==="stats")renderStats();
+  else if(TAB==="settings")renderSettings();
+}
+
+/* ---------- 啟動 ---------- */
+if(CUR){ PROG=loadProg(CUR); SCREEN="home"; } else { SCREEN="who"; }
+render();
+</script>
+</body>
+</html>
