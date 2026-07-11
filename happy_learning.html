@@ -91,6 +91,7 @@
     <div class="who" id="whoBox"></div>
   </div>
   <div class="warn" id="lsWarn">⚠️ 這個環境無法儲存進度（可能是無痕模式或預覽視窗）。把檔案放到網站或用一般瀏覽器開啟，進度就會記住。</div>
+  <div class="warn" id="zhWarn">🔈 這個裝置沒有安裝中文語音，中文解說會「只顯示文字、不發聲」（英文發音正常）。iPhone／iPad／Mac／Windows 通常內建；部分 Android 需到系統「文字轉語音」下載中文語音包。</div>
 
   <div id="app"></div>
 </div>
@@ -262,11 +263,29 @@ function setCustom(list){ lsSet("lh-custom",JSON.stringify(list)); }
 function allPacks(){ return [...BUILTIN, ...getCustom()]; }
 function packById(id){ return allPacks().find(p=>p.id===id); }
 
-/* ---------- 語音 ---------- */
-function speak(t,rate=0.9){ try{ if(!("speechSynthesis"in window))return; speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(t); u.lang="en-GB"; u.rate=rate; u.pitch=1.1;
-  const v=speechSynthesis.getVoices().find(x=>/en[-_]GB/i.test(x.lang)); if(v)u.voice=v; speechSynthesis.speak(u);}catch(e){} }
-if("speechSynthesis"in window){ speechSynthesis.onvoiceschanged=()=>{}; }
+/* ---------- 語音（中英雙語） ---------- */
+function getVoice(prefs){ try{ const vs=speechSynthesis.getVoices();
+  for(const p of prefs){ const v=vs.find(x=>x.lang.replace("_","-").toLowerCase().startsWith(p)); if(v)return v; } }catch(e){} return null; }
+function revealNoZh(){ const el=document.getElementById("zhWarn"); if(el)el.style.display="block"; }
+// 只講英文（用於題目整句朗讀）
+function speak(t){ try{ if(!("speechSynthesis"in window))return; speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(t); const v=getVoice(["en-gb","en-us","en"]);
+  u.lang=v?v.lang:"en-GB"; if(v)u.voice=v; u.rate=0.8; u.pitch=1.1; speechSynthesis.speak(u);}catch(e){} }
+// 先中文詳解，停頓，再英文例句
+function speakBilingual(zh,en){ try{ if(!("speechSynthesis"in window))return; speechSynthesis.cancel();
+  const vs=speechSynthesis.getVoices();
+  const zhV=getVoice(["zh-tw","zh-hk","zh-cn","zh"]);
+  const enV=getVoice(["en-gb","en-us","en"]);
+  const q=[];
+  if(zh){ if(zhV) q.push({t:zh,voice:zhV,lang:zhV.lang,rate:0.82,pitch:1.05});
+    else if(vs.length===0) q.push({t:zh,voice:null,lang:"zh-TW",rate:0.82,pitch:1.05}); // 語音尚未載入，盡力嘗試
+    else revealNoZh(); }                                                                 // 確定沒有中文語音 → 只顯示文字
+  if(en) q.push({t:en,voice:enV,lang:enV?enV.lang:"en-GB",rate:0.8,pitch:1.1});
+  let i=0; (function nxt(){ if(i>=q.length)return; const it=q[i++];
+    const u=new SpeechSynthesisUtterance(it.t); u.lang=it.lang; if(it.voice)u.voice=it.voice; u.rate=it.rate; u.pitch=it.pitch;
+    u.onend=()=>setTimeout(nxt,350); u.onerror=()=>setTimeout(nxt,100); speechSynthesis.speak(u); })();
+}catch(e){} }
+if("speechSynthesis"in window){ speechSynthesis.onvoiceschanged=()=>{}; try{ speechSynthesis.getVoices(); }catch(e){} }
 
 /* ---------- 正向回饋語 ---------- */
 const YAY=["太棒了！","做得好！","你好厲害！","答對囉！","繼續保持！","真聰明！"];
@@ -425,14 +444,14 @@ function renderLearn(){
     <div class="card">
       <div style="font-size:15.5px;font-weight:800;line-height:1.6">🦉 ${esc(t.intro)}</div>
       ${t.points.map(pt=>`<div class="point"><div class="r">${esc(pt.r)}</div>
-        ${pt.ex?`<div class="ex">${esc(pt.ex)} ${pt.tts?`<button class="chip" onclick="speak(${sattr(pt.tts)})">🔊 聽</button>`:""}</div>`:""}</div>`).join("")}
+        <div style="margin-top:6px">${pt.ex?`<span class="ex">${esc(pt.ex)}</span>　`:""}<button class="chip" onclick="speakBilingual(${sattr(pt.r)}, ${sattr(pt.tts||'')})">🔊 中文＋英文</button></div></div>`).join("")}
     </div>
     <div class="card">
       <div style="font-weight:800;font-size:16px;margin-bottom:4px">👀 一起看兩題範例</div>
       ${t.worked.map(w=>`<div class="worked">
         <div style="font-weight:800;font-size:16px">${esc(w.q)}</div>
         <div class="lbl" style="margin-top:4px">✔ 答案：<b>${esc(w.opts[w.ans])}</b>　${esc(w.why)}
-        ${w.tts?` <button class="chip" onclick="speak(${sattr(w.tts)})">🔊</button>`:""}</div>
+        <button class="chip" onclick="speakBilingual(${sattr('答案是「'+w.opts[w.ans]+'」。'+(w.why||''))}, ${sattr(w.tts||'')})">🔊 中文＋英文</button></div>
       </div>`).join("")}
     </div>
     <button class="big" style="background:var(--mint)" onclick="startBank('${p.id}')">✅ 我懂了，開始練習！</button>`;
@@ -453,6 +472,7 @@ function renderQuiz(){
         return `<button class="opt ${cls}" onclick="choose(${i})"><span class="k">${lb}.</span>${esc(q.opts[i])}</button>`;}).join("")}
       ${picked!==null?`<div class="fb" style="background:${picked===q.ans?'#EAFBF4':'#FFF6E8'}">
         ${picked===q.ans?"✅ "+pick(YAY):"💡 "+pick(OOPS)+"　正解："+esc(q.opts[q.ans])+"。"}　${esc(q.why||"")}</div>`:""}
+      ${picked!==null?`<button class="ghost" style="width:100%;margin-top:10px" onclick="speakBilingual(${sattr('正確答案是「'+q.opts[q.ans]+'」。'+(q.why||''))}, ${sattr(q.tts||'')})">🔊 聽詳細解說（中文 ➜ 英文）</button>`:""}
       ${picked!==null?`<button class="idk ${SESSION.flagged?'flagged':''}" onclick="flagIDK()">${SESSION.flagged?"👌 已記下「這題我不懂」":"🤔 這題我不懂（記給爸媽看）"}</button>`:""}
       ${picked!==null?`<button class="big" style="background:var(--ink)" onclick="nextQ()">${SESSION.idx+1<SESSION.qs.length?"下一題 ▶":"看成績 🏁"}</button>`:""}
     </div>`;
