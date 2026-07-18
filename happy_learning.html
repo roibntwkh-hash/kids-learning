@@ -87,6 +87,10 @@
   .yr-h .yr-n{font-size:11px;font-weight:700;color:var(--grey);background:#fff;border:2px solid var(--line);
     border-radius:999px;padding:2px 8px}
   #app > .yr-h:first-child{margin-top:2px}
+  .fbar{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 6px}
+  .fchip{border:2px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-weight:800;font-size:13px;color:var(--ink)}
+  .fchip.on{background:var(--tang);border-color:var(--tang);color:#fff}
+  button[disabled]{opacity:.4}
 </style>
 </head>
 <body>
@@ -5087,6 +5091,1304 @@ BUILTIN.push(
         "why": "應謹慎使用資源。"
       }
     ]
+  },
+  {
+    "id": "bm2-b",
+    "subj": "BM",
+    "year": "Y2",
+    "icon": "🗣️",
+    "color": "var(--tang)",
+    "title": "Bahasa Melayu Tahun 2: Ganti Nama & Kata Tanya",
+    "sub": "人稱代名詞·疑問詞",
+    "teach": {
+      "intro": "學馬來文的『人稱代名詞』和『疑問詞 kata tanya』。",
+      "points": [
+        {
+          "r": "人稱:Saya 我、Awak/Kamu 你、Dia 他/她、Kami/Kita 我們、Mereka 他們。"
+        },
+        {
+          "r": "疑問詞:Siapa 誰(問人)、Apa 什麼(問物)、Bila 何時、Mana 何處、Berapa 多少。"
+        }
+      ],
+      "worked": [
+        {
+          "q": "'I' dalam Bahasa Melayu ialah ___.",
+          "opts": [
+            "Saya",
+            "Dia",
+            "Mereka"
+          ],
+          "ans": 0,
+          "why": "我 = Saya。"
+        },
+        {
+          "q": "Kata tanya untuk orang ialah ___.",
+          "opts": [
+            "Siapa",
+            "Apa",
+            "Bila"
+          ],
+          "ans": 0,
+          "why": "問人用 Siapa。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "'I' dalam Bahasa Melayu ialah ___.",
+        "opts": [
+          "Saya",
+          "Awak",
+          "Dia"
+        ],
+        "ans": 0,
+        "why": "我 = Saya。"
+      },
+      {
+        "q": "'You' dalam Bahasa Melayu ialah ___.",
+        "opts": [
+          "Saya",
+          "Awak",
+          "Dia"
+        ],
+        "ans": 1,
+        "why": "你 = Awak / Kamu。"
+      },
+      {
+        "q": "'He / She' dalam Bahasa Melayu ialah ___.",
+        "opts": [
+          "Saya",
+          "Dia",
+          "Kami"
+        ],
+        "ans": 1,
+        "why": "他/她 = Dia。"
+      },
+      {
+        "q": "'They' dalam Bahasa Melayu ialah ___.",
+        "opts": [
+          "Kami",
+          "Kita",
+          "Mereka"
+        ],
+        "ans": 2,
+        "why": "他們 = Mereka。"
+      },
+      {
+        "q": "Kata tanya untuk orang ialah ___.",
+        "opts": [
+          "Apa",
+          "Siapa",
+          "Mana"
+        ],
+        "ans": 1,
+        "why": "問人用 Siapa。"
+      },
+      {
+        "q": "Kata tanya untuk benda ialah ___.",
+        "opts": [
+          "Apa",
+          "Siapa",
+          "Bila"
+        ],
+        "ans": 0,
+        "why": "問物用 Apa。"
+      },
+      {
+        "q": "Kata tanya untuk masa ialah ___.",
+        "opts": [
+          "Bila",
+          "Mana",
+          "Berapa"
+        ],
+        "ans": 0,
+        "why": "問時間用 Bila。"
+      },
+      {
+        "q": "Kata tanya untuk tempat ialah ___.",
+        "opts": [
+          "Mana",
+          "Apa",
+          "Berapa"
+        ],
+        "ans": 0,
+        "why": "問地點用 Mana(Di mana)。"
+      }
+    ]
+  },
+  {
+    "id": "bm2-c",
+    "subj": "BM",
+    "year": "Y2",
+    "icon": "🔤",
+    "color": "var(--tang)",
+    "title": "Bahasa Melayu Tahun 2: Jenis Kata",
+    "sub": "名詞·動詞·形容詞",
+    "teach": {
+      "intro": "學分辨三種詞:kata nama 名詞、kata kerja 動詞、kata adjektif 形容詞。",
+      "points": [
+        {
+          "r": "Kata nama 名詞:人、事、物。",
+          "ex": "kucing, meja, buku"
+        },
+        {
+          "r": "Kata kerja 動詞:動作。",
+          "ex": "lari, makan, tidur"
+        },
+        {
+          "r": "Kata adjektif 形容詞:樣子、感覺。",
+          "ex": "besar, cantik, panas"
+        }
+      ],
+      "worked": [
+        {
+          "q": "'kucing' ialah kata ___.",
+          "opts": [
+            "nama",
+            "kerja",
+            "adjektif"
+          ],
+          "ans": 0,
+          "why": "kucing 貓是名詞。"
+        },
+        {
+          "q": "'lari' ialah kata ___.",
+          "opts": [
+            "nama",
+            "kerja",
+            "adjektif"
+          ],
+          "ans": 1,
+          "why": "lari 跑是動詞。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "'kucing' ialah kata ___.",
+        "opts": [
+          "nama",
+          "kerja",
+          "adjektif"
+        ],
+        "ans": 0,
+        "why": "貓 kucing 是名詞。"
+      },
+      {
+        "q": "'meja' ialah kata ___.",
+        "opts": [
+          "nama",
+          "kerja",
+          "adjektif"
+        ],
+        "ans": 0,
+        "why": "桌子 meja 是名詞。"
+      },
+      {
+        "q": "'buku' ialah kata ___.",
+        "opts": [
+          "nama",
+          "kerja",
+          "adjektif"
+        ],
+        "ans": 0,
+        "why": "書 buku 是名詞。"
+      },
+      {
+        "q": "'lari' ialah kata ___.",
+        "opts": [
+          "nama",
+          "kerja",
+          "adjektif"
+        ],
+        "ans": 1,
+        "why": "跑 lari 是動詞。"
+      },
+      {
+        "q": "'makan' ialah kata ___.",
+        "opts": [
+          "nama",
+          "kerja",
+          "adjektif"
+        ],
+        "ans": 1,
+        "why": "吃 makan 是動詞。"
+      },
+      {
+        "q": "'tidur' ialah kata ___.",
+        "opts": [
+          "nama",
+          "kerja",
+          "adjektif"
+        ],
+        "ans": 1,
+        "why": "睡 tidur 是動詞。"
+      },
+      {
+        "q": "'cantik' ialah kata ___.",
+        "opts": [
+          "nama",
+          "kerja",
+          "adjektif"
+        ],
+        "ans": 2,
+        "why": "漂亮 cantik 是形容詞。"
+      },
+      {
+        "q": "'besar' ialah kata ___.",
+        "opts": [
+          "nama",
+          "kerja",
+          "adjektif"
+        ],
+        "ans": 2,
+        "why": "大 besar 是形容詞。"
+      }
+    ]
+  },
+  {
+    "id": "bm3-b",
+    "subj": "BM",
+    "year": "Y3",
+    "icon": "🧩",
+    "color": "var(--tang)",
+    "title": "Bahasa Melayu Tahun 3: Imbuhan & Kata Sendi",
+    "sub": "前綴 me-·介系詞",
+    "teach": {
+      "intro": "學前綴 imbuhan『me-』和介系詞 kata sendi nama。",
+      "points": [
+        {
+          "r": "me + kata dasar:me+baca→membaca、me+tulis→menulis、me+lukis→melukis。"
+        },
+        {
+          "r": "Kata sendi:di 在(位置)、ke 去(方向)、dari 從(地方)、kepada 給(人)。"
+        }
+      ],
+      "worked": [
+        {
+          "q": "me + baca = ___",
+          "opts": [
+            "membaca",
+            "dibaca",
+            "terbaca"
+          ],
+          "ans": 0,
+          "why": "me + baca = membaca。"
+        },
+        {
+          "q": "Saya pergi ___ sekolah.",
+          "opts": [
+            "di",
+            "ke",
+            "dari"
+          ],
+          "ans": 1,
+          "why": "去某地用 ke。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "me + baca = ___",
+        "opts": [
+          "membaca",
+          "dibaca",
+          "terbaca"
+        ],
+        "ans": 0,
+        "why": "me + baca = membaca(讀)。"
+      },
+      {
+        "q": "me + tulis = ___",
+        "opts": [
+          "menulis",
+          "ditulis",
+          "tertulis"
+        ],
+        "ans": 0,
+        "why": "me + tulis = menulis(寫)。"
+      },
+      {
+        "q": "me + lukis = ___",
+        "opts": [
+          "melukis",
+          "dilukis",
+          "terlukis"
+        ],
+        "ans": 0,
+        "why": "me + lukis = melukis(畫)。"
+      },
+      {
+        "q": "me + nyanyi = ___",
+        "opts": [
+          "menyanyi",
+          "dinyanyi",
+          "bernyanyi"
+        ],
+        "ans": 0,
+        "why": "me + nyanyi = menyanyi(唱)。"
+      },
+      {
+        "q": "Buku itu ada ___ atas meja.",
+        "opts": [
+          "di",
+          "ke",
+          "dari"
+        ],
+        "ans": 0,
+        "why": "表位置用 di(di atas meja)。"
+      },
+      {
+        "q": "Saya pergi ___ sekolah.",
+        "opts": [
+          "di",
+          "ke",
+          "dari"
+        ],
+        "ans": 1,
+        "why": "去某地用 ke(pergi ke sekolah)。"
+      },
+      {
+        "q": "Dia datang ___ rumah.",
+        "opts": [
+          "di",
+          "ke",
+          "dari"
+        ],
+        "ans": 2,
+        "why": "從某地用 dari(datang dari rumah)。"
+      },
+      {
+        "q": "Saya memberi hadiah ___ ibu.",
+        "opts": [
+          "kepada",
+          "ke",
+          "di"
+        ],
+        "ans": 0,
+        "why": "給某人用 kepada。"
+      }
+    ]
+  },
+  {
+    "id": "bm3-c",
+    "subj": "BM",
+    "year": "Y3",
+    "icon": "🔁",
+    "color": "var(--tang)",
+    "title": "Bahasa Melayu Tahun 3: Sinonim, Antonim & Kata Hubung",
+    "sub": "同義·反義·連接詞",
+    "teach": {
+      "intro": "學同義詞 sinonim、反義詞 antonim、連接詞 kata hubung。",
+      "points": [
+        {
+          "r": "Sinonim 同義:pandai=bijak、cantik=indah、gembira=riang。"
+        },
+        {
+          "r": "Antonim 反義:tinggi↔rendah、panas↔sejuk、gembira↔sedih。"
+        },
+        {
+          "r": "Kata hubung:dan(和)、tetapi(但是)、atau(或)。"
+        }
+      ],
+      "worked": [
+        {
+          "q": "Sinonim 'pandai' ialah ___.",
+          "opts": [
+            "bijak",
+            "bodoh",
+            "malas"
+          ],
+          "ans": 0,
+          "why": "pandai 聰明 = bijak。"
+        },
+        {
+          "q": "Antonim 'tinggi' ialah ___.",
+          "opts": [
+            "rendah",
+            "besar",
+            "jauh"
+          ],
+          "ans": 0,
+          "why": "tinggi 高 ↔ rendah 低。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "Sinonim 'pandai' ialah ___.",
+        "opts": [
+          "bijak",
+          "bodoh",
+          "malas"
+        ],
+        "ans": 0,
+        "why": "聰明 pandai = bijak。"
+      },
+      {
+        "q": "Sinonim 'cantik' ialah ___.",
+        "opts": [
+          "indah",
+          "hodoh",
+          "kotor"
+        ],
+        "ans": 0,
+        "why": "美 cantik = indah。"
+      },
+      {
+        "q": "Sinonim 'gembira' ialah ___.",
+        "opts": [
+          "riang",
+          "sedih",
+          "marah"
+        ],
+        "ans": 0,
+        "why": "快樂 gembira = riang。"
+      },
+      {
+        "q": "Antonim 'tinggi' ialah ___.",
+        "opts": [
+          "rendah",
+          "besar",
+          "jauh"
+        ],
+        "ans": 0,
+        "why": "高 tinggi ↔ 低 rendah。"
+      },
+      {
+        "q": "Antonim 'panas' ialah ___.",
+        "opts": [
+          "sejuk",
+          "cerah",
+          "basah"
+        ],
+        "ans": 0,
+        "why": "熱 panas ↔ 冷 sejuk。"
+      },
+      {
+        "q": "Antonim 'gembira' ialah ___.",
+        "opts": [
+          "sedih",
+          "riang",
+          "suka"
+        ],
+        "ans": 0,
+        "why": "快樂 gembira ↔ 傷心 sedih。"
+      },
+      {
+        "q": "Saya suka nasi ___ ayam.",
+        "opts": [
+          "dan",
+          "tetapi",
+          "atau"
+        ],
+        "ans": 0,
+        "why": "表相加用 dan(和)。"
+      },
+      {
+        "q": "Dia kecil ___ kuat.",
+        "opts": [
+          "dan",
+          "tetapi",
+          "atau"
+        ],
+        "ans": 1,
+        "why": "前後相反用 tetapi(但是)。"
+      }
+    ]
+  },
+  {
+    "id": "health-y2",
+    "subj": "健康",
+    "year": "Y2",
+    "icon": "❤️",
+    "color": "var(--coral)",
+    "title": "Pendidikan Kesihatan Tahun 2",
+    "sub": "牙齒·飲食·衛生·安全",
+    "teach": {
+      "intro": "複習健康好習慣:刷牙、健康飲食、洗手、安全。",
+      "points": [
+        {
+          "r": "每天刷牙 2 次,吃蔬菜水果,多喝白開水。"
+        },
+        {
+          "r": "吃東西前先洗手;過馬路先看兩邊;咳嗽掩口。"
+        }
+      ],
+      "worked": [
+        {
+          "q": "How many times a day should we brush our teeth?",
+          "opts": [
+            "once",
+            "twice",
+            "never"
+          ],
+          "ans": 1,
+          "why": "每天刷牙 2 次。"
+        },
+        {
+          "q": "Which drink is the healthiest?",
+          "opts": [
+            "water",
+            "soda",
+            "sweet juice"
+          ],
+          "ans": 0,
+          "why": "白開水最健康。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "How many times a day should we brush our teeth?",
+        "opts": [
+          "once",
+          "twice",
+          "never"
+        ],
+        "ans": 1,
+        "why": "每天刷牙 2 次。"
+      },
+      {
+        "q": "Which food helps us grow strong?",
+        "opts": [
+          "candy",
+          "vegetables",
+          "chips"
+        ],
+        "ans": 1,
+        "why": "蔬菜幫助長高長壯。"
+      },
+      {
+        "q": "We should wash our hands before we ___.",
+        "opts": [
+          "eat",
+          "run",
+          "sing"
+        ],
+        "ans": 0,
+        "why": "吃東西前要洗手。"
+      },
+      {
+        "q": "Which drink is the healthiest?",
+        "opts": [
+          "water",
+          "soda",
+          "sweet juice"
+        ],
+        "ans": 0,
+        "why": "白開水最健康。"
+      },
+      {
+        "q": "Before crossing the road, we should look ___.",
+        "opts": [
+          "both ways",
+          "up",
+          "at a phone"
+        ],
+        "ans": 0,
+        "why": "過馬路先看左右兩邊。"
+      },
+      {
+        "q": "Children need about ___ of sleep at night.",
+        "opts": [
+          "2 hours",
+          "9 hours",
+          "20 hours"
+        ],
+        "ans": 1,
+        "why": "小孩每晚約睡 9–10 小時。"
+      },
+      {
+        "q": "Eating too many sweets is bad for our ___.",
+        "opts": [
+          "teeth",
+          "hair",
+          "shoes"
+        ],
+        "ans": 0,
+        "why": "糖太多會傷牙齒。"
+      },
+      {
+        "q": "To stay clean, we should take a ___ every day.",
+        "opts": [
+          "bath",
+          "nap",
+          "walk"
+        ],
+        "ans": 0,
+        "why": "每天洗澡保持乾淨。"
+      },
+      {
+        "q": "Which is a healthy habit?",
+        "opts": [
+          "sitting all day",
+          "exercise every day",
+          "eating only sweets"
+        ],
+        "ans": 1,
+        "why": "每天運動是好習慣。"
+      },
+      {
+        "q": "We cover our mouth when we ___.",
+        "opts": [
+          "cough",
+          "read",
+          "walk"
+        ],
+        "ans": 0,
+        "why": "咳嗽時掩住口。"
+      }
+    ]
+  },
+  {
+    "id": "health-y3",
+    "subj": "健康",
+    "year": "Y3",
+    "icon": "💪",
+    "color": "var(--coral)",
+    "title": "Pendidikan Kesihatan Tahun 3",
+    "sub": "營養·情緒·安全·身體",
+    "teach": {
+      "intro": "複習均衡飲食、情緒、身體與安全。",
+      "points": [
+        {
+          "r": "米飯麵包給能量;蔬果給維生素;要均衡。"
+        },
+        {
+          "r": "生氣時深呼吸;陌生人要說不並告訴大人;抽菸有害健康。"
+        }
+      ],
+      "worked": [
+        {
+          "q": "Fruits and vegetables give us ___ to stay healthy.",
+          "opts": [
+            "vitamins",
+            "sugar",
+            "fat"
+          ],
+          "ans": 0,
+          "why": "蔬果提供維生素。"
+        },
+        {
+          "q": "When we feel angry, a good thing to do is ___.",
+          "opts": [
+            "hit someone",
+            "take deep breaths",
+            "break things"
+          ],
+          "ans": 1,
+          "why": "生氣時可以深呼吸。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "Rice and bread give us ___.",
+        "opts": [
+          "energy",
+          "water",
+          "sleep"
+        ],
+        "ans": 0,
+        "why": "米飯麵包提供能量。"
+      },
+      {
+        "q": "Fruits and vegetables give us ___ to stay healthy.",
+        "opts": [
+          "vitamins",
+          "sugar",
+          "fat"
+        ],
+        "ans": 0,
+        "why": "蔬果提供維生素。"
+      },
+      {
+        "q": "When we feel angry, a good thing to do is ___.",
+        "opts": [
+          "hit someone",
+          "take deep breaths",
+          "break things"
+        ],
+        "ans": 1,
+        "why": "生氣時深呼吸。"
+      },
+      {
+        "q": "If a stranger asks you to go with them, you should ___.",
+        "opts": [
+          "go with them",
+          "say no and tell an adult",
+          "keep it secret"
+        ],
+        "ans": 1,
+        "why": "說不並告訴信任的大人。"
+      },
+      {
+        "q": "Smoking is ___ for our health.",
+        "opts": [
+          "good",
+          "bad",
+          "tasty"
+        ],
+        "ans": 1,
+        "why": "抽菸對健康有害。"
+      },
+      {
+        "q": "We should exercise to keep our ___ strong.",
+        "opts": [
+          "body",
+          "toys",
+          "homework"
+        ],
+        "ans": 0,
+        "why": "運動讓身體強壯。"
+      },
+      {
+        "q": "Germs spread when we do not wash our ___.",
+        "opts": [
+          "hands",
+          "hair",
+          "shoes"
+        ],
+        "ans": 0,
+        "why": "不洗手會傳播細菌。"
+      },
+      {
+        "q": "A helmet protects our ___ when cycling.",
+        "opts": [
+          "head",
+          "feet",
+          "hands"
+        ],
+        "ans": 0,
+        "why": "安全帽保護頭部。"
+      },
+      {
+        "q": "Feeling sad sometimes is ___.",
+        "opts": [
+          "normal",
+          "bad",
+          "dangerous"
+        ],
+        "ans": 0,
+        "why": "偶爾難過是正常的。"
+      },
+      {
+        "q": "A balanced meal has many ___ of food.",
+        "opts": [
+          "kinds",
+          "colours",
+          "boxes"
+        ],
+        "ans": 0,
+        "why": "均衡的一餐有多種食物。"
+      }
+    ]
+  },
+  {
+    "id": "bm-ayat",
+    "subj": "BM",
+    "year": "Y3",
+    "icon": "💬",
+    "color": "var(--tang)",
+    "title": "Bahasa Melayu: Jenis Ayat",
+    "sub": "句型:陳述·疑問·命令·感嘆",
+    "teach": {
+      "intro": "學四種句子 jenis ayat 與標點。",
+      "points": [
+        {
+          "r": "penyata 陳述(.)、tanya 疑問(?)、perintah 命令、seruan 感嘆(!)。"
+        }
+      ],
+      "worked": [
+        {
+          "q": "'Saya suka nasi.' ialah ayat ___.",
+          "opts": [
+            "penyata",
+            "tanya",
+            "perintah"
+          ],
+          "ans": 0,
+          "why": "陳述句 penyata。"
+        },
+        {
+          "q": "'Awak sihat?' ialah ayat ___.",
+          "opts": [
+            "penyata",
+            "tanya",
+            "seruan"
+          ],
+          "ans": 1,
+          "why": "疑問句 tanya。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "'Saya suka nasi.' ialah ayat ___.",
+        "opts": [
+          "penyata",
+          "tanya",
+          "perintah"
+        ],
+        "ans": 0,
+        "why": "陳述句 = penyata。"
+      },
+      {
+        "q": "'Awak sihat?' ialah ayat ___.",
+        "opts": [
+          "penyata",
+          "tanya",
+          "seruan"
+        ],
+        "ans": 1,
+        "why": "疑問句 = tanya。"
+      },
+      {
+        "q": "'Duduk di sini!' ialah ayat ___.",
+        "opts": [
+          "tanya",
+          "perintah",
+          "penyata"
+        ],
+        "ans": 1,
+        "why": "命令句 = perintah。"
+      },
+      {
+        "q": "'Wah, cantiknya!' ialah ayat ___.",
+        "opts": [
+          "seruan",
+          "tanya",
+          "penyata"
+        ],
+        "ans": 0,
+        "why": "感嘆句 = seruan。"
+      },
+      {
+        "q": "Ayat tanya diakhiri dengan tanda ___.",
+        "opts": [
+          "?",
+          ".",
+          "!"
+        ],
+        "ans": 0,
+        "why": "疑問句用問號。"
+      },
+      {
+        "q": "Ayat penyata diakhiri dengan tanda ___.",
+        "opts": [
+          ".",
+          "?",
+          "!"
+        ],
+        "ans": 0,
+        "why": "陳述句用句號。"
+      },
+      {
+        "q": "'Tolong tutup pintu.' ialah ayat ___.",
+        "opts": [
+          "perintah",
+          "tanya",
+          "seruan"
+        ],
+        "ans": 0,
+        "why": "請求/命令 = perintah。"
+      },
+      {
+        "q": "'Mereka bermain bola.' ialah ayat ___.",
+        "opts": [
+          "penyata",
+          "tanya",
+          "perintah"
+        ],
+        "ans": 0,
+        "why": "陳述句 = penyata。"
+      }
+    ]
+  },
+  {
+    "id": "bm-suku",
+    "subj": "BM",
+    "year": "Y2",
+    "icon": "🔡",
+    "color": "var(--tang)",
+    "title": "Bahasa Melayu: Suku Kata & Ejaan",
+    "sub": "音節·拼字",
+    "teach": {
+      "intro": "學數音節 suku kata 和拼合成詞 ejaan。",
+      "points": [
+        {
+          "r": "每個音節一拍:bo-la(2)、ke-re-ta(3)。"
+        },
+        {
+          "r": "拼音:ba + ju = baju。"
+        }
+      ],
+      "worked": [
+        {
+          "q": "Bilangan suku kata 'bola' ialah ___.",
+          "opts": [
+            "1",
+            "2",
+            "3"
+          ],
+          "ans": 1,
+          "why": "bo-la = 2 音節。"
+        },
+        {
+          "q": "'ba' + 'ju' = ___",
+          "opts": [
+            "baju",
+            "buja",
+            "jabu"
+          ],
+          "ans": 0,
+          "why": "拼成 baju(衣服)。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "Bilangan suku kata 'bola' ialah ___.",
+        "opts": [
+          "1",
+          "2",
+          "3"
+        ],
+        "ans": 1,
+        "why": "bo-la = 2。"
+      },
+      {
+        "q": "Bilangan suku kata 'meja' ialah ___.",
+        "opts": [
+          "2",
+          "3",
+          "4"
+        ],
+        "ans": 0,
+        "why": "me-ja = 2。"
+      },
+      {
+        "q": "Bilangan suku kata 'kereta' ialah ___.",
+        "opts": [
+          "2",
+          "3",
+          "4"
+        ],
+        "ans": 1,
+        "why": "ke-re-ta = 3。"
+      },
+      {
+        "q": "Bilangan suku kata 'buku' ialah ___.",
+        "opts": [
+          "1",
+          "2",
+          "3"
+        ],
+        "ans": 1,
+        "why": "bu-ku = 2。"
+      },
+      {
+        "q": "Bilangan suku kata 'sekolah' ialah ___.",
+        "opts": [
+          "2",
+          "3",
+          "4"
+        ],
+        "ans": 1,
+        "why": "se-ko-lah = 3。"
+      },
+      {
+        "q": "'ba' + 'ju' = ___",
+        "opts": [
+          "baju",
+          "buja",
+          "jabu"
+        ],
+        "ans": 0,
+        "why": "baju 衣服。"
+      },
+      {
+        "q": "'ka' + 'ki' = ___",
+        "opts": [
+          "kaki",
+          "kika",
+          "akik"
+        ],
+        "ans": 0,
+        "why": "kaki 腳。"
+      },
+      {
+        "q": "'bu' + 'nga' = ___",
+        "opts": [
+          "bunga",
+          "ngabu",
+          "gabun"
+        ],
+        "ans": 0,
+        "why": "bunga 花。"
+      }
+    ]
+  },
+  {
+    "id": "bm-penjodoh2",
+    "subj": "BM",
+    "year": "Y2",
+    "icon": "🧮",
+    "color": "var(--tang)",
+    "title": "Bahasa Melayu: Penjodoh Bilangan (2)",
+    "sub": "量詞進階",
+    "teach": {
+      "intro": "學更多量詞 penjodoh bilangan。",
+      "points": [
+        {
+          "r": "gelas 杯(水)、cawan 杯(咖啡)、keping 片(紙)、kuntum 朵(花)、pasang 雙(鞋)。"
+        }
+      ],
+      "worked": [
+        {
+          "q": "Se___ air.",
+          "opts": [
+            "gelas",
+            "ekor",
+            "batang"
+          ],
+          "ans": 0,
+          "why": "一杯水 = segelas。"
+        },
+        {
+          "q": "Se___ bunga.",
+          "opts": [
+            "kuntum",
+            "ekor",
+            "biji"
+          ],
+          "ans": 0,
+          "why": "一朵花 = sekuntum。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "Se___ air.",
+        "opts": [
+          "gelas",
+          "ekor",
+          "batang"
+        ],
+        "ans": 0,
+        "why": "一杯水 = segelas air。"
+      },
+      {
+        "q": "Se___ kertas.",
+        "opts": [
+          "keping",
+          "ekor",
+          "batang"
+        ],
+        "ans": 0,
+        "why": "一張紙 = sekeping kertas。"
+      },
+      {
+        "q": "Se___ bunga.",
+        "opts": [
+          "kuntum",
+          "ekor",
+          "biji"
+        ],
+        "ans": 0,
+        "why": "一朵花 = sekuntum bunga。"
+      },
+      {
+        "q": "Se___ kasut.",
+        "opts": [
+          "pasang",
+          "helai",
+          "ekor"
+        ],
+        "ans": 0,
+        "why": "一雙鞋 = sepasang kasut。"
+      },
+      {
+        "q": "Se___ kopi.",
+        "opts": [
+          "cawan",
+          "biji",
+          "ekor"
+        ],
+        "ans": 0,
+        "why": "一杯咖啡 = secawan kopi。"
+      },
+      {
+        "q": "Se___ kereta.",
+        "opts": [
+          "buah",
+          "ekor",
+          "batang"
+        ],
+        "ans": 0,
+        "why": "一輛車 = sebuah kereta。"
+      },
+      {
+        "q": "Se___ epal.",
+        "opts": [
+          "biji",
+          "ekor",
+          "helai"
+        ],
+        "ans": 0,
+        "why": "一顆蘋果 = sebiji epal。"
+      },
+      {
+        "q": "Se___ ayam.",
+        "opts": [
+          "ekor",
+          "biji",
+          "batang"
+        ],
+        "ans": 0,
+        "why": "一隻雞 = seekor ayam。"
+      }
+    ]
+  },
+  {
+    "id": "think-math",
+    "subj": "思考",
+    "year": "",
+    "icon": "🧠",
+    "color": "var(--grape)",
+    "title": "思考題 · 數學(多解 & 找錯)",
+    "sub": "開放題,無標準答案",
+    "think": true,
+    "bank": [
+      {
+        "q": "Which two numbers add up to 10? Write 3 ways. 哪兩個數字加起來是 10?寫 3 種。",
+        "sample": "1+9、2+8、3+7、4+6、5+5、0+10…(任 3 種都對)",
+        "hint": "先鼓勵數量,再鼓勵不同種類。"
+      },
+      {
+        "q": "Ali has RM10. He buys 2 things. What could they be? Ali 有 RM10,買 2 樣東西,可能是什麼?(Pencil RM2·Ruler RM3·Book RM5·Eraser RM1·Bread RM4·Milk RM6)",
+        "sample": "例:Book RM5 + Eraser RM1;Bread RM4 + Ruler RM3…很多組合。",
+        "hint": "問:還有別的買法嗎?"
+      },
+      {
+        "q": "A number is smaller than 20 and bigger than 10. Name 3. 比 20 小、比 10 大,寫 3 個。",
+        "sample": "11、12、13…19(任 3 個)。",
+        "hint": "問:最多能寫幾個?"
+      },
+      {
+        "q": "12 = ___ + ___ . Write 4 different ways. 寫 4 種不同寫法。",
+        "sample": "6+6、5+7、8+4、10+2、11+1、0+12…",
+        "hint": "接受任何正確拆法。"
+      },
+      {
+        "q": "You pay RM5 and get some change. What could you have bought? 你付 RM5 有找錢,可能買了什麼?",
+        "sample": "Eraser RM1(找 RM4)、Pencil RM2(找 RM3)…只要合理。",
+        "hint": "重點是聽理由。"
+      },
+      {
+        "q": "Lee says 14 + 8 = 21. Is he right? Fix it. 對嗎?改正。",
+        "sample": "錯。14 + 8 = 22,不是 21。",
+        "hint": "找錯比解題更練批判思考。"
+      },
+      {
+        "q": "May says 30 − 12 = 22. Is she right? 對嗎?",
+        "sample": "錯。30 − 12 = 18。",
+        "hint": "請孩子說哪裡錯。"
+      },
+      {
+        "q": "A shop says RM3 + RM4 = RM8. Is it right? 對嗎?",
+        "sample": "錯。RM3 + RM4 = RM7。",
+        "hint": ""
+      },
+      {
+        "q": "Tom says 5 × 3 = 15, so 5 × 4 = 18. Where is the mistake? 哪裡錯了?",
+        "sample": "錯。5 × 4 = 20(要加 5,不是加 3)。",
+        "hint": ""
+      },
+      {
+        "q": "Amy says half of 10 is 6. Is she right? 對嗎?",
+        "sample": "錯。10 的一半是 5。",
+        "hint": ""
+      }
+    ]
+  },
+  {
+    "id": "think-sci",
+    "subj": "思考",
+    "year": "",
+    "icon": "🧠",
+    "color": "var(--grape)",
+    "title": "思考題 · 科學與創意",
+    "sub": "找不同·假設·分類·一物多用",
+    "think": true,
+    "bank": [
+      {
+        "q": "Apple · Banana · Carrot — which is different? Give 2 reasons. 哪個不同?給 2 個理由。",
+        "sample": "Carrot(是蔬菜);或 Banana(顏色/形狀不同)。不同標準有不同答案,都對!",
+        "hint": "重點:同一組用不同標準會有不同答案。"
+      },
+      {
+        "q": "Bird · Butterfly · Dog — which is different? Why? 哪個不同?為什麼?",
+        "sample": "Dog(不會飛);或 Butterfly(是昆蟲)。",
+        "hint": ""
+      },
+      {
+        "q": "Sun · Torch · Moon — which gives its own light? 哪個會自己發光?",
+        "sample": "Sun 和 Torch 會自己發光;Moon 只反射光。",
+        "hint": ""
+      },
+      {
+        "q": "Wood · Glass · Plastic — which is natural? 哪個是天然的?",
+        "sample": "Wood 木材是天然的;glass、plastic 是人造。",
+        "hint": ""
+      },
+      {
+        "q": "Fish · Frog · Snake — group them 2 different ways. 用 2 種方法分組。",
+        "sample": "依住處(水/陸)、依有無腳…很多分法。",
+        "hint": ""
+      },
+      {
+        "q": "What if you put ice under the hot sun? 把冰放在大太陽下會怎樣?",
+        "sample": "冰融化成水,因為熱讓它變暖。",
+        "hint": "只要理由合理都算對。"
+      },
+      {
+        "q": "What if there is no gravity for one minute? 一分鐘沒有重力會怎樣?",
+        "sample": "東西會飄起來,因為沒有重力往下拉。",
+        "hint": ""
+      },
+      {
+        "q": "What if plants get no sunlight? 植物沒有陽光會怎樣?",
+        "sample": "會變黃枯死,因為需要光造食物。",
+        "hint": ""
+      },
+      {
+        "q": "What if you never brush your teeth? 都不刷牙會怎樣?",
+        "sample": "牙齒會髒、蛀牙,因為細菌累積。",
+        "hint": ""
+      },
+      {
+        "q": "Sort: Cow, Chicken, Fish, Duck. What rules can you use? 用什麼標準分?",
+        "sample": "依腳數(2/4)、依住處、依大小…很多。",
+        "hint": "找到新分類標準要多鼓勵。"
+      },
+      {
+        "q": "Which of these are living? Tree, Car, Cat, Stone. 哪些是生物?",
+        "sample": "生物:Tree、Cat。非生物:Car、Stone。",
+        "hint": ""
+      },
+      {
+        "q": "How many uses can you find for a paper clip? 迴紋針有多少用途?",
+        "sample": "開放題,數點子。種類越多、越罕見越好。",
+        "hint": "評 3 項:數量、種類、獨特。"
+      },
+      {
+        "q": "Draw or list 5 uses for a plastic bottle. 塑膠瓶的 5 種用途。",
+        "sample": "裝水、種花、當筆筒、做樂器、當漏斗…",
+        "hint": "鼓勵越多越好。"
+      }
+    ]
   }
 ]
 ));
@@ -5153,6 +6455,8 @@ const pick=a=>a[Math.floor(Math.random()*a.length)];
 /* ---------- 狀態 ---------- */
 let TAB="home";
 let SCREEN="who";     // who | home | learn | quiz | result
+let FILTER="all";
+let THINKPACK=null, THINKIDX=0, THINKREVEAL=false;
 let LEARNPACK=null;
 let SESSION=null;     // {packId,qs,idx,correct,mode,picked,flagged}
 
@@ -5281,7 +6585,19 @@ function renderHome(){
   topWho(); document.getElementById("nav").style.display="flex";
   document.getElementById("subhead").textContent="KSSR · "+(CHILDREN.find(c=>c.id===CUR)?.name||"");
   const packs=allPacks();
+  const order=["英文","數學","科學","BM","健康","思考"];
+  const subjs=[...new Set(packs.map(p=>p.subj))].sort((a,b)=>{const ia=order.indexOf(a),ib=order.indexOf(b);return (ia<0?99:ia)-(ib<0?99:ib);});
+  if(!FILTER)FILTER="all";
+  const chip=(k,l)=>`<button class="fchip${FILTER===k?' on':''}" onclick="setFilter('${k}')">${esc(l)}</button>`;
+  const chips=`<div class="fbar">${chip('all','全部')}${subjs.map(s=>chip(s,s)).join("")}</div>`;
+  const shown=FILTER==="all"?packs:packs.filter(p=>p.subj===FILTER);
   const cardHTML=(p)=>{
+    if(p.think){
+      return `<div class="card" style="border-bottom:6px solid ${p.color}">
+        <div class="pk"><span class="e">${p.icon}</span>
+          <div><div class="t">${esc(p.subj)} · ${esc(p.title)}</div><div class="s">${esc(p.sub||"")}</div></div></div>
+        <button class="big" style="background:${p.color}" onclick="startThink('${p.id}')">🧠 開始思考（不計分）</button></div>`;
+    }
     const s=PROG.packs[p.id]; const a=s&&s.done?Math.round(100*s.correct/s.done):null;
     return `<div class="card" style="border-bottom:6px solid ${p.color}">
       <div class="pk"><span class="e">${p.icon}</span>
@@ -5291,16 +6607,45 @@ function renderHome(){
       <button class="ghost" style="width:100%;margin-top:8px" onclick="startBank('${p.id}')">⚡ 我學會了，直接練習</button>
     </div>`;
   };
-  const section=(label,yr,emoji)=>{
-    const list=packs.filter(p=>p.year===yr);
-    if(!list.length) return "";
-    return `<div class="yr-h">${emoji} ${label} <span class="yr-n">${list.length} 個題庫</span></div>`+list.map(cardHTML).join("");
-  };
-  const others=packs.filter(p=>p.year!=="Y2"&&p.year!=="Y3");
-  let html = section("二年級 Year 2","Y2","👦") + section("三年級 Year 3","Y3","👧");
-  if(others.length) html += `<div class="yr-h">🌟 其他 / 匯入 <span class="yr-n">${others.length} 個題庫</span></div>`+others.map(cardHTML).join("");
-  app().innerHTML = html + `<div class="lbl" style="margin-top:4px">💡 建議先按「先學一下」看規則和例句，再開始練習。英文可點 🔊 聽發音。</div>`;
+  const section=(label,emoji,list)=>list.length?`<div class="yr-h">${emoji} ${label} <span class="yr-n">${list.length} 個</span></div>`+list.map(cardHTML).join(""):"";
+  const y2=shown.filter(p=>!p.think&&p.year==="Y2");
+  const y3=shown.filter(p=>!p.think&&p.year==="Y3");
+  const tk=shown.filter(p=>p.think);
+  const others=shown.filter(p=>!p.think&&p.year!=="Y2"&&p.year!=="Y3");
+  let html=chips
+    +section("二年級 Year 2","👦",y2)
+    +section("三年級 Year 3","👧",y3)
+    +section("思考題（親子共讀·不計分）","🧠",tk)
+    +section("其他 / 匯入","🌟",others);
+  if(!shown.length)html+=`<div class="lbl">這個科目還沒有題庫。</div>`;
+  app().innerHTML=html+`<div class="lbl" style="margin-top:4px">💡 先按「先學一下」看規則，再練習。英文可點 🔊 聽發音。🧠 思考題沒有標準答案，重點是聽孩子的理由。</div>`;
   setNav();
+}
+function setFilter(k){ FILTER=k; render(); }
+function startThink(pid){ THINKPACK=pid; THINKIDX=0; THINKREVEAL=false; SCREEN="think"; render(); }
+function thinkNav(d){ const p=packById(THINKPACK); if(!p)return; const n=THINKIDX+d; if(n<0||n>=p.bank.length)return; THINKIDX=n; THINKREVEAL=false; render(); }
+function thinkReveal(){ THINKREVEAL=true; render(); }
+function renderThink(){
+  const p=packById(THINKPACK); if(!p){goHome();return;}
+  topWho(); document.getElementById("nav").style.display="none";
+  const q=p.bank[THINKIDX]; const last=THINKIDX===p.bank.length-1;
+  app().innerHTML=`
+    <div class="qtop"><button class="ghost" onclick="goHome()">← 回家</button>
+      <div style="font-weight:800;font-size:15px">${p.icon} ${esc(p.title)}</div>
+      <div style="margin-left:auto;font-size:13px;color:var(--grey);font-weight:800">${THINKIDX+1} / ${p.bank.length}</div></div>
+    <div class="card">
+      <div class="qtext">${esc(q.q)}</div>
+      <div class="lbl" style="margin-top:8px">🧠 這題沒有標準答案，把想到的都說出來或寫下來。</div>
+      ${THINKREVEAL?`<div class="worked" style="margin-top:10px"><div style="font-weight:800">💡 參考答案（僅範例）</div>
+         <div style="margin-top:4px;line-height:1.6">${esc(q.sample)}</div>
+         ${q.hint?`<div class="lbl" style="margin-top:6px">👪 家長：${esc(q.hint)}</div>`:""}</div>`
+        :`<button class="ghost" style="width:100%;margin-top:12px" onclick="thinkReveal()">👀 看參考答案</button>`}
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="ghost" style="flex:1" onclick="thinkNav(-1)" ${THINKIDX===0?'disabled':''}>← 上一題</button>
+      ${last?`<button class="big" style="flex:2;background:var(--mint)" onclick="goHome()">✅ 完成</button>`
+            :`<button class="big" style="flex:2;background:var(--grape)" onclick="thinkNav(1)">下一題 →</button>`}
+    </div>`;
 }
 function renderLearn(){
   const p=packById(LEARNPACK); if(!p||!p.teach){ startBank(LEARNPACK); return; }
@@ -5422,6 +6767,7 @@ function render(){
   if(!PROG&&CUR)PROG=loadProg(CUR);
   if(SCREEN==="learn"){renderLearn();return;}
   if(SCREEN==="quiz"){renderQuiz();return;}
+  if(SCREEN==="think"){renderThink();return;}
   if(SCREEN==="result"){renderResult();return;}
   // home-level tabs
   if(TAB==="home")renderHome();
