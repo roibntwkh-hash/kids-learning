@@ -91,11 +91,16 @@
   .fchip{border:2px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-weight:800;font-size:13px;color:var(--ink)}
   .fchip.on{background:var(--tang);border-color:var(--tang);color:#fff}
   button[disabled]{opacity:.4}
+  .homeBtn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;
+    background:#fff;border:2px solid var(--line);border-radius:999px;width:40px;height:40px;
+    font-size:19px;flex:0 0 auto;box-shadow:0 3px 0 rgba(180,150,110,.10);line-height:1}
+  .homeBtn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(180,150,110,.10)}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="topbar">
+    <a class="homeBtn" href="../" title="回首頁">🏠</a>
     <span class="m">🦉</span>
     <h1>快樂學習樂園<small id="subhead">KSSR · 英文＋數學</small></h1>
     <div class="who" id="whoBox"></div>
