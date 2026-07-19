@@ -95,6 +95,17 @@
   .catface{width:34px;height:34px;border-radius:50%;margin:0 auto;position:relative;}
   .catface::before,.catface::after{content:"";position:absolute;top:-6px;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:12px solid currentColor;}
   .catface::before{left:2px;transform:rotate(-18deg);}.catface::after{right:2px;transform:rotate(18deg);}
+
+  .clocks{display:none;gap:10px;margin-top:2px;}
+  .clocks.show{display:flex;}
+  .clk{flex:1;display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--card);
+    border:2px solid var(--line);border-radius:12px;padding:6px 12px;transition:.15s;}
+  .clk.active{border-color:var(--accent);box-shadow:0 0 0 3px rgba(217,118,66,.16);}
+  .clk.low .ct{color:#e25548;}
+  .clk .cn{font-family:'Fredoka';font-weight:600;font-size:12.5px;color:var(--ink-soft);}
+  .clk .ct{font-family:'Fredoka';font-weight:700;font-size:20px;font-variant-numeric:tabular-nums;letter-spacing:1px;}
+  #pgnText{width:100%;height:150px;font-family:ui-monospace,monospace;font-size:12px;border:2px solid var(--line);
+    border-radius:12px;padding:10px;resize:vertical;color:var(--ink);background:var(--paper);}
 </style>
 </head>
 <body>
@@ -108,6 +119,10 @@
     </div>
   </div>
   <div class="status"><span class="dot cream" id="turnDot"></span><span id="statusTxt">你的回合</span><span class="spinner" id="spin"></span></div>
+  <div class="clocks" id="clocks">
+    <div class="clk" id="clkWwrap"><span class="cn" id="clkWname">奶油貓</span><span class="ct" id="clkW">--:--</span></div>
+    <div class="clk" id="clkBwrap"><span class="cn" id="clkBname">暗影貓</span><span class="ct" id="clkB">--:--</span></div>
+  </div>
 </header>
 
 <div id="stage"><div class="hint-help">拖曳旋轉 · 雙指縮放 · 點貓選子</div></div>
@@ -120,6 +135,7 @@
     <button class="btn ghost" id="hintBtn">💡 提示</button>
     <button class="btn ghost" id="resignBtn">🏳 認輸看教學</button>
     <button class="btn ghost" id="styleBtn">🎨 樣式</button>
+    <button class="btn ghost" id="matchBtn">🏆 比賽練習</button>
   </div>
   <div class="tabs">
     <span class="tab on" data-t="log">📜 棋譜</span>
@@ -130,6 +146,8 @@
 
 <div class="overlay" id="overlay"><div class="coach" id="coach"></div></div>
 <div class="overlay" id="styleOverlay"><div class="coach" id="styleBox"></div></div>
+<div class="overlay" id="matchOverlay"><div class="coach" id="matchBox"></div></div>
+<div class="overlay" id="pgnOverlay"><div class="coach" id="pgnBox"></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
@@ -483,18 +501,72 @@ function pick(clientX,clientY){
    ============================================================ */
 let board,state,turn,selected=null,selMoves=[],lastMove=null,captured,gameOver,locked,hintMove=null;
 let snapshots=[],moveRecords=[];
-const AI_COLOR='b';
+let HUMAN_COLOR='w', AI_COLOR='b';
 const DIFFS={1:{depth:1,rnd:60},2:{depth:2,rnd:0},3:{depth:3,rnd:0}};
 let DIFF=DIFFS[2];
+const NAME={w:'奶油貓',b:'暗影貓'};
+const humanName=()=>NAME[HUMAN_COLOR];
 
-function serialize(){return{board:deepBoard(board),state:cloneState(state),turn,captured:{w:[...captured.w],b:[...captured.b]},lastMove:lastMove?{...lastMove}:null};}
-function restore(s){board=deepBoard(s.board);state=cloneState(s.state);turn=s.turn;captured={w:[...s.captured.w],b:[...s.captured.b]};lastMove=s.lastMove?{...s.lastMove}:null;}
+/* 比賽練習：時間控制 + PGN */
+const TIME_CONTROLS={
+  none   :{name:'無限制',    tc:null},
+  bullet :{name:'子彈 1+0',  tc:{base:60,inc:0}},
+  blitz  :{name:'快棋 3+2',  tc:{base:180,inc:2}},
+  rapid  :{name:'快速 10+5', tc:{base:600,inc:5}},
+  classic:{name:'慢棋 30+0', tc:{base:1800,inc:0}},
+};
+let matchColor='w', matchTC='none', currentTC=null, gameResult='*';
+const clock={on:false,w:0,b:0,inc:0,active:null,last:0,timer:null};
+function startClock(tc){
+  stopClockTimer();
+  if(!tc){clock.on=false;document.getElementById('clocks').classList.remove('show');return;}
+  clock.on=true;clock.w=tc.base*1000;clock.b=tc.base*1000;clock.inc=tc.inc*1000;clock.active=null;
+  document.getElementById('clocks').classList.add('show');
+  document.getElementById('clkWname').textContent=NAME.w+(HUMAN_COLOR==='w'?'(你)':'(大師)');
+  document.getElementById('clkBname').textContent=NAME.b+(HUMAN_COLOR==='b'?'(你)':'(大師)');
+  renderClocks();
+}
+function runClock(side){if(!clock.on)return;clock.active=side;clock.last=performance.now();if(!clock.timer)clock.timer=setInterval(tickClock,150);renderClocks();}
+function stopClockTimer(){if(clock.timer){clearInterval(clock.timer);clock.timer=null;}clock.active=null;renderClocks&&renderClocks();}
+function tickClock(){
+  if(!clock.on||clock.active===null||gameOver)return;
+  const now=performance.now();clock[clock.active]-=(now-clock.last);clock.last=now;
+  if(clock[clock.active]<=0){clock[clock.active]=0;renderClocks();flagFall(clock.active);return;}
+  renderClocks();
+}
+function fmtClock(ms){ms=Math.max(0,ms);const s=Math.ceil(ms/1000);const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;
+  return (h>0?h+':'+String(m).padStart(2,'0'):m)+':'+String(ss).padStart(2,'0');}
+function renderClocks(){
+  if(!clock.on)return;
+  const w=document.getElementById('clkW'),b=document.getElementById('clkB');
+  if(!w)return;w.textContent=fmtClock(clock.w);b.textContent=fmtClock(clock.b);
+  const ww=document.getElementById('clkWwrap'),bw=document.getElementById('clkBwrap');
+  ww.classList.toggle('active',clock.active==='w'&&!gameOver);bw.classList.toggle('active',clock.active==='b'&&!gameOver);
+  ww.classList.toggle('low',clock.w<=30000);bw.classList.toggle('low',clock.b<=30000);
+}
+function flagFall(side){
+  stopClockTimer();if(gameOver)return;gameOver=true;locked=true;
+  const winner=other(side);gameResult=winner==='w'?'1-0':'0-1';
+  endGame(winner,(side===HUMAN_COLOR?'你的時間用完了。':'大師的時間用完了！'));
+}
+
+function serialize(){return{board:deepBoard(board),state:cloneState(state),turn,captured:{w:[...captured.w],b:[...captured.b]},lastMove:lastMove?{...lastMove}:null,cw:clock.w,cb:clock.b};}
+function restore(s){board=deepBoard(s.board);state=cloneState(s.state);turn=s.turn;captured={w:[...s.captured.w],b:[...s.captured.b]};lastMove=s.lastMove?{...s.lastMove}:null;if(clock.on){clock.w=s.cw;clock.b=s.cb;}}
 
 function newGame(){
+  // 套用比賽設定
+  HUMAN_COLOR = matchColor==='rand' ? (Math.random()<0.5?'w':'b') : matchColor;
+  AI_COLOR = other(HUMAN_COLOR);
+  currentTC = TIME_CONTROLS[matchTC].tc;
+  camTheta = HUMAN_COLOR==='w'?0:Math.PI;
   board=startBoard();state=newState();turn='w';selected=null;selMoves=[];lastMove=null;hintMove=null;
-  captured={w:[],b:[]};gameOver=false;locked=false;snapshots=[];moveRecords=[];
+  captured={w:[],b:[]};gameOver=false;locked=false;snapshots=[];moveRecords=[];gameResult='*';
   document.getElementById('overlay').classList.remove('show');
-  rebuild3D();setStatus('你的回合，點一隻奶油貓開始 🐾');renderTab();
+  startClock(currentTC);
+  rebuild3D();renderTab();
+  if(clock.on)runClock('w');
+  if(turn===AI_COLOR){locked=true;setStatus('貓大師先手，思考中…',true);setTimeout(aiMove,350);}
+  else setStatus('你的回合，點一隻'+humanName()+'開始 🐾');
 }
 
 function onSquare(r,c){
@@ -529,6 +601,12 @@ function commitMove(m){
   else if(chk)suffix='+';
   moveRecords.push({color:mover,san:sanBase+suffix,move:m,boardBefore,stBefore});
   lastMove=m;
+  // 比賽鐘：加秒給剛走的一方，並啟動對手的鐘
+  if(clock.on){
+    if(ended){stopClockTimer();}
+    else{clock[mover]+=clock.inc;runClock(opp);}
+  }
+  if(ended)gameResult = result==='draw'?'1/2-1/2':(result==='w'?'1-0':'0-1');
   // 3D
   applyVisual(m,()=>{
     turn=opp;paintTiles();renderTab();
@@ -563,31 +641,36 @@ function undo(){
   else{target=snapshots.pop();moveRecords.splice(-1);}
   restore(target);selected=null;selMoves=[];hintMove=null;gameOver=false;locked=false;
   document.getElementById('overlay').classList.remove('show');
-  rebuild3D();setStatus('你的回合');renderTab();
+  rebuild3D();setStatus(turn===AI_COLOR?'貓大師思考中…':'你的回合');renderTab();
+  if(clock.on&&turn!==AI_COLOR)runClock(turn);
+  if(turn===AI_COLOR){locked=true;setTimeout(aiMove,300);}
 }
 function hint(){
-  if(locked||gameOver||turn!==('w'))return;
+  if(locked||gameOver||turn!==HUMAN_COLOR)return;
   setStatus('貓大師幫你看看…',true);
-  setTimeout(()=>{hintMove=bestMove(board,state,'w',Math.max(2,DIFF.depth),0);paintTiles();setStatus('💡 建議走藍色標示的那一步');setTimeout(()=>{if(!locked){hintMove=null;paintTiles();}},2600);},20);
+  setTimeout(()=>{hintMove=bestMove(board,state,HUMAN_COLOR,Math.max(2,DIFF.depth),0);paintTiles();setStatus('💡 建議走藍色標示的那一步');setTimeout(()=>{if(!locked){hintMove=null;paintTiles();}},2600);},20);
 }
 
 /* 結束 + 教學 */
-function endGame(result){
+function endGame(result,extra){
+  stopClockTimer();
   let title,sub;
   if(result==='draw'){title='和局 🐾';sub='逼和，兩隻貓都很頑強！';}
-  else if(result==='w'){title='你贏了！🏆';sub='奶油貓將死貓大師，太厲害了！';}
-  else{title='貓大師獲勝';sub='暗影貓將死了你，再接再厲！';}
+  else{const humanWon=result===HUMAN_COLOR;
+    title=humanWon?'你贏了！🏆':'貓大師獲勝';
+    sub=humanWon?'恭喜！將死了對手 👑':'再接再厲，下一局會更好！';}
+  if(extra)sub=extra+' '+sub;
   setStatus(title);
   buildCoaching(title,sub);
   document.getElementById('overlay').classList.add('show');
 }
-function analyzeWhiteMove(rec){
+function analyzeHumanMove(rec){
   const b=deepBoard(rec.boardBefore),st=cloneState(rec.stBefore);
-  const moves=legalMoves(b,st,'w');let bestSc=-Infinity,bestM=null,playedSc=null;
-  for(const m of moves){const u=makeMove(b,st,m);const sc=-negamax(b,st,'b',2,-Infinity,Infinity);unmakeMove(b,st,m,u);
+  const moves=legalMoves(b,st,HUMAN_COLOR);let bestSc=-Infinity,bestM=null,playedSc=null;
+  for(const m of moves){const u=makeMove(b,st,m);const sc=-negamax(b,st,AI_COLOR,2,-Infinity,Infinity);unmakeMove(b,st,m,u);
     if(sc>bestSc){bestSc=sc;bestM=m;}if(sameMove(m,rec.move))playedSc=sc;}
   if(playedSc===null)playedSc=bestSc;
-  return{loss:Math.max(0,bestSc-playedSc),bestSan:bestM?sanOf(b,st,bestM,'w'):'',playedSan:rec.san};
+  return{loss:Math.max(0,bestSc-playedSc),bestSan:bestM?sanOf(b,st,bestM,HUMAN_COLOR):'',playedSan:rec.san};
 }
 const OPENINGS={'e4 e5':'開放開局 (King\'s Pawn)','e4 c5':'西西里防禦','e4 e6':'法蘭西防禦','e4 c6':'卡羅-卡恩防禦',
   'd4 d5':'后翼兵開局','d4 Nf6':'印度防禦系統','c4 ':'英國式開局','Nf3 ':'雷蒂開局','e4 d5':'中心反擊'};
@@ -596,12 +679,12 @@ function detectOpening(){const w=moveRecords.filter(r=>r.color==='w');const b=mo
   for(const k in OPENINGS){if(key1.startsWith(k))return OPENINGS[k];}return null;}
 
 function buildCoaching(title,sub){
-  const whiteMoves=moveRecords.filter(r=>r.color==='w');
+  const humanMoves=moveRecords.filter(r=>r.color===HUMAN_COLOR);
   let html=`<h2>${title}</h2>`;
-  if(whiteMoves.length<2){html+=`<p class="acc">${sub}</p><button class="btn close" id="closeCoach">看棋譜並再來一局</button>`;
+  if(humanMoves.length<2){html+=`<p class="acc">${sub}</p><button class="btn close" id="closeCoach">看棋譜並再來一局</button>`;
     document.getElementById('coach').innerHTML=html;document.getElementById('closeCoach').onclick=()=>{document.getElementById('overlay').classList.remove('show');switchTab('log');};return;}
   // 分析 (用引擎逐手評估你的走法)
-  const results=whiteMoves.map(analyzeWhiteMove);
+  const results=humanMoves.map(analyzeHumanMove);
   let best=0,inacc=0,mis=0,bl=0,sumLoss=0;
   results.forEach(r=>{sumLoss+=r.loss;if(r.loss<=20)best++;else if(r.loss<=110)inacc++;else if(r.loss<=250)mis++;else bl++;});
   const avg=sumLoss/results.length;
@@ -622,12 +705,12 @@ function buildCoaching(title,sub){
   // 教練建議
   html+=`<h3>🎓 教練建議</h3>`;
   const tips=[];
-  const sansW=whiteMoves.map(r=>r.san);
+  const sansH=humanMoves.map(r=>r.san);
   if(bl>0)tips.push('移動前先想一想：對方下一步能不能吃掉你剛動的那隻貓？子力安全最重要。');
-  if(!sansW.some(s=>s.startsWith('O-O'))&&whiteMoves.length>=7)tips.push('記得及早「王車易位」(O-O)，把國王貓藏到角落，會安全很多。');
-  const first=sansW[0]?sansW[0].replace(/[+#]/,''):'';
-  if(!['e4','d4','c4','Nf3'].includes(first))tips.push('開局第一步先佔據中央 (例如 e4 或 d4)，能讓貓兵團更快展開。');
-  const earlyQ=whiteMoves.slice(0,5).some(r=>r.san.startsWith('Q'));
+  if(!sansH.some(s=>s.startsWith('O-O'))&&humanMoves.length>=7)tips.push('記得及早「王車易位」(O-O)，把國王貓藏到角落，會安全很多。');
+  const first=sansH[0]?sansH[0].replace(/[+#]/,''):'';
+  if(HUMAN_COLOR==='w'&&!['e4','d4','c4','Nf3'].includes(first))tips.push('開局第一步先佔據中央 (例如 e4 或 d4)，能讓貓兵團更快展開。');
+  const earlyQ=humanMoves.slice(0,5).some(r=>r.san.startsWith('Q'));
   if(earlyQ)tips.push('別太早把皇后貓派出去，牠容易被對方的小貓追著跑而浪費步數。');
   if(mis+bl===0)tips.push('你的判斷很穩，下一步可以試著主動找對方弱點進攻！');
   if(tips.length<2)tips.push('多把馬貓、象貓「出動」(develop) 到能控制中央的位置，是強力開局的關鍵。');
@@ -644,7 +727,7 @@ function setStatus(txt,thinking){document.getElementById('statusTxt').textConten
   document.getElementById('spin').classList.toggle('show',!!thinking);
   document.getElementById('turnDot').className='dot '+(turn==='w'?'cream':'shadow');
   document.getElementById('undoBtn').disabled=locked||!snapshots.length;
-  document.getElementById('hintBtn').disabled=locked||gameOver||turn!=='w';}
+  document.getElementById('hintBtn').disabled=locked||gameOver||turn!==HUMAN_COLOR;}
 let activeTab='log';
 function switchTab(t){activeTab=t;document.querySelectorAll('.tab').forEach(e=>e.classList.toggle('on',e.dataset.t===t));renderTab();}
 const CN={p:'兵',n:'馬',b:'象',r:'車',q:'后',k:'王'};
@@ -658,11 +741,12 @@ function renderTab(){const body=document.getElementById('tabbody');
     const cnt=a=>{const m={};a.forEach(t=>m[t]=(m[t]||0)+1);return Object.keys(m).map(t=>cnt2(t,m[t])).join('、')||'（無）';};
     const cnt2=(t,n)=>n+'隻'+CN[t];
     const matW=captured.b.reduce((s,t)=>s+VAL[t],0),matB=captured.w.reduce((s,t)=>s+VAL[t],0);
-    const lead=matW-matB;
+    const humanLead=(HUMAN_COLOR==='w'?matW-matB:matB-matW);
+    const wTag=HUMAN_COLOR==='w'?'(你)':'(大師)',bTag=HUMAN_COLOR==='b'?'(你)':'(大師)';
     body.innerHTML=`
-      <div class="stat-line"><span class="dot cream" style="display:inline-block;vertical-align:middle"></span> 奶油貓(你) 吃掉：${cnt(captured.b)}</div>
-      <div class="stat-line"><span class="dot shadow" style="display:inline-block;vertical-align:middle"></span> 暗影貓(大師) 吃掉：${cnt(captured.w)}</div>
-      <div class="stat-line">子力差：<span class="b">${lead>0?'你領先 +'+(lead/100).toFixed(1):lead<0?'落後 '+(lead/100).toFixed(1):'勢均力敵'}</span></div>
+      <div class="stat-line"><span class="dot cream" style="display:inline-block;vertical-align:middle"></span> 奶油貓${wTag} 吃掉：${cnt(captured.b)}</div>
+      <div class="stat-line"><span class="dot shadow" style="display:inline-block;vertical-align:middle"></span> 暗影貓${bTag} 吃掉：${cnt(captured.w)}</div>
+      <div class="stat-line">子力差：<span class="b">${humanLead>0?'你領先 +'+(humanLead/100).toFixed(1):humanLead<0?'落後 '+(humanLead/100).toFixed(1):'勢均力敵'}</span></div>
       <div class="stat-line" style="margin-top:6px;color:var(--ink-soft)">配件對照：王👑 后💎 象⛪ 車🏰 馬🐾招財 兵🔔</div>`;
   }
 }
@@ -670,7 +754,58 @@ function renderTab(){const body=document.getElementById('tabbody');
 document.getElementById('newBtn').onclick=newGame;
 document.getElementById('undoBtn').onclick=undo;
 document.getElementById('hintBtn').onclick=hint;
-document.getElementById('resignBtn').onclick=()=>{if(!gameOver&&moveRecords.length){gameOver=true;endGame('b');}};
+document.getElementById('resignBtn').onclick=()=>{if(!gameOver&&moveRecords.length){gameOver=true;gameResult=AI_COLOR==='w'?'1-0':'0-1';endGame(AI_COLOR,'你認輸了。');}};
+
+/* 🏆 比賽練習：執棋顏色 + 時間控制 + PGN */
+function buildMatchUI(){
+  let h=`<h2>🏆 比賽練習</h2><p class="acc">仿照國際賽制：選邊、設定計時鐘，賽後可匯出 PGN 標準棋譜。</p>`;
+  h+=`<div class="setsec">♟ 你執哪一邊</div><div class="optrow">`;
+  const cols=[['w','奶油貓（白）先手'],['b','暗影貓（黑）後手'],['rand','🎲 隨機']];
+  cols.forEach(([k,nm])=>{h+=`<div class="opt ${matchColor===k?'on':''}" data-kind="color" data-k="${k}"><div class="nm">${nm}</div></div>`;});
+  h+=`</div>`;
+  h+=`<div class="setsec">⏱ 時間控制</div><div class="optrow">`;
+  for(const k in TIME_CONTROLS){h+=`<div class="opt ${matchTC===k?'on':''}" data-kind="tc" data-k="${k}"><div class="nm">${TIME_CONTROLS[k].name}</div></div>`;}
+  h+=`</div>`;
+  h+=`<button class="btn close" id="startMatch">開始新對局</button>`;
+  h+=`<button class="btn ghost" id="openPgn" style="margin:10px auto 0;display:block">💾 匯出 PGN 棋譜</button>`;
+  const box=document.getElementById('matchBox');box.innerHTML=h;
+  box.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{const kind=o.dataset.kind,k=o.dataset.k;
+    if(kind==='color')matchColor=k;else matchTC=k;buildMatchUI();});
+  document.getElementById('startMatch').onclick=()=>{document.getElementById('matchOverlay').classList.remove('show');newGame();};
+  document.getElementById('openPgn').onclick=openPgn;
+}
+document.getElementById('matchBtn').onclick=()=>{buildMatchUI();document.getElementById('matchOverlay').classList.add('show');};
+
+function buildPGN(){
+  const d=new Date();
+  const dd=d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0');
+  const wName=HUMAN_COLOR==='w'?'玩家':'貓大師', bName=HUMAN_COLOR==='b'?'玩家':'貓大師';
+  const tc=currentTC?`${currentTC.base}+${currentTC.inc}`:'-';
+  let h=`[Event "貓咪西洋棋 練習"]\n[Site "kids-learning"]\n[Date "${dd}"]\n[White "${wName}"]\n[Black "${bName}"]\n[Result "${gameResult}"]\n[TimeControl "${tc}"]\n\n`;
+  let mt='';
+  for(let i=0;i<moveRecords.length;i++){if(i%2===0)mt+=(i/2+1)+'. ';mt+=moveRecords[i].san+' ';}
+  mt+=gameResult;
+  return h+mt.trim()+'\n';
+}
+function openPgn(){
+  document.getElementById('matchOverlay').classList.remove('show');
+  const pgn=moveRecords.length?buildPGN():'（還沒有任何棋步，先下幾手再匯出。）';
+  let h=`<h2>💾 PGN 棋譜</h2><p class="acc">國際標準格式，可貼到任何西洋棋軟體分析。</p>`;
+  h+=`<textarea id="pgnText" readonly>${pgn.replace(/</g,'&lt;')}</textarea>`;
+  h+=`<div style="display:flex;gap:8px;margin-top:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn" id="copyPgn">📋 複製</button>
+        <button class="btn ghost" id="dlPgn">⬇ 下載 .pgn</button>
+        <button class="btn ghost" id="closePgn">關閉</button></div>`;
+  document.getElementById('pgnBox').innerHTML=h;
+  document.getElementById('pgnOverlay').classList.add('show');
+  document.getElementById('copyPgn').onclick=()=>{const ta=document.getElementById('pgnText');ta.select();
+    let ok=false;try{ok=document.execCommand('copy');}catch(e){}
+    if(navigator.clipboard){navigator.clipboard.writeText(pgn).catch(()=>{});}
+    document.getElementById('copyPgn').textContent=ok||navigator.clipboard?'✓ 已複製':'請手動複製';};
+  document.getElementById('dlPgn').onclick=()=>{const blob=new Blob([pgn],{type:'text/plain'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cat-chess.pgn';a.click();};
+  document.getElementById('closePgn').onclick=()=>document.getElementById('pgnOverlay').classList.remove('show');
+}
 
 /* 🎨 樣式設定 */
 const hx=n=>'#'+n.toString(16).padStart(6,'0');
