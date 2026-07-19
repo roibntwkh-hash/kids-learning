@@ -263,9 +263,9 @@ const COL={nose:0xf2a0aa,eyeDark:0x2b2b33,eyeGlow:0xffd86b,
 
 /* 三組貓咪配色 (淺色軍 vs 深色軍) */
 const PIECE_THEMES={
-  classic:{name:'奶油 × 暗影', w:{body:0xf7e6cb,ear:0xef9f63}, b:{body:0x55555f,ear:0x9a8bd6}},
-  ginger :{name:'薑橘 × 石板', w:{body:0xf3a960,ear:0xffd9a0}, b:{body:0x6f7782,ear:0xb6c2cd}},
-  snow   :{name:'雪白 × 焦糖', w:{body:0xf2eee4,ear:0xf4b6c0}, b:{body:0x7a543a,ear:0xc99a72}},
+  classic:{name:'奶油 × 暗影', w:{body:0xf3dcb0,ear:0xef9f63}, b:{body:0x44444e,ear:0x9a8bd6}},
+  ginger :{name:'薑橘 × 石板', w:{body:0xf0a24f,ear:0xffd9a0}, b:{body:0x5c6470,ear:0xaeb9c6}},
+  snow   :{name:'雪白 × 焦糖', w:{body:0xeee7d6,ear:0xf4b6c0}, b:{body:0x6a4830,ear:0xc99a72}},
 };
 /* 三種貓咪造型 */
 const CAT_STYLES={
@@ -273,13 +273,13 @@ const CAT_STYLES={
   fluffy:{name:'蓬蓬貓', headR:0.27, bodyR:0.38, bodyY:[1.1,1.0,1.05], earR:0.14, earH:0.2,  tailR:0.1,  fluff:true,  slim:1.0},
   sleek :{name:'暹羅貓', headR:0.25, bodyR:0.3,  bodyY:[0.92,1.05,0.95],earR:0.1,  earH:0.32, tailR:0.045,fluff:false, slim:0.88},
 };
-/* 棋盤配色 (更高對比) */
+/* 棋盤配色 (深淺分明) */
 const BOARD_THEMES={
-  wood  :{name:'木質經典', light:0xf4e4ca, dark:0xc08457, frame:0x6e4a2e},
-  forest:{name:'森林綠',   light:0xeeeed2, dark:0x6f9a52, frame:0x4a5e34},
-  ocean :{name:'海洋藍',   light:0xe9eef3, dark:0x5a89b0, frame:0x355168},
-  berry :{name:'莓果紫',   light:0xf2e8f6, dark:0x9a6aa0, frame:0x5e3f62},
-  mono  :{name:'高對比灰', light:0xf2f2f0, dark:0x5f6469, frame:0x35383b},
+  wood  :{name:'木質經典', light:0xf0d6a6, dark:0xa9682f, frame:0x6e4a2e},
+  forest:{name:'森林綠',   light:0xe6e3bd, dark:0x5a8a3c, frame:0x40542f},
+  ocean :{name:'海洋藍',   light:0xdae6f0, dark:0x437fa8, frame:0x2f4a60},
+  berry :{name:'莓果紫',   light:0xf3d3e8, dark:0xa452a0, frame:0x5e3f62},
+  mono  :{name:'高對比',   light:0xededed, dark:0x51565c, frame:0x33363a},
 };
 const SETTINGS={style:'round', theme:'classic', board:'wood'};
 function pieceColor(army){return PIECE_THEMES[SETTINGS.theme][army];}
@@ -287,17 +287,17 @@ function pieceColor(army){return PIECE_THEMES[SETTINGS.theme][army];}
 function toonMat(color,emissive){const m=new THREE.MeshToonMaterial({color});if(emissive){m.emissive=new THREE.Color(emissive);}return m;}
 
 function initThree(){
-  scene=new THREE.Scene();scene.background=new THREE.Color(0xf3e0c8);
-  scene.fog=new THREE.Fog(0xf3e0c8,18,34);
+  scene=new THREE.Scene();scene.background=new THREE.Color(0xf6ecdd);
   camera=new THREE.PerspectiveCamera(42,1,0.1,100);
   renderer=new THREE.WebGLRenderer({antialias:true});
   renderer.setPixelRatio(Math.min(devicePixelRatio,2));
   renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
   stage.appendChild(renderer.domElement);
-  const amb=new THREE.AmbientLight(0xfff3e0,0.85);scene.add(amb);
-  const key=new THREE.DirectionalLight(0xffffff,0.95);key.position.set(6,12,7);key.castShadow=true;
-  key.shadow.mapSize.set(1024,1024);key.shadow.camera.left=-8;key.shadow.camera.right=8;key.shadow.camera.top=8;key.shadow.camera.bottom=-8;key.shadow.camera.near=1;key.shadow.camera.far=40;scene.add(key);
-  const fill=new THREE.DirectionalLight(0xffe2c0,0.35);fill.position.set(-6,6,-4);scene.add(fill);
+  const amb=new THREE.AmbientLight(0xffffff,0.5);scene.add(amb);
+  const key=new THREE.DirectionalLight(0xffffff,1.2);key.position.set(5,13,6);key.castShadow=true;
+  key.shadow.mapSize.set(2048,2048);key.shadow.camera.left=-8;key.shadow.camera.right=8;key.shadow.camera.top=8;key.shadow.camera.bottom=-8;key.shadow.camera.near=1;key.shadow.camera.far=40;key.shadow.bias=-0.0004;scene.add(key);
+  const fill=new THREE.DirectionalLight(0xffffff,0.3);fill.position.set(-6,5,-3);scene.add(fill);
+  const rim=new THREE.DirectionalLight(0xbcd2ff,0.6);rim.position.set(-4,7,-9);scene.add(rim);
   raycaster=new THREE.Raycaster();
   // 桌面/草地
   const ground=new THREE.Mesh(new THREE.CircleGeometry(22,48),toonMat(0xe7cfa6));
@@ -337,9 +337,12 @@ function makeCat(type,colorKey){
   const bodyMat=toonMat(tc.body), earMat=toonMat(tc.ear), noseMat=toonMat(COL.nose);
   const eyeMat=toonMat(eyeCol,isW?null:0x4a3a00);
   const add=(geo,mat,x,y,z,sx,sy,sz)=>{const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);if(sx!==undefined)m.scale.set(sx,sy,sz);m.castShadow=true;g.add(m);return m;};
+  const outlineMat=new THREE.MeshBasicMaterial({color:0x3a2f24,side:THREE.BackSide});
+  const outline=(geo,x,y,z,sx,sy,sz)=>{const o=new THREE.Mesh(geo,outlineMat);o.position.set(x,y,z);const k=1.08;o.scale.set((sx||1)*k,(sy||1)*k,(sz||1)*k);g.add(o);};
   const sphere=(r)=>new THREE.SphereGeometry(r,20,16);
   const W=S.slim; // 身體橫向窄縮 (暹羅貓較瘦)
   // 身體 (坐姿)
+  outline(sphere(S.bodyR),0,0.30,0,S.bodyY[0]*W,S.bodyY[1],S.bodyY[2]);
   add(sphere(S.bodyR),bodyMat,0,0.30,0,S.bodyY[0]*W,S.bodyY[1],S.bodyY[2]);
   // 前腳
   add(sphere(0.1),bodyMat,0.15*W,0.07,0.26);add(sphere(0.1),bodyMat,-0.15*W,0.07,0.26);
@@ -348,6 +351,7 @@ function makeCat(type,colorKey){
   const tail=new THREE.Mesh(new THREE.TubeGeometry(curve,24,S.tailR,8),bodyMat);tail.castShadow=true;g.add(tail);
   // 頭
   const headY=0.72;
+  outline(sphere(S.headR),0,headY,0.04,W,1,1);
   add(sphere(S.headR),bodyMat,0,headY,0.04,W,1,1);
   // 耳朵
   const ear=new THREE.ConeGeometry(S.earR,S.earH,16);
