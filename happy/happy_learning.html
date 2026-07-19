@@ -1,0 +1,6784 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>快樂學習樂園 · KSSR</title>
+<style>
+  :root{ --bg:#FFF7EF; --ink:#243248; --card:#fff; --line:#F0E2D2;
+    --tang:#FF8A3D; --mint:#2FBF8F; --coral:#FF5D6C; --lemon:#FFCB3D; --sky:#6FB4FF; --grape:#B48CF2;
+    --grey:#7A6A58; }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font-family:'ui-rounded','Hiragino Maru Gothic ProN','PingFang TC','Microsoft JhengHei',system-ui,sans-serif;}
+  .wrap{max-width:540px;margin:0 auto;padding:14px 14px 100px;}
+  button{font-family:inherit;}
+  .screen{display:none;} .screen.on{display:block;animation:pop .22s ease;}
+  @keyframes pop{from{opacity:.3;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.screen{animation:none}}
+
+  .topbar{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .topbar .m{font-size:30px}
+  .topbar h1{font-size:19px;margin:0;font-weight:800}
+  .topbar h1 small{display:block;font-size:11px;color:var(--grey);letter-spacing:1px;font-weight:700}
+  .who{margin-left:auto;display:flex;gap:6px;align-items:center}
+  .whoBtn{background:#fff;border:2px solid var(--line);border-radius:999px;padding:5px 10px;font-weight:800;font-size:13px;cursor:pointer}
+  .star{background:#fff;border:2px solid var(--line);border-radius:999px;padding:5px 12px;font-weight:800;font-size:14px}
+
+  .card{background:var(--card);border:3px solid var(--line);border-radius:22px;padding:16px;margin-bottom:12px;box-shadow:0 3px 0 rgba(180,150,110,.10)}
+  .big{width:100%;min-height:58px;border:none;border-radius:18px;color:#fff;font-size:17px;font-weight:800;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.15);margin-top:10px}
+  .big:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.15)}
+  .ghost{min-height:48px;background:#fff;border:2px solid var(--line);border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;color:var(--ink);padding:8px 14px}
+  .lbl{font-size:12.5px;color:var(--grey);line-height:1.7}
+
+  /* who screen */
+  .kidPick{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+  .kid{flex:1;min-width:130px;background:#fff;border:3px solid var(--line);border-radius:22px;padding:18px 10px;text-align:center;cursor:pointer}
+  .kid:active{transform:scale(.97)}
+  .kid .e{font-size:52px} .kid .n{font-weight:800;font-size:17px;margin-top:4px}
+  .kid .s{font-size:12px;color:var(--grey);margin-top:2px}
+
+  /* pack card */
+  .pk{display:flex;align-items:center;gap:12px}
+  .pk .e{font-size:34px}
+  .pk .t{font-weight:800;font-size:16px} .pk .s{font-size:12px;color:var(--grey)}
+  .pk .acc{margin-left:auto;font-size:12.5px;font-weight:800}
+
+  /* teach */
+  .point{background:#FFF9F0;border:2px solid var(--line);border-radius:16px;padding:12px 14px;margin-top:10px}
+  .point .r{font-weight:800;font-size:15.5px;line-height:1.6}
+  .point .ex{margin-top:6px;font-size:16px;color:#0B6E4F;font-weight:800}
+  .worked{border-left:6px solid var(--lemon);padding-left:12px;margin-top:12px}
+
+  /* quiz */
+  .qtop{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .bar{display:flex;gap:4px;margin-bottom:10px}
+  .bar i{flex:1;height:9px;border-radius:99px;background:#EFE3D3}
+  .qtext{font-size:23px;font-weight:800;line-height:1.5}
+  .opt{width:100%;min-height:62px;text-align:left;padding:12px 16px;margin-top:10px;background:#fff;
+    border:3px solid var(--line);border-radius:18px;font-size:19px;font-weight:800;cursor:pointer;color:var(--ink)}
+  .opt .k{color:var(--grey);margin-right:10px}
+  .opt.ok{border-color:var(--mint);background:#EAFBF4}
+  .opt.no{border-color:var(--coral);background:#FFF0F1}
+  .fb{margin-top:12px;padding:11px 13px;border-radius:14px;font-size:14.5px;line-height:1.65}
+  .idk{margin-top:10px;background:#FFF3E4;border:2px dashed #FFC98F;color:#8A4B00;border-radius:14px;
+    width:100%;min-height:46px;font-weight:800;font-size:14px;cursor:pointer}
+  .idk.flagged{background:#FFE7C4;border-style:solid}
+
+  /* result */
+  .result{text-align:center;padding:26px 16px}
+  .result .b{font-size:58px} .result h2{margin:8px 0 2px;font-size:22px}
+
+  /* nav */
+  .nav{position:fixed;left:0;right:0;bottom:0;display:flex;gap:6px;justify-content:center;
+    padding:9px 10px calc(9px + env(safe-area-inset-bottom));background:rgba(255,247,239,.96);border-top:2px solid var(--line);z-index:5}
+  .nav button{flex:1;max-width:130px;min-height:54px;border:none;border-radius:15px;font-size:13px;font-weight:800;cursor:pointer;background:#fff;color:var(--ink);box-shadow:inset 0 0 0 2px var(--line)}
+  .nav button.on{background:var(--ink);color:#fff;box-shadow:none}
+
+  textarea{width:100%;min-height:120px;border:2px solid var(--line);border-radius:14px;padding:10px;font-family:inherit;font-size:13px}
+  input[type=text]{width:100%;border:2px solid var(--line);border-radius:12px;padding:10px;font-family:inherit;font-size:15px;font-weight:700}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;background:#FFF9F0;border:2px solid var(--line);cursor:pointer}
+  .chip.sel{background:var(--tang);color:#fff;border-color:var(--tang)}
+  .warn{display:none;background:#FFF3E4;border:2px solid #FFC98F;border-radius:14px;padding:10px 12px;font-size:12.5px;color:#8A4B00;margin-bottom:10px;line-height:1.6}
+  .yr-h{font-weight:800;font-size:16px;margin:16px 2px 8px;padding:6px 12px;border-radius:12px;
+    background:linear-gradient(90deg,#FFF1E2,#FFF7EF);border-left:6px solid var(--tang);color:var(--ink);
+    display:flex;align-items:center;gap:8px}
+  .yr-h .yr-n{font-size:11px;font-weight:700;color:var(--grey);background:#fff;border:2px solid var(--line);
+    border-radius:999px;padding:2px 8px}
+  #app > .yr-h:first-child{margin-top:2px}
+  .fbar{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 6px}
+  .fchip{border:2px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-weight:800;font-size:13px;color:var(--ink)}
+  .fchip.on{background:var(--tang);border-color:var(--tang);color:#fff}
+  button[disabled]{opacity:.4}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <span class="m">🦉</span>
+    <h1>快樂學習樂園<small id="subhead">KSSR · 英文＋數學</small></h1>
+    <div class="who" id="whoBox"></div>
+  </div>
+  <div class="warn" id="lsWarn">⚠️ 這個環境無法儲存進度（可能是無痕模式或預覽視窗）。把檔案放到網站或用一般瀏覽器開啟，進度就會記住。</div>
+  <div class="warn" id="zhWarn">🔈 這個裝置沒有安裝中文語音，中文解說會「只顯示文字、不發聲」（英文發音正常）。iPhone／iPad／Mac／Windows 通常內建；部分 Android 需到系統「文字轉語音」下載中文語音包。</div>
+
+  <div id="app"></div>
+</div>
+
+<div class="nav" id="nav" style="display:none">
+  <button data-tab="home" onclick="setTab('home')">🏠 練習</button>
+  <button data-tab="wrong" onclick="setTab('wrong')">📌 錯題</button>
+  <button data-tab="stats" onclick="setTab('stats')">📊 成績</button>
+  <button data-tab="settings" onclick="setTab('settings')">⚙️ 設定</button>
+</div>
+
+<script>
+/* ============================================================
+   快樂學習樂園 · 純網頁版
+   - 進度：localStorage（分兩個小孩）
+   - 流程：先教學 → 再出題
+   - 題庫：可匯入 JSON、可匯出錯題與不懂的地方
+   ============================================================ */
+
+/* ---------- 內建題庫（外殼與內容分離；匯入的題庫會併進來） ---------- */
+const BUILTIN = [
+  { id:"en2", subj:"英文", year:"Y2", icon:"🔤", color:"var(--sky)", title:"English Year 2", sub:"句型套用 · A1 Low",
+    teach:{ intro:"這一關學「一個東西怎麼說」和「東西在哪裡」。跟著唸唸看，你一定做得到！",
+      points:[
+        {r:"a / an：一個東西。子音前用 a，母音(a e i o u)前用 an。", ex:"a ball ／ an apple", tts:"a ball. an apple."},
+        {r:"this / these：近的一個用 this，很多個用 these。", ex:"This is a cat. These are cats.", tts:"This is a cat. These are cats."},
+        {r:"位置：in 裡面、on 上面、under 下面。", ex:"The cat is in the box.", tts:"The cat is in the box."},
+      ],
+      worked:[
+        {q:"This is ___ orange.", opts:["a","an","the"], ans:1, why:"orange 母音開頭，用 an。", tts:"This is an orange."},
+        {q:"The book is ___ the table.", opts:["on","in","under"], ans:0, why:"在桌「上」用 on。", tts:"The book is on the table."},
+      ]},
+    bank:[
+      {q:"This is ___ apple.", opts:["a","an","the"], ans:1, why:"apple 母音開頭，用 an。", tts:"This is an apple."},
+      {q:"I ___ football on Saturdays.", opts:["play","plays","playing"], ans:0, why:"主詞 I，用原形 play。", tts:"I play football on Saturdays."},
+      {q:"___ are my books.", opts:["This","These","It"], ans:1, why:"books 複數，用 These。", tts:"These are my books."},
+      {q:"I like ___.", opts:["cat","cats","a cats"], ans:1, why:"喜歡某類東西用複數 cats。", tts:"I like cats."},
+      {q:"The cat is ___ the box.", opts:["in","at","of"], ans:0, why:"在盒子「裡」用 in。", tts:"The cat is in the box."},
+      {q:"I ___ like durian.", opts:["don't","doesn't","not"], ans:0, why:"I 的否定用 don't。", tts:"I don't like durian."},
+      {q:"Today is Monday. Tomorrow is ___.", opts:["Sunday","Tuesday","Friday"], ans:1, why:"星期一的隔天是 Tuesday。", tts:"Tomorrow is Tuesday."},
+      {q:"She is ___ mother.", opts:["my","me","I"], ans:0, why:"「我的」用 my。", tts:"She is my mother."},
+      {q:"This is ___ ball.", opts:["a","an","—"], ans:0, why:"ball 子音開頭，用 a。", tts:"This is a ball."},
+      {q:"The book is ___ the table.", opts:["on","in","under"], ans:0, why:"在桌「上」用 on。", tts:"The book is on the table."},
+      {q:"I have two ___.", opts:["pencil","pencils","pencilses"], ans:1, why:"two 後面用複數。", tts:"I have two pencils."},
+      {q:"___ name is Ali.", opts:["His","He","Him"], ans:0, why:"「他的」用 His。", tts:"His name is Ali."},
+      {q:"I can see ___ elephant.", opts:["a","an","two"], ans:1, why:"elephant 母音開頭，用 an。", tts:"I can see an elephant."},
+      {q:"Is this your bag? Yes, it ___.", opts:["is","are","am"], ans:0, why:"it 配 is。", tts:"Yes, it is."},
+      {q:"The dog is ___ the chair.", opts:["under","in","on"], ans:0, why:"在椅子「下」用 under。", tts:"The dog is under the chair."},
+    ]},
+
+  { id:"en3", subj:"英文", year:"Y3", icon:"✏️", color:"var(--grape)", title:"English Year 3", sub:"明示文法起步 · A1 Mid",
+    teach:{ intro:"這一關學「他／她怎麼做」和「會不會」。準備好了嗎？我們一步一步來！",
+      points:[
+        {r:"他／她＋動詞加 -s／-es：She goes. He likes.", ex:"She goes to school.", tts:"She goes to school."},
+        {r:"can 會／can't 不會，後面動詞不變。", ex:"I can swim. She can't fly.", tts:"I can swim. She can not fly."},
+        {r:"there is（一個）／ there are（很多）。", ex:"There are three birds.", tts:"There are three birds."},
+        {r:"比較：短形容詞加 -er，配 than。", ex:"He is taller than me.", tts:"He is taller than me."},
+      ],
+      worked:[
+        {q:"She ___ to school every day.", opts:["go","goes","going"], ans:1, why:"She 第三人稱，加 -es。", tts:"She goes to school every day."},
+        {q:"There ___ two cats.", opts:["is","are","am"], ans:1, why:"two cats 複數，用 are。", tts:"There are two cats."},
+      ]},
+    bank:[
+      {q:"She ___ to school every day.", opts:["go","goes","going"], ans:1, why:"第三人稱單數加 -es。", tts:"She goes to school every day."},
+      {q:"I ___ swim.", opts:["can","cans","canning"], ans:0, why:"can 不變化。", tts:"I can swim."},
+      {q:"There ___ three birds.", opts:["is","are","am"], ans:1, why:"three birds 複數，用 are。", tts:"There are three birds."},
+      {q:"He ___ like spicy food.", opts:["don't","doesn't","isn't"], ans:1, why:"He 的否定用 doesn't。", tts:"He doesn't like spicy food."},
+      {q:"___ you like ice cream?", opts:["Do","Does","Is"], ans:0, why:"you 的問句用 Do。", tts:"Do you like ice cream?"},
+      {q:"My brother is ___ than me.", opts:["tall","taller","tallest"], ans:1, why:"than 比較用 -er。", tts:"My brother is taller than me."},
+      {q:"There ___ a cat under the chair.", opts:["is","are","be"], ans:0, why:"a cat 單數，用 is。", tts:"There is a cat under the chair."},
+      {q:"We went to the zoo ___ Saturday.", opts:["on","in","at"], ans:0, why:"星期幾前用 on。", tts:"We went to the zoo on Saturday."},
+      {q:"___ is your birthday?", opts:["When","Who","What"], ans:0, why:"問時間用 When。", tts:"When is your birthday?"},
+      {q:"The children ___ playing now.", opts:["is","are","am"], ans:1, why:"children 複數，用 are。", tts:"The children are playing now."},
+      {q:"Ali ___ two cats.", opts:["have","has","haves"], ans:1, why:"第三人稱用 has。", tts:"Ali has two cats."},
+      {q:"I get up ___ 7 o'clock.", opts:["at","on","in"], ans:0, why:"幾點鐘前用 at。", tts:"I get up at seven o'clock."},
+      {q:"This is the ___ mango!", opts:["sweet","sweeter","sweetest"], ans:2, why:"the＋最高級 -est。", tts:"This is the sweetest mango!"},
+      {q:"She can sing, ___ she can't dance.", opts:["but","so","or"], ans:0, why:"前後相反用 but。", tts:"She can sing, but she can not dance."},
+      {q:"___ many pupils are there?", opts:["How","What","Why"], ans:0, why:"問數量用 How many。", tts:"How many pupils are there?"},
+    ]},
+
+  { id:"ma2", subj:"數學", year:"Y2", icon:"🔢", color:"var(--tang)", title:"Mathematics Year 2", sub:"1000 內 · 乘除入門 · RM",
+    teach:{ intro:"這一關學 1000 以內的加減，還有乘法和除法的祕密！一起變成小數學家！",
+      points:[
+        {r:"位值：數字站的位置不同。456 → 4 百、5 十、6 個。"},
+        {r:"乘法就是「幾個幾」：4 × 5 = 4 個 5 = 20。"},
+        {r:"除法就是「平分」：10 ÷ 2 = 分成 2 份，每份 5。"},
+        {r:"錢幣用 RM（令吉）。買東西＝減法。"},
+      ],
+      worked:[
+        {q:"3 × 5 = ?", opts:["15","8","35"], ans:0, why:"3 個 5 相加＝15。"},
+        {q:"小明有 RM8，買筆 RM3，剩多少？", opts:["RM5","RM11","RM3"], ans:0, why:"8 − 3 = 5。"},
+      ]},
+    bank:[
+      {q:"345 + 123 = ?", opts:["468","478","458"], ans:0, why:"5+3=8、4+2=6、3+1=4。"},
+      {q:"500 − 250 = ?", opts:["350","250","150"], ans:1, why:"500 減 250 剩 250。"},
+      {q:"4 × 5 = ?", opts:["20","25","15"], ans:0, why:"4 個 5＝20。"},
+      {q:"10 ÷ 2 = ?", opts:["5","2","8"], ans:0, why:"分成 2 份，每份 5。"},
+      {q:"小美有 RM5，買麵包 RM2，剩多少？", opts:["RM3","RM2","RM7"], ans:0, why:"5 − 2 = 3。"},
+      {q:"2, 4, 6, ___, 10", opts:["7","8","9"], ans:1, why:"每次加 2，是 8。"},
+      {q:"蛋糕平分 2 份，每份是？", opts:["1/2","1/3","2/2"], ans:0, why:"二分之一 (1/2)。"},
+      {q:"4/10 寫成小數是？", opts:["0.4","4.0","0.04"], ans:0, why:"十分之四＝0.4。"},
+      {q:"分針指 12、時針指 3，幾點？", opts:["3 點","12 點","6 點"], ans:0, why:"整點 3 點。"},
+      {q:"700 + 200 = ?", opts:["900","500","920"], ans:0, why:"7 百加 2 百＝9 百。"},
+      {q:"5 × 10 = ?", opts:["15","50","510"], ans:1, why:"乘 10 加一個 0＝50。"},
+      {q:"20 ÷ 4 = ?", opts:["5","4","6"], ans:0, why:"4×5=20。"},
+      {q:"RM10 買 RM4 玩具，找回多少？", opts:["RM6","RM4","RM14"], ans:0, why:"10 − 4 = 6。"},
+      {q:"哪個比較長？", opts:["1 m","1 cm","一樣長"], ans:0, why:"1 m＝100 cm，較長。"},
+      {q:"456 的百位數字是？", opts:["4","5","6"], ans:0, why:"4 在百位。"},
+    ]},
+
+  { id:"ma3", subj:"數學", year:"Y3", icon:"🧮", color:"var(--mint)", title:"Mathematics Year 3", sub:"10,000 內 · 混合運算 · 分數小數",
+    teach:{ intro:"這一關學更大的數、混合運算，還有分數和小數！你已經很棒了，繼續加油！",
+      points:[
+        {r:"混合運算（只有 + −）：由左到右算。"},
+        {r:"同分母分數：分母不變，分子相加減。1/4 + 2/4 = 3/4。"},
+        {r:"小數加減：小數點對齊。0.5 + 0.3 = 0.8。"},
+        {r:"單位換算：1 m = 100 cm，1 kg = 1000 g。"},
+      ],
+      worked:[
+        {q:"100 − 20 + 5 = ?", opts:["85","75","125"], ans:0, why:"由左到右：80，再+5=85。"},
+        {q:"2/5 + 1/5 = ?", opts:["3/5","3/10","1/5"], ans:0, why:"同分母，分子 2+1=3。"},
+      ]},
+    bank:[
+      {q:"3456 + 1234 = ?", opts:["4690","4680","4590"], ans:0, why:"逐位相加＝4690。"},
+      {q:"5000 − 1250 = ?", opts:["3750","3850","4250"], ans:0, why:"5000−1250=3750。"},
+      {q:"6 × 7 = ?", opts:["42","36","48"], ans:0, why:"六七四十二。"},
+      {q:"45 ÷ 9 = ?", opts:["5","6","4"], ans:0, why:"9×5=45。"},
+      {q:"2345 四捨五入到百位？", opts:["2300","2400","2350"], ans:0, why:"十位 4 捨去→2300。"},
+      {q:"1/4 + 2/4 = ?", opts:["3/4","3/8","2/4"], ans:0, why:"分子 1+2=3→3/4。"},
+      {q:"0.5 + 0.3 = ?", opts:["0.8","0.53","8.0"], ans:0, why:"5+3 個 0.1＝0.8。"},
+      {q:"RM10 − RM3.50 = ?", opts:["RM6.50","RM7.50","RM6.00"], ans:0, why:"10.00−3.50=6.50。"},
+      {q:"2 kg = ? g", opts:["2000 g","200 g","20 g"], ans:0, why:"1 kg=1000 g。"},
+      {q:"RM5 + RM5 − RM3 = ?", opts:["RM7","RM13","RM8"], ans:0, why:"左到右：10−3=7。"},
+      {q:"1 小時 = ? 分鐘", opts:["60","100","30"], ans:0, why:"1 hour=60 min。"},
+      {q:"100 − 25 + 10 = ?", opts:["85","65","75"], ans:0, why:"75，再+10=85。"},
+      {q:"1 m = ? cm", opts:["100","10","1000"], ans:0, why:"1 米=100 厘米。"},
+      {q:"7008 的十位數字是？", opts:["0","7","8"], ans:0, why:"十位是 0。"},
+      {q:"3/5 − 1/5 = ?", opts:["2/5","2/10","4/5"], ans:0, why:"分子 3−1=2→2/5。"},
+    ]},
+];
+
+BUILTIN.push(
+...(
+[
+  {
+    "id": "y2-math-money-wp",
+    "subj": "數學",
+    "year": "Y2",
+    "icon": "💰",
+    "color": "var(--lemon)",
+    "title": "Y2 Money Word Problems",
+    "sub": "購物找零應用題 · RM",
+    "teach": {
+      "intro": "應用題先讀懂再算。找『關鍵字』就知道用加減乘除。",
+      "points": [
+        {
+          "r": "in total / altogether / how many … in all → 加法 ( + )",
+          "ex": "There are 3 and 4 more. → 3 + 4"
+        },
+        {
+          "r": "left / change / how many … left → 減法 ( − )",
+          "ex": "10 − 3 = 7"
+        },
+        {
+          "r": "each … how many / groups of → 乘法 ( × ) 或 除法 ( ÷ )",
+          "ex": "5 boxes × 4 = 20 ／ 20 ÷ 4 = 5"
+        }
+      ],
+      "worked": [
+        {
+          "q": "Ann has 6 sweets. She gets 3 more. How many sweets in total?",
+          "opts": [
+            "8",
+            "9",
+            "10"
+          ],
+          "ans": 1,
+          "why": "『in total』用加法:6 + 3 = 9。",
+          "tts": "Ann has 6 sweets. She gets 3 more. How many sweets in total?"
+        },
+        {
+          "q": "A shop had 10 eggs. It sold 4. How many eggs are left?",
+          "opts": [
+            "4",
+            "6",
+            "8"
+          ],
+          "ans": 1,
+          "why": "『left』用減法:10 − 4 = 6。",
+          "tts": "A shop had 10 eggs. It sold 4. How many eggs are left?"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "Ali has RM10. He buys a pencil for RM3 and a book for RM4. How much money does Ali have left?",
+        "opts": [
+          "RM2",
+          "RM3",
+          "RM7"
+        ],
+        "ans": 1,
+        "why": "RM10 − RM3 − RM4 = RM3。"
+      },
+      {
+        "q": "Siti buys 2 apples. Each apple costs RM2. She pays with a RM10 note. How much change does she get?",
+        "opts": [
+          "RM4",
+          "RM6",
+          "RM8"
+        ],
+        "ans": 1,
+        "why": "2 × RM2 = RM4;RM10 − RM4 = RM6。"
+      },
+      {
+        "q": "A pen costs RM5. A ruler costs RM2. How much do they cost together?",
+        "opts": [
+          "RM3",
+          "RM7",
+          "RM10"
+        ],
+        "ans": 1,
+        "why": "RM5 + RM2 = RM7。"
+      },
+      {
+        "q": "Ravi has 3 coins of 50 sen. How much money does he have in total?",
+        "opts": [
+          "RM1.00",
+          "RM1.50",
+          "RM2.00"
+        ],
+        "ans": 1,
+        "why": "3 × 50 sen = 150 sen = RM1.50。"
+      },
+      {
+        "q": "Mei buys a toy for RM8. She gives the seller RM20. How much change should she get back?",
+        "opts": [
+          "RM10",
+          "RM12",
+          "RM14"
+        ],
+        "ans": 1,
+        "why": "RM20 − RM8 = RM12。"
+      },
+      {
+        "q": "A bun costs RM1. Ahmad wants to buy 6 buns. How much money does he need?",
+        "opts": [
+          "RM5",
+          "RM6",
+          "RM7"
+        ],
+        "ans": 1,
+        "why": "6 × RM1 = RM6。"
+      },
+      {
+        "q": "Lily saves RM4 on Monday and RM5 on Tuesday. How much has she saved in total?",
+        "opts": [
+          "RM8",
+          "RM9",
+          "RM10"
+        ],
+        "ans": 1,
+        "why": "RM4 + RM5 = RM9。"
+      },
+      {
+        "q": "A drink costs RM3. John buys 3 drinks. He pays RM10. How much change does he get?",
+        "opts": [
+          "RM1",
+          "RM2",
+          "RM3"
+        ],
+        "ans": 0,
+        "why": "3 × RM3 = RM9;RM10 − RM9 = RM1。"
+      }
+    ]
+  },
+  {
+    "id": "y2-math-addsub-wp",
+    "subj": "數學",
+    "year": "Y2",
+    "icon": "➕",
+    "color": "var(--lemon)",
+    "title": "Y2 Add & Subtract Word Problems",
+    "sub": "加法減法應用題",
+    "teach": {
+      "intro": "應用題先讀懂再算。找『關鍵字』就知道用加減乘除。",
+      "points": [
+        {
+          "r": "in total / altogether / how many … in all → 加法 ( + )",
+          "ex": "There are 3 and 4 more. → 3 + 4"
+        },
+        {
+          "r": "left / change / how many … left → 減法 ( − )",
+          "ex": "10 − 3 = 7"
+        },
+        {
+          "r": "each … how many / groups of → 乘法 ( × ) 或 除法 ( ÷ )",
+          "ex": "5 boxes × 4 = 20 ／ 20 ÷ 4 = 5"
+        }
+      ],
+      "worked": [
+        {
+          "q": "Ann has 6 sweets. She gets 3 more. How many sweets in total?",
+          "opts": [
+            "8",
+            "9",
+            "10"
+          ],
+          "ans": 1,
+          "why": "『in total』用加法:6 + 3 = 9。",
+          "tts": "Ann has 6 sweets. She gets 3 more. How many sweets in total?"
+        },
+        {
+          "q": "A shop had 10 eggs. It sold 4. How many eggs are left?",
+          "opts": [
+            "4",
+            "6",
+            "8"
+          ],
+          "ans": 1,
+          "why": "『left』用減法:10 − 4 = 6。",
+          "tts": "A shop had 10 eggs. It sold 4. How many eggs are left?"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "There are 25 red balloons and 30 blue balloons. How many balloons are there in total?",
+        "opts": [
+          "45",
+          "55",
+          "65"
+        ],
+        "ans": 1,
+        "why": "25 + 30 = 55。"
+      },
+      {
+        "q": "A box has 48 sweets. Children eat 15 sweets. How many sweets are left?",
+        "opts": [
+          "23",
+          "33",
+          "43"
+        ],
+        "ans": 1,
+        "why": "48 − 15 = 33。"
+      },
+      {
+        "q": "A farm has 60 chickens and 40 ducks. How many birds are on the farm?",
+        "opts": [
+          "80",
+          "100",
+          "120"
+        ],
+        "ans": 1,
+        "why": "60 + 40 = 100。"
+      },
+      {
+        "q": "There are 90 pupils in the hall. 35 pupils go home. How many pupils are still in the hall?",
+        "opts": [
+          "45",
+          "55",
+          "65"
+        ],
+        "ans": 1,
+        "why": "90 − 35 = 55。"
+      },
+      {
+        "q": "Ben reads 120 pages on Monday and 130 pages on Tuesday. How many pages does he read in two days?",
+        "opts": [
+          "240",
+          "250",
+          "260"
+        ],
+        "ans": 1,
+        "why": "120 + 130 = 250。"
+      },
+      {
+        "q": "A shop had 200 eggs. It sold 75 eggs. How many eggs are left?",
+        "opts": [
+          "115",
+          "125",
+          "135"
+        ],
+        "ans": 1,
+        "why": "200 − 75 = 125。"
+      },
+      {
+        "q": "A bus has 32 people. At the next stop, 18 more people get on. How many people are on the bus now?",
+        "opts": [
+          "40",
+          "50",
+          "60"
+        ],
+        "ans": 1,
+        "why": "32 + 18 = 50。"
+      },
+      {
+        "q": "There are 85 books on a shelf. A teacher takes away 27 books. How many books are left on the shelf?",
+        "opts": [
+          "58",
+          "62",
+          "68"
+        ],
+        "ans": 0,
+        "why": "85 − 27 = 58。"
+      }
+    ]
+  },
+  {
+    "id": "y2-math-mixed-ops-wp",
+    "subj": "數學",
+    "year": "Y2",
+    "icon": "✖️",
+    "color": "var(--lemon)",
+    "title": "Y2 Times, Time & Measure Word Problems",
+    "sub": "乘除·時間·長度應用題",
+    "teach": {
+      "intro": "應用題先讀懂再算。找『關鍵字』就知道用加減乘除。",
+      "points": [
+        {
+          "r": "in total / altogether / how many … in all → 加法 ( + )",
+          "ex": "There are 3 and 4 more. → 3 + 4"
+        },
+        {
+          "r": "left / change / how many … left → 減法 ( − )",
+          "ex": "10 − 3 = 7"
+        },
+        {
+          "r": "each … how many / groups of → 乘法 ( × ) 或 除法 ( ÷ )",
+          "ex": "5 boxes × 4 = 20 ／ 20 ÷ 4 = 5"
+        }
+      ],
+      "worked": [
+        {
+          "q": "Ann has 6 sweets. She gets 3 more. How many sweets in total?",
+          "opts": [
+            "8",
+            "9",
+            "10"
+          ],
+          "ans": 1,
+          "why": "『in total』用加法:6 + 3 = 9。",
+          "tts": "Ann has 6 sweets. She gets 3 more. How many sweets in total?"
+        },
+        {
+          "q": "A shop had 10 eggs. It sold 4. How many eggs are left?",
+          "opts": [
+            "4",
+            "6",
+            "8"
+          ],
+          "ans": 1,
+          "why": "『left』用減法:10 − 4 = 6。",
+          "tts": "A shop had 10 eggs. It sold 4. How many eggs are left?"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "One box has 5 crayons. There are 4 boxes. How many crayons are there altogether?",
+        "opts": [
+          "15",
+          "20",
+          "25"
+        ],
+        "ans": 1,
+        "why": "5 × 4 = 20。"
+      },
+      {
+        "q": "A tricycle has 3 wheels. How many wheels do 6 tricycles have?",
+        "opts": [
+          "12",
+          "18",
+          "24"
+        ],
+        "ans": 1,
+        "why": "3 × 6 = 18。"
+      },
+      {
+        "q": "There are 10 pupils in one row. There are 3 rows. How many pupils are there in total?",
+        "opts": [
+          "20",
+          "30",
+          "40"
+        ],
+        "ans": 1,
+        "why": "10 × 3 = 30。"
+      },
+      {
+        "q": "Mother buys 4 packs of eggs. Each pack has 5 eggs. How many eggs does she buy?",
+        "opts": [
+          "9",
+          "20",
+          "24"
+        ],
+        "ans": 1,
+        "why": "4 × 5 = 20。"
+      },
+      {
+        "q": "20 apples are shared equally among 4 children. How many apples does each child get?",
+        "opts": [
+          "4",
+          "5",
+          "6"
+        ],
+        "ans": 1,
+        "why": "20 ÷ 4 = 5。"
+      },
+      {
+        "q": "A film starts at 2 o'clock. It ends 2 hours later. What time does the film end?",
+        "opts": [
+          "3 o'clock",
+          "4 o'clock",
+          "5 o'clock"
+        ],
+        "ans": 1,
+        "why": "2 + 2 = 4 o'clock。"
+      },
+      {
+        "q": "A rope is 8 cm long. Another rope is 6 cm long. How much longer is the first rope?",
+        "opts": [
+          "2 cm",
+          "4 cm",
+          "14 cm"
+        ],
+        "ans": 0,
+        "why": "8 − 6 = 2 cm。"
+      },
+      {
+        "q": "A bottle holds 2 litres of water. How much water do 5 bottles hold?",
+        "opts": [
+          "7 litres",
+          "10 litres",
+          "12 litres"
+        ],
+        "ans": 1,
+        "why": "2 × 5 = 10 litres。"
+      }
+    ]
+  },
+  {
+    "id": "y3-math-money-wp",
+    "subj": "數學",
+    "year": "Y3",
+    "icon": "💵",
+    "color": "var(--lemon)",
+    "title": "Y3 Money Word Problems",
+    "sub": "購物·消費應用題 · RM",
+    "teach": {
+      "intro": "應用題先讀懂再算。找『關鍵字』就知道用加減乘除。",
+      "points": [
+        {
+          "r": "in total / altogether / how many … in all → 加法 ( + )",
+          "ex": "There are 3 and 4 more. → 3 + 4"
+        },
+        {
+          "r": "left / change / how many … left → 減法 ( − )",
+          "ex": "10 − 3 = 7"
+        },
+        {
+          "r": "each … how many / groups of → 乘法 ( × ) 或 除法 ( ÷ )",
+          "ex": "5 boxes × 4 = 20 ／ 20 ÷ 4 = 5"
+        }
+      ],
+      "worked": [
+        {
+          "q": "Ann has 6 sweets. She gets 3 more. How many sweets in total?",
+          "opts": [
+            "8",
+            "9",
+            "10"
+          ],
+          "ans": 1,
+          "why": "『in total』用加法:6 + 3 = 9。",
+          "tts": "Ann has 6 sweets. She gets 3 more. How many sweets in total?"
+        },
+        {
+          "q": "A shop had 10 eggs. It sold 4. How many eggs are left?",
+          "opts": [
+            "4",
+            "6",
+            "8"
+          ],
+          "ans": 1,
+          "why": "『left』用減法:10 − 4 = 6。",
+          "tts": "A shop had 10 eggs. It sold 4. How many eggs are left?"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "A school bag costs RM45. A water bottle costs RM18. How much do they cost together?",
+        "opts": [
+          "RM53",
+          "RM63",
+          "RM73"
+        ],
+        "ans": 1,
+        "why": "RM45 + RM18 = RM63。"
+      },
+      {
+        "q": "Encik Rahman has RM100. He buys a shirt for RM65. How much money does he have left?",
+        "opts": [
+          "RM25",
+          "RM35",
+          "RM45"
+        ],
+        "ans": 1,
+        "why": "RM100 − RM65 = RM35。"
+      },
+      {
+        "q": "A notebook costs RM6. Aina buys 7 notebooks. How much does she pay in total?",
+        "opts": [
+          "RM36",
+          "RM42",
+          "RM48"
+        ],
+        "ans": 1,
+        "why": "7 × RM6 = RM42。"
+      },
+      {
+        "q": "A toy car costs RM24. Kumar wants to buy 3 toy cars. How much money does he need?",
+        "opts": [
+          "RM62",
+          "RM72",
+          "RM82"
+        ],
+        "ans": 1,
+        "why": "3 × RM24 = RM72。"
+      },
+      {
+        "q": "Sara has RM250. She spends RM130 on books and RM40 on food. How much money is left?",
+        "opts": [
+          "RM70",
+          "RM80",
+          "RM90"
+        ],
+        "ans": 1,
+        "why": "RM250 − RM130 − RM40 = RM80。"
+      },
+      {
+        "q": "A pizza costs RM30. 5 friends share the cost equally. How much does each friend pay?",
+        "opts": [
+          "RM5",
+          "RM6",
+          "RM7"
+        ],
+        "ans": 1,
+        "why": "RM30 ÷ 5 = RM6。"
+      },
+      {
+        "q": "A shop sells a fan for RM88. On sale, the price is RM20 cheaper. What is the sale price?",
+        "opts": [
+          "RM58",
+          "RM68",
+          "RM78"
+        ],
+        "ans": 1,
+        "why": "RM88 − RM20 = RM68。"
+      },
+      {
+        "q": "Lim saves RM15 each week. How much does he save in 8 weeks?",
+        "opts": [
+          "RM110",
+          "RM120",
+          "RM130"
+        ],
+        "ans": 1,
+        "why": "8 × RM15 = RM120。"
+      }
+    ]
+  },
+  {
+    "id": "y3-math-multdiv-wp",
+    "subj": "數學",
+    "year": "Y3",
+    "icon": "➗",
+    "color": "var(--lemon)",
+    "title": "Y3 Multiply & Divide Word Problems",
+    "sub": "乘法除法應用題",
+    "teach": {
+      "intro": "應用題先讀懂再算。找『關鍵字』就知道用加減乘除。",
+      "points": [
+        {
+          "r": "in total / altogether / how many … in all → 加法 ( + )",
+          "ex": "There are 3 and 4 more. → 3 + 4"
+        },
+        {
+          "r": "left / change / how many … left → 減法 ( − )",
+          "ex": "10 − 3 = 7"
+        },
+        {
+          "r": "each … how many / groups of → 乘法 ( × ) 或 除法 ( ÷ )",
+          "ex": "5 boxes × 4 = 20 ／ 20 ÷ 4 = 5"
+        }
+      ],
+      "worked": [
+        {
+          "q": "Ann has 6 sweets. She gets 3 more. How many sweets in total?",
+          "opts": [
+            "8",
+            "9",
+            "10"
+          ],
+          "ans": 1,
+          "why": "『in total』用加法:6 + 3 = 9。",
+          "tts": "Ann has 6 sweets. She gets 3 more. How many sweets in total?"
+        },
+        {
+          "q": "A shop had 10 eggs. It sold 4. How many eggs are left?",
+          "opts": [
+            "4",
+            "6",
+            "8"
+          ],
+          "ans": 1,
+          "why": "『left』用減法:10 − 4 = 6。",
+          "tts": "A shop had 10 eggs. It sold 4. How many eggs are left?"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "There are 6 baskets. Each basket has 8 oranges. How many oranges are there in total?",
+        "opts": [
+          "42",
+          "48",
+          "54"
+        ],
+        "ans": 1,
+        "why": "6 × 8 = 48。"
+      },
+      {
+        "q": "A factory makes 9 toys every hour. How many toys does it make in 7 hours?",
+        "opts": [
+          "56",
+          "63",
+          "72"
+        ],
+        "ans": 1,
+        "why": "9 × 7 = 63。"
+      },
+      {
+        "q": "72 pupils are put into 8 equal groups. How many pupils are in each group?",
+        "opts": [
+          "8",
+          "9",
+          "10"
+        ],
+        "ans": 1,
+        "why": "72 ÷ 8 = 9。"
+      },
+      {
+        "q": "A gardener plants 7 rows of trees. Each row has 6 trees. How many trees does he plant?",
+        "opts": [
+          "36",
+          "42",
+          "48"
+        ],
+        "ans": 1,
+        "why": "7 × 6 = 42。"
+      },
+      {
+        "q": "56 apples are packed into bags of 8. How many bags are needed?",
+        "opts": [
+          "6",
+          "7",
+          "8"
+        ],
+        "ans": 1,
+        "why": "56 ÷ 8 = 7。"
+      },
+      {
+        "q": "One book has 9 chapters. How many chapters do 8 books have?",
+        "opts": [
+          "63",
+          "72",
+          "81"
+        ],
+        "ans": 1,
+        "why": "9 × 8 = 72。"
+      },
+      {
+        "q": "A teacher shares 63 pencils equally among 9 pupils. How many pencils does each pupil get?",
+        "opts": [
+          "6",
+          "7",
+          "8"
+        ],
+        "ans": 1,
+        "why": "63 ÷ 9 = 7。"
+      },
+      {
+        "q": "There are 8 boxes. Each box holds 7 books. How many books are there altogether?",
+        "opts": [
+          "49",
+          "56",
+          "64"
+        ],
+        "ans": 1,
+        "why": "8 × 7 = 56。"
+      }
+    ]
+  },
+  {
+    "id": "y3-math-measure-frac-wp",
+    "subj": "數學",
+    "year": "Y3",
+    "icon": "📏",
+    "color": "var(--lemon)",
+    "title": "Y3 Measure, Time & Fraction Word Problems",
+    "sub": "單位換算·時間·分數應用題",
+    "teach": {
+      "intro": "應用題先讀懂再算。找『關鍵字』就知道用加減乘除。",
+      "points": [
+        {
+          "r": "in total / altogether / how many … in all → 加法 ( + )",
+          "ex": "There are 3 and 4 more. → 3 + 4"
+        },
+        {
+          "r": "left / change / how many … left → 減法 ( − )",
+          "ex": "10 − 3 = 7"
+        },
+        {
+          "r": "each … how many / groups of → 乘法 ( × ) 或 除法 ( ÷ )",
+          "ex": "5 boxes × 4 = 20 ／ 20 ÷ 4 = 5"
+        }
+      ],
+      "worked": [
+        {
+          "q": "Ann has 6 sweets. She gets 3 more. How many sweets in total?",
+          "opts": [
+            "8",
+            "9",
+            "10"
+          ],
+          "ans": 1,
+          "why": "『in total』用加法:6 + 3 = 9。",
+          "tts": "Ann has 6 sweets. She gets 3 more. How many sweets in total?"
+        },
+        {
+          "q": "A shop had 10 eggs. It sold 4. How many eggs are left?",
+          "opts": [
+            "4",
+            "6",
+            "8"
+          ],
+          "ans": 1,
+          "why": "『left』用減法:10 − 4 = 6。",
+          "tts": "A shop had 10 eggs. It sold 4. How many eggs are left?"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "A ribbon is 3 m long. Ali cuts off 120 cm. How many centimetres of ribbon are left?",
+        "opts": [
+          "150 cm",
+          "180 cm",
+          "200 cm"
+        ],
+        "ans": 1,
+        "why": "3 m = 300 cm;300 − 120 = 180 cm。"
+      },
+      {
+        "q": "A bag of rice has a mass of 5 kg. How many grams is that?",
+        "opts": [
+          "500 g",
+          "5000 g",
+          "50000 g"
+        ],
+        "ans": 1,
+        "why": "1 kg = 1000 g;5 kg = 5000 g。"
+      },
+      {
+        "q": "A bottle holds 2 litres of juice. Mei drinks 500 ml. How much juice is left?",
+        "opts": [
+          "1000 ml",
+          "1500 ml",
+          "2500 ml"
+        ],
+        "ans": 1,
+        "why": "2 ℓ = 2000 mℓ;2000 − 500 = 1500 mℓ。"
+      },
+      {
+        "q": "A pizza is cut into 8 equal slices. Sam eats 3 slices. What fraction of the pizza does he eat?",
+        "opts": [
+          "3/8",
+          "3/5",
+          "5/8"
+        ],
+        "ans": 0,
+        "why": "8 份中吃 3 份 = 3/8。"
+      },
+      {
+        "q": "A cake is cut into 4 equal pieces. 1 piece is eaten. What fraction of the cake is left?",
+        "opts": [
+          "1/4",
+          "2/4",
+          "3/4"
+        ],
+        "ans": 2,
+        "why": "剩 3 份,4 份中的 3 份 = 3/4。"
+      },
+      {
+        "q": "A movie starts at 3:00 p.m. and lasts 2 hours 30 minutes. What time does it end?",
+        "opts": [
+          "5:00 p.m.",
+          "5:30 p.m.",
+          "6:00 p.m."
+        ],
+        "ans": 1,
+        "why": "3:00 + 2 小時 30 分 = 5:30 p.m.。"
+      },
+      {
+        "q": "A rope is 4 m long. It is cut into 2 equal parts. How long is each part?",
+        "opts": [
+          "1 m",
+          "2 m",
+          "3 m"
+        ],
+        "ans": 1,
+        "why": "4 m ÷ 2 = 2 m。"
+      },
+      {
+        "q": "Two boxes have masses of 3 kg and 4 kg. What is the total mass?",
+        "opts": [
+          "6 kg",
+          "7 kg",
+          "8 kg"
+        ],
+        "ans": 1,
+        "why": "3 kg + 4 kg = 7 kg。"
+      }
+    ]
+  },
+  {
+    "id": "y3-math-advanced-wp",
+    "subj": "數學",
+    "year": "Y3",
+    "icon": "🧮",
+    "color": "var(--lemon)",
+    "title": "Y3 Advanced: 4-Digit, Perimeter & Bar Chart",
+    "sub": "四位數·周長·長條圖",
+    "teach": {
+      "intro": "進階題:四位數加減、周長 perimeter、看長條圖 bar chart。",
+      "points": [
+        {
+          "r": "周長 perimeter = 把每一邊長度全部加起來。",
+          "ex": "正方形 = 4 × 邊;長方形 = 2 × (長 + 寬)"
+        },
+        {
+          "r": "bar chart 讀圖:先看每一條的數字,再照題目加或減。",
+          "ex": "apples 20, oranges 35 → 相差 35 − 20 = 15"
+        }
+      ],
+      "worked": [
+        {
+          "q": "A square has a side of 5 cm. What is its perimeter?",
+          "opts": [
+            "10 cm",
+            "15 cm",
+            "20 cm"
+          ],
+          "ans": 2,
+          "why": "正方形周長 = 4 × 5 = 20 cm。"
+        },
+        {
+          "q": "A chart shows 30 cats and 10 dogs. How many more cats than dogs?",
+          "opts": [
+            "10",
+            "20",
+            "40"
+          ],
+          "ans": 1,
+          "why": "30 − 10 = 20。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "A stadium has 3200 seats. 1500 seats are filled. How many seats are empty?",
+        "opts": [
+          "1600",
+          "1700",
+          "1800"
+        ],
+        "ans": 1,
+        "why": "3200 − 1500 = 1700。"
+      },
+      {
+        "q": "A library has 4500 books. It buys 2300 more books. How many books does the library have now?",
+        "opts": [
+          "6700",
+          "6800",
+          "6900"
+        ],
+        "ans": 1,
+        "why": "4500 + 2300 = 6800。"
+      },
+      {
+        "q": "A square garden has a side of 6 m. What is the perimeter of the garden?",
+        "opts": [
+          "12 m",
+          "18 m",
+          "24 m"
+        ],
+        "ans": 2,
+        "why": "正方形周長 = 4 × 6 = 24 m。"
+      },
+      {
+        "q": "A rectangle is 8 cm long and 5 cm wide. What is its perimeter?",
+        "opts": [
+          "13 cm",
+          "26 cm",
+          "40 cm"
+        ],
+        "ans": 1,
+        "why": "長方形周長 = 2 × (8 + 5) = 26 cm。"
+      },
+      {
+        "q": "A bar chart shows fruit sold: apples 20, oranges 35, bananas 15. How many fruits were sold in total?",
+        "opts": [
+          "60",
+          "70",
+          "80"
+        ],
+        "ans": 1,
+        "why": "20 + 35 + 15 = 70。"
+      },
+      {
+        "q": "From the same chart, how many more oranges than bananas were sold?",
+        "opts": [
+          "15",
+          "20",
+          "25"
+        ],
+        "ans": 1,
+        "why": "35 − 15 = 20。"
+      },
+      {
+        "q": "A number is 2500. It is 1200 more than another number. What is the other number?",
+        "opts": [
+          "1300",
+          "1400",
+          "3700"
+        ],
+        "ans": 0,
+        "why": "2500 − 1200 = 1300。"
+      },
+      {
+        "q": "A triangle has 3 equal sides. Each side is 7 cm. What is the perimeter?",
+        "opts": [
+          "14 cm",
+          "21 cm",
+          "28 cm"
+        ],
+        "ans": 1,
+        "why": "周長 = 3 × 7 = 21 cm。"
+      }
+    ]
+  },
+  {
+    "id": "y2-math-mixed-wp",
+    "subj": "數學",
+    "year": "Y2",
+    "icon": "🎲",
+    "color": "var(--lemon)",
+    "title": "Y2 Mixed Word Problems",
+    "sub": "混合題型(錢·加減·乘除·時間)",
+    "teach": {
+      "intro": "混合題:一次練不同題型,考你會不會挑對『加減乘除』。",
+      "points": [
+        {
+          "r": "先問自己:這題要合起來(加/乘)還是拿走/分開(減/除)?",
+          "ex": "'more' → 加;'left' → 減;'each' → 乘或除"
+        }
+      ],
+      "worked": [
+        {
+          "q": "There are 5 cats. 2 more come. How many cats now?",
+          "opts": [
+            "6",
+            "7",
+            "8"
+          ],
+          "ans": 1,
+          "why": "5 + 2 = 7。"
+        },
+        {
+          "q": "12 pens shared by 3 kids. How many each?",
+          "opts": [
+            "3",
+            "4",
+            "5"
+          ],
+          "ans": 1,
+          "why": "12 ÷ 3 = 4。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "Ali buys 3 pens. Each pen costs RM2. How much does he pay?",
+        "opts": [
+          "RM5",
+          "RM6",
+          "RM7"
+        ],
+        "ans": 1,
+        "why": "3 × RM2 = RM6。"
+      },
+      {
+        "q": "There are 40 birds in a tree. 12 fly away. How many birds are left?",
+        "opts": [
+          "28",
+          "32",
+          "52"
+        ],
+        "ans": 0,
+        "why": "40 − 12 = 28。"
+      },
+      {
+        "q": "A box has 5 rows of stickers. Each row has 4 stickers. How many stickers in total?",
+        "opts": [
+          "16",
+          "20",
+          "24"
+        ],
+        "ans": 1,
+        "why": "5 × 4 = 20。"
+      },
+      {
+        "q": "Sara has RM15. She gets RM5 more from her mother. How much does she have now?",
+        "opts": [
+          "RM18",
+          "RM20",
+          "RM25"
+        ],
+        "ans": 1,
+        "why": "RM15 + RM5 = RM20。"
+      },
+      {
+        "q": "18 cookies are shared equally among 3 children. How many cookies does each child get?",
+        "opts": [
+          "5",
+          "6",
+          "7"
+        ],
+        "ans": 1,
+        "why": "18 ÷ 3 = 6。"
+      },
+      {
+        "q": "School starts at 8 o'clock. It is now 6 o'clock. How many hours until school starts?",
+        "opts": [
+          "1 hour",
+          "2 hours",
+          "3 hours"
+        ],
+        "ans": 1,
+        "why": "8 − 6 = 2 hours。"
+      },
+      {
+        "q": "There are 55 boys and 45 girls in a school. How many pupils are there in total?",
+        "opts": [
+          "90",
+          "100",
+          "110"
+        ],
+        "ans": 1,
+        "why": "55 + 45 = 100。"
+      },
+      {
+        "q": "A ribbon is 10 cm. Mei cuts off 3 cm. How long is the ribbon now?",
+        "opts": [
+          "6 cm",
+          "7 cm",
+          "13 cm"
+        ],
+        "ans": 1,
+        "why": "10 − 3 = 7 cm。"
+      }
+    ]
+  },
+  {
+    "id": "y3-math-mixed-wp",
+    "subj": "數學",
+    "year": "Y3",
+    "icon": "🎯",
+    "color": "var(--lemon)",
+    "title": "Y3 Mixed Word Problems",
+    "sub": "混合題型(錢·乘除·單位·分數·時間)",
+    "teach": {
+      "intro": "混合題:一次練不同題型,考你會不會挑對『加減乘除』。",
+      "points": [
+        {
+          "r": "先問自己:這題要合起來(加/乘)還是拿走/分開(減/除)?",
+          "ex": "'more' → 加;'left' → 減;'each' → 乘或除"
+        }
+      ],
+      "worked": [
+        {
+          "q": "There are 5 cats. 2 more come. How many cats now?",
+          "opts": [
+            "6",
+            "7",
+            "8"
+          ],
+          "ans": 1,
+          "why": "5 + 2 = 7。"
+        },
+        {
+          "q": "12 pens shared by 3 kids. How many each?",
+          "opts": [
+            "3",
+            "4",
+            "5"
+          ],
+          "ans": 1,
+          "why": "12 ÷ 3 = 4。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "A shop sells 8 boxes of pencils. Each box has 12 pencils. How many pencils in total?",
+        "opts": [
+          "84",
+          "96",
+          "108"
+        ],
+        "ans": 1,
+        "why": "8 × 12 = 96。"
+      },
+      {
+        "q": "Kumar has RM500. He buys a bicycle for RM280. How much money is left?",
+        "opts": [
+          "RM210",
+          "RM220",
+          "RM230"
+        ],
+        "ans": 1,
+        "why": "RM500 − RM280 = RM220。"
+      },
+      {
+        "q": "A rope is 6 m long. It is cut into 3 equal parts. How long is each part?",
+        "opts": [
+          "2 m",
+          "3 m",
+          "18 m"
+        ],
+        "ans": 0,
+        "why": "6 ÷ 3 = 2 m。"
+      },
+      {
+        "q": "A cake is cut into 6 equal slices. Ravi eats 2 slices. What fraction of the cake does he eat?",
+        "opts": [
+          "2/6",
+          "2/4",
+          "4/6"
+        ],
+        "ans": 0,
+        "why": "6 份中吃 2 份 = 2/6。"
+      },
+      {
+        "q": "A bottle holds 3 litres. How many millilitres is that?",
+        "opts": [
+          "300 ml",
+          "3000 ml",
+          "30000 ml"
+        ],
+        "ans": 1,
+        "why": "1 ℓ = 1000 mℓ;3 ℓ = 3000 mℓ。"
+      },
+      {
+        "q": "A car travels 250 km on Monday and 340 km on Tuesday. How far does it travel in total?",
+        "opts": [
+          "580 km",
+          "590 km",
+          "600 km"
+        ],
+        "ans": 1,
+        "why": "250 + 340 = 590 km。"
+      },
+      {
+        "q": "63 sweets are shared equally among 7 children. How many sweets does each child get?",
+        "opts": [
+          "8",
+          "9",
+          "10"
+        ],
+        "ans": 1,
+        "why": "63 ÷ 7 = 9。"
+      },
+      {
+        "q": "A movie starts at 4:15 p.m. and lasts 1 hour 30 minutes. What time does it end?",
+        "opts": [
+          "5:30 p.m.",
+          "5:45 p.m.",
+          "6:15 p.m."
+        ],
+        "ans": 1,
+        "why": "4:15 + 1 小時 30 分 = 5:45 p.m.。"
+      }
+    ]
+  },
+  {
+    "id": "en2-gram-a",
+    "subj": "英文",
+    "year": "Y2",
+    "icon": "🔤",
+    "color": "var(--sky)",
+    "title": "Y2 Grammar A: a/an, Plurals, this/these, Prepositions",
+    "sub": "冠詞·複數·指示詞·位置",
+    "teach": {
+      "intro": "學『一個東西怎麼說』和『東西在哪裡』。跟著唸唸看!",
+      "points": [
+        {
+          "r": "a / an:一個。子音前 a,母音(a e i o u)前 an。",
+          "ex": "a ball ／ an apple",
+          "tts": "a ball. an apple."
+        },
+        {
+          "r": "this / these:近的一個用 this,很多個用 these。",
+          "ex": "This is a cat. These are cats.",
+          "tts": "This is a cat. These are cats."
+        },
+        {
+          "r": "位置:in 裡面、on 上面、under 下面。",
+          "ex": "The cat is in the box.",
+          "tts": "The cat is in the box."
+        }
+      ],
+      "worked": [
+        {
+          "q": "This is ___ orange.",
+          "opts": [
+            "a",
+            "an",
+            "the"
+          ],
+          "ans": 1,
+          "why": "orange 母音開頭,用 an。",
+          "tts": "This is an orange."
+        },
+        {
+          "q": "The pen is ___ the box. It is inside.",
+          "opts": [
+            "in",
+            "on",
+            "under"
+          ],
+          "ans": 0,
+          "why": "在裡面用 in。",
+          "tts": "The pen is in the box."
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "This is ___ egg.",
+        "opts": [
+          "a",
+          "an",
+          "the"
+        ],
+        "ans": 1,
+        "why": "egg 母音開頭,用 an。",
+        "tts": "This is an egg."
+      },
+      {
+        "q": "I have three ___.",
+        "opts": [
+          "apple",
+          "apples",
+          "applees"
+        ],
+        "ans": 1,
+        "why": "複數在後面加 s。",
+        "tts": "I have three apples."
+      },
+      {
+        "q": "___ are my pens.",
+        "opts": [
+          "This",
+          "These",
+          "Is"
+        ],
+        "ans": 1,
+        "why": "很多個近物用 These。",
+        "tts": "These are my pens."
+      },
+      {
+        "q": "He eats ___ banana.",
+        "opts": [
+          "a",
+          "an",
+          "the"
+        ],
+        "ans": 0,
+        "why": "banana 子音開頭,用 a。",
+        "tts": "He eats a banana."
+      },
+      {
+        "q": "There are two ___.",
+        "opts": [
+          "box",
+          "boxs",
+          "boxes"
+        ],
+        "ans": 2,
+        "why": "以 x 結尾加 es:boxes。",
+        "tts": "There are two boxes."
+      },
+      {
+        "q": "___ is a red car.",
+        "opts": [
+          "This",
+          "These",
+          "Are"
+        ],
+        "ans": 0,
+        "why": "單一個近物用 This。",
+        "tts": "This is a red car."
+      },
+      {
+        "q": "The lamp is ___ the table. It is on top.",
+        "opts": [
+          "in",
+          "on",
+          "under"
+        ],
+        "ans": 1,
+        "why": "在上面用 on。",
+        "tts": "The lamp is on the table."
+      },
+      {
+        "q": "The ball is ___ the chair. It is at the bottom.",
+        "opts": [
+          "in",
+          "on",
+          "under"
+        ],
+        "ans": 2,
+        "why": "在下面用 under。",
+        "tts": "The ball is under the chair."
+      }
+    ]
+  },
+  {
+    "id": "en2-gram-b",
+    "subj": "英文",
+    "year": "Y2",
+    "icon": "🗣️",
+    "color": "var(--sky)",
+    "title": "Y2 Grammar B: Present Simple, Pronouns, can, there is/are",
+    "sub": "現在式·代名詞·can·存在句",
+    "teach": {
+      "intro": "學『我做什麼』和『有幾個』。",
+      "points": [
+        {
+          "r": "I / you / we / they + 原形動詞;he / she / it + 動詞加 s。",
+          "ex": "I play. She plays.",
+          "tts": "I play. She plays."
+        },
+        {
+          "r": "can + 原形動詞(不加 s)。",
+          "ex": "A bird can fly.",
+          "tts": "A bird can fly."
+        },
+        {
+          "r": "一個用 There is;很多個用 There are。",
+          "ex": "There is a cat. There are two cats.",
+          "tts": "There is a cat. There are two cats."
+        }
+      ],
+      "worked": [
+        {
+          "q": "She ___ to school every day.",
+          "opts": [
+            "go",
+            "goes",
+            "going"
+          ],
+          "ans": 1,
+          "why": "主詞 she,動詞加 es:goes。",
+          "tts": "She goes to school every day."
+        },
+        {
+          "q": "There ___ five books on the desk.",
+          "opts": [
+            "is",
+            "are",
+            "am"
+          ],
+          "ans": 1,
+          "why": "five(多個)用 are。",
+          "tts": "There are five books on the desk."
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "I ___ to school every day.",
+        "opts": [
+          "go",
+          "goes",
+          "going"
+        ],
+        "ans": 0,
+        "why": "主詞 I,用原形 go。",
+        "tts": "I go to school every day."
+      },
+      {
+        "q": "She ___ a nice voice.",
+        "opts": [
+          "have",
+          "has",
+          "haves"
+        ],
+        "ans": 1,
+        "why": "主詞 she,用 has。",
+        "tts": "She has a nice voice."
+      },
+      {
+        "q": "My brother is a boy. ___ is tall.",
+        "opts": [
+          "He",
+          "She",
+          "It"
+        ],
+        "ans": 0,
+        "why": "男生用 He。",
+        "tts": "He is tall."
+      },
+      {
+        "q": "A bird can ___.",
+        "opts": [
+          "fly",
+          "flies",
+          "flying"
+        ],
+        "ans": 0,
+        "why": "can 後面用原形 fly。",
+        "tts": "A bird can fly."
+      },
+      {
+        "q": "There ___ a cat on the mat.",
+        "opts": [
+          "is",
+          "are",
+          "am"
+        ],
+        "ans": 0,
+        "why": "一個 cat 用 is。",
+        "tts": "There is a cat on the mat."
+      },
+      {
+        "q": "There ___ three apples in the bag.",
+        "opts": [
+          "is",
+          "are",
+          "be"
+        ],
+        "ans": 1,
+        "why": "three(多個)用 are。",
+        "tts": "There are three apples in the bag."
+      },
+      {
+        "q": "We ___ football on Sunday.",
+        "opts": [
+          "play",
+          "plays",
+          "played"
+        ],
+        "ans": 0,
+        "why": "主詞 we,用原形 play。",
+        "tts": "We play football on Sunday."
+      },
+      {
+        "q": "Ali and I ___ friends.",
+        "opts": [
+          "is",
+          "are",
+          "am"
+        ],
+        "ans": 1,
+        "why": "Ali and I(多人)用 are。",
+        "tts": "Ali and I are friends."
+      }
+    ]
+  },
+  {
+    "id": "en3-gram-a",
+    "subj": "英文",
+    "year": "Y3",
+    "icon": "📝",
+    "color": "var(--sky)",
+    "title": "Y3 Grammar A: Past Simple, Present Continuous, Comparatives",
+    "sub": "過去式·進行式·比較級",
+    "teach": {
+      "intro": "學『昨天做了什麼』『現在正在做』和『比一比』。",
+      "points": [
+        {
+          "r": "過去式:規則動詞加 -ed;be 動詞用 was / were。",
+          "ex": "play → played;is → was",
+          "tts": "I played. She was happy."
+        },
+        {
+          "r": "現在進行式:am / is / are + 動詞 -ing。",
+          "ex": "She is reading.",
+          "tts": "She is reading."
+        },
+        {
+          "r": "比較級:短形容詞加 -er,後面接 than。",
+          "ex": "big → bigger than",
+          "tts": "An elephant is bigger than a cat."
+        }
+      ],
+      "worked": [
+        {
+          "q": "Yesterday, I ___ to the park.",
+          "opts": [
+            "go",
+            "went",
+            "gone"
+          ],
+          "ans": 1,
+          "why": "過去式:go → went。",
+          "tts": "Yesterday, I went to the park."
+        },
+        {
+          "q": "Look! The baby ___ sleeping.",
+          "opts": [
+            "is",
+            "are",
+            "be"
+          ],
+          "ans": 0,
+          "why": "單數 baby 用 is + -ing。",
+          "tts": "Look! The baby is sleeping."
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "Yesterday, we ___ a film.",
+        "opts": [
+          "watch",
+          "watched",
+          "watching"
+        ],
+        "ans": 1,
+        "why": "過去式:watch → watched。",
+        "tts": "Yesterday, we watched a film."
+      },
+      {
+        "q": "She ___ happy last week.",
+        "opts": [
+          "is",
+          "was",
+          "were"
+        ],
+        "ans": 1,
+        "why": "單數過去用 was。",
+        "tts": "She was happy last week."
+      },
+      {
+        "q": "They ___ playing now.",
+        "opts": [
+          "is",
+          "are",
+          "am"
+        ],
+        "ans": 1,
+        "why": "they + are + -ing。",
+        "tts": "They are playing now."
+      },
+      {
+        "q": "He is ___ a book right now.",
+        "opts": [
+          "read",
+          "reads",
+          "reading"
+        ],
+        "ans": 2,
+        "why": "現在進行式用 reading。",
+        "tts": "He is reading a book right now."
+      },
+      {
+        "q": "An elephant is ___ than a cat.",
+        "opts": [
+          "big",
+          "bigger",
+          "biggest"
+        ],
+        "ans": 1,
+        "why": "比較兩者用 bigger … than。",
+        "tts": "An elephant is bigger than a cat."
+      },
+      {
+        "q": "We ___ badminton last night.",
+        "opts": [
+          "play",
+          "played",
+          "playing"
+        ],
+        "ans": 1,
+        "why": "過去式:play → played。",
+        "tts": "We played badminton last night."
+      },
+      {
+        "q": "Listen! The girl ___ singing.",
+        "opts": [
+          "is",
+          "are",
+          "am"
+        ],
+        "ans": 0,
+        "why": "單數 girl 用 is。",
+        "tts": "Listen! The girl is singing."
+      },
+      {
+        "q": "This box is ___ than that box.",
+        "opts": [
+          "heavy",
+          "heavier",
+          "heaviest"
+        ],
+        "ans": 1,
+        "why": "比較兩者:heavy → heavier。",
+        "tts": "This box is heavier than that box."
+      }
+    ]
+  },
+  {
+    "id": "en3-gram-b",
+    "subj": "英文",
+    "year": "Y3",
+    "icon": "🔗",
+    "color": "var(--sky)",
+    "title": "Y3 Grammar B: Time Prepositions, Possessives, Conjunctions, some/any",
+    "sub": "時間介系詞·所有格·連接詞·some/any",
+    "teach": {
+      "intro": "學『時間怎麼說』『這是誰的』和『連接兩句』。",
+      "points": [
+        {
+          "r": "時間:月份用 in;星期用 on;鐘點用 at。",
+          "ex": "in May ／ on Monday ／ at 8 o'clock",
+          "tts": "in May. on Monday. at eight o'clock."
+        },
+        {
+          "r": "連接詞:and(而且)、but(但是)、because(因為)。",
+          "ex": "I like tea but not coffee.",
+          "tts": "I like tea but not coffee."
+        },
+        {
+          "r": "肯定句用 some;否定/疑問用 any。",
+          "ex": "some apples ／ not any milk",
+          "tts": "some apples. not any milk."
+        }
+      ],
+      "worked": [
+        {
+          "q": "My birthday is ___ May.",
+          "opts": [
+            "in",
+            "on",
+            "at"
+          ],
+          "ans": 0,
+          "why": "月份用 in。",
+          "tts": "My birthday is in May."
+        },
+        {
+          "q": "She is happy ___ she won a prize.",
+          "opts": [
+            "but",
+            "because",
+            "or"
+          ],
+          "ans": 1,
+          "why": "表原因用 because。",
+          "tts": "She is happy because she won a prize."
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "We meet ___ Monday.",
+        "opts": [
+          "in",
+          "on",
+          "at"
+        ],
+        "ans": 1,
+        "why": "星期用 on。",
+        "tts": "We meet on Monday."
+      },
+      {
+        "q": "The class starts ___ 8 o'clock.",
+        "opts": [
+          "in",
+          "on",
+          "at"
+        ],
+        "ans": 2,
+        "why": "鐘點用 at。",
+        "tts": "The class starts at 8 o'clock."
+      },
+      {
+        "q": "This is ___ book. It belongs to her.",
+        "opts": [
+          "she",
+          "her",
+          "hers"
+        ],
+        "ans": 1,
+        "why": "所有格形容詞用 her + 名詞。",
+        "tts": "This is her book."
+      },
+      {
+        "q": "I like tea ___ I do not like coffee.",
+        "opts": [
+          "and",
+          "but",
+          "because"
+        ],
+        "ans": 1,
+        "why": "前後相反用 but。",
+        "tts": "I like tea but I do not like coffee."
+      },
+      {
+        "q": "He stayed home ___ he was sick.",
+        "opts": [
+          "but",
+          "because",
+          "or"
+        ],
+        "ans": 1,
+        "why": "表原因用 because。",
+        "tts": "He stayed home because he was sick."
+      },
+      {
+        "q": "I have ___ apples in my bag.",
+        "opts": [
+          "some",
+          "any",
+          "a"
+        ],
+        "ans": 0,
+        "why": "肯定句用 some。",
+        "tts": "I have some apples in my bag."
+      },
+      {
+        "q": "There isn't ___ milk in the cup.",
+        "opts": [
+          "some",
+          "any",
+          "many"
+        ],
+        "ans": 1,
+        "why": "否定句用 any。",
+        "tts": "There isn't any milk in the cup."
+      },
+      {
+        "q": "We go to the mosque ___ Friday.",
+        "opts": [
+          "in",
+          "on",
+          "at"
+        ],
+        "ans": 1,
+        "why": "星期用 on。",
+        "tts": "We go to the mosque on Friday."
+      }
+    ]
+  },
+  {
+    "id": "sci2-a",
+    "subj": "科學",
+    "year": "Y2",
+    "icon": "🔬",
+    "color": "var(--mint)",
+    "title": "Y2 Science A: Living Things & Senses",
+    "sub": "生物與感官",
+    "teach": {
+      "intro": "學『什麼是生物』和『五種感官』。",
+      "points": [
+        {
+          "r": "生物 living things 會生長、需要食物、水和空氣。",
+          "ex": "a cat, a plant",
+          "tts": "a cat. a plant."
+        },
+        {
+          "r": "我們用五官認識世界:eyes 看、ears 聽、nose 聞、tongue 嚐、skin 摸。",
+          "ex": "eyes to see",
+          "tts": "We use our eyes to see."
+        }
+      ],
+      "worked": [
+        {
+          "q": "Which one is a living thing?",
+          "opts": [
+            "a rock",
+            "a cat",
+            "a car"
+          ],
+          "ans": 1,
+          "why": "貓會生長、需要食物,是生物。",
+          "tts": "Which one is a living thing?"
+        },
+        {
+          "q": "We use our ___ to see.",
+          "opts": [
+            "nose",
+            "eyes",
+            "ears"
+          ],
+          "ans": 1,
+          "why": "用眼睛看。",
+          "tts": "We use our eyes to see."
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "Living things need food, water and ___.",
+        "opts": [
+          "air",
+          "toys",
+          "money"
+        ],
+        "ans": 0,
+        "why": "生物需要空氣。",
+        "tts": "Living things need food, water and air."
+      },
+      {
+        "q": "We use our ___ to hear.",
+        "opts": [
+          "eyes",
+          "ears",
+          "hands"
+        ],
+        "ans": 1,
+        "why": "用耳朵聽。",
+        "tts": "We use our ears to hear."
+      },
+      {
+        "q": "We use our ___ to smell.",
+        "opts": [
+          "nose",
+          "tongue",
+          "skin"
+        ],
+        "ans": 0,
+        "why": "用鼻子聞。",
+        "tts": "We use our nose to smell."
+      },
+      {
+        "q": "Which is a non-living thing?",
+        "opts": [
+          "a tree",
+          "a dog",
+          "a chair"
+        ],
+        "ans": 2,
+        "why": "椅子不會生長,是非生物。",
+        "tts": "Which is a non-living thing?"
+      },
+      {
+        "q": "A plant is a ___ thing.",
+        "opts": [
+          "living",
+          "non-living",
+          "dead"
+        ],
+        "ans": 0,
+        "why": "植物會生長,是生物。",
+        "tts": "A plant is a living thing."
+      },
+      {
+        "q": "We use our ___ to taste food.",
+        "opts": [
+          "tongue",
+          "eyes",
+          "ears"
+        ],
+        "ans": 0,
+        "why": "用舌頭嚐味道。",
+        "tts": "We use our tongue to taste food."
+      },
+      {
+        "q": "Which one can grow bigger?",
+        "opts": [
+          "a stone",
+          "a baby",
+          "a spoon"
+        ],
+        "ans": 1,
+        "why": "寶寶會長大,是生物。",
+        "tts": "Which one can grow bigger?"
+      },
+      {
+        "q": "We use our ___ to touch and feel.",
+        "opts": [
+          "skin",
+          "eyes",
+          "nose"
+        ],
+        "ans": 0,
+        "why": "用皮膚觸摸。",
+        "tts": "We use our skin to touch and feel."
+      }
+    ]
+  },
+  {
+    "id": "sci2-b",
+    "subj": "科學",
+    "year": "Y2",
+    "icon": "🌱",
+    "color": "var(--mint)",
+    "title": "Y2 Science B: Plants, Animals & Materials",
+    "sub": "植物·動物·材料",
+    "teach": {
+      "intro": "學『植物和動物』和『日常材料』。",
+      "points": [
+        {
+          "r": "植物的部位:root 根、stem 莖、leaf 葉、flower 花。植物用陽光造食物。",
+          "ex": "root holds the plant",
+          "tts": "The root holds the plant."
+        },
+        {
+          "r": "材料 materials:glass 玻璃、wood 木、plastic 塑膠、metal 金屬,各有用途。",
+          "ex": "glass for windows",
+          "tts": "Glass is used for windows."
+        }
+      ],
+      "worked": [
+        {
+          "q": "A plant makes food using ___.",
+          "opts": [
+            "sunlight",
+            "darkness",
+            "noise"
+          ],
+          "ans": 0,
+          "why": "植物靠陽光造食物。",
+          "tts": "A plant makes food using sunlight."
+        },
+        {
+          "q": "A fish lives in ___.",
+          "opts": [
+            "water",
+            "trees",
+            "sand"
+          ],
+          "ans": 0,
+          "why": "魚住在水裡。",
+          "tts": "A fish lives in water."
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "The part of a plant that holds it in the soil is the ___.",
+        "opts": [
+          "leaf",
+          "root",
+          "flower"
+        ],
+        "ans": 1,
+        "why": "根固定植物。",
+        "tts": "The root holds the plant in the soil."
+      },
+      {
+        "q": "The part of a plant that makes seeds is the ___.",
+        "opts": [
+          "root",
+          "flower",
+          "stem"
+        ],
+        "ans": 1,
+        "why": "花會結出種子。",
+        "tts": "The flower makes seeds."
+      },
+      {
+        "q": "A bird moves by ___.",
+        "opts": [
+          "flying",
+          "swimming",
+          "digging"
+        ],
+        "ans": 0,
+        "why": "鳥用飛的。",
+        "tts": "A bird moves by flying."
+      },
+      {
+        "q": "A cat has four ___.",
+        "opts": [
+          "wings",
+          "legs",
+          "fins"
+        ],
+        "ans": 1,
+        "why": "貓有四條腿。",
+        "tts": "A cat has four legs."
+      },
+      {
+        "q": "Glass is used to make a ___.",
+        "opts": [
+          "window",
+          "pillow",
+          "shirt"
+        ],
+        "ans": 0,
+        "why": "玻璃用來做窗戶。",
+        "tts": "Glass is used to make a window."
+      },
+      {
+        "q": "Which material can float on water?",
+        "opts": [
+          "a stone",
+          "a nail",
+          "a cork"
+        ],
+        "ans": 2,
+        "why": "軟木會浮在水上。",
+        "tts": "A cork can float on water."
+      },
+      {
+        "q": "A leaf is usually ___ in colour.",
+        "opts": [
+          "green",
+          "blue",
+          "red"
+        ],
+        "ans": 0,
+        "why": "葉子通常是綠色。",
+        "tts": "A leaf is usually green."
+      },
+      {
+        "q": "Which one is made of metal?",
+        "opts": [
+          "a spoon",
+          "a leaf",
+          "a cloud"
+        ],
+        "ans": 0,
+        "why": "湯匙用金屬做。",
+        "tts": "A spoon is made of metal."
+      }
+    ]
+  },
+  {
+    "id": "sci3-a",
+    "subj": "科學",
+    "year": "Y3",
+    "icon": "🦷",
+    "color": "var(--mint)",
+    "title": "Y3 Science A: Human Body, Teeth & Healthy Living",
+    "sub": "人體·牙齒·健康",
+    "teach": {
+      "intro": "學『身體怎麼運作』和『怎樣健康』。",
+      "points": [
+        {
+          "r": "人類用 lungs 肺呼吸,吸入 oxygen 氧氣。",
+          "ex": "breathe in oxygen",
+          "tts": "We breathe in oxygen."
+        },
+        {
+          "r": "牙齒:incisors 門齒(切)、canines 犬齒(撕)、molars 臼齒(磨)。每天刷牙兩次。",
+          "ex": "incisors cut food",
+          "tts": "Incisors cut food."
+        }
+      ],
+      "worked": [
+        {
+          "q": "Humans breathe in ___ to live.",
+          "opts": [
+            "oxygen",
+            "smoke",
+            "dust"
+          ],
+          "ans": 0,
+          "why": "人類吸入氧氣。",
+          "tts": "Humans breathe in oxygen to live."
+        },
+        {
+          "q": "We should brush our teeth ___ a day.",
+          "opts": [
+            "once",
+            "twice",
+            "never"
+          ],
+          "ans": 1,
+          "why": "每天刷牙兩次。",
+          "tts": "We should brush our teeth twice a day."
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "We breathe using our ___.",
+        "opts": [
+          "lungs",
+          "stomach",
+          "heart"
+        ],
+        "ans": 0,
+        "why": "用肺呼吸。",
+        "tts": "We breathe using our lungs."
+      },
+      {
+        "q": "The teeth used to cut food are the ___.",
+        "opts": [
+          "molars",
+          "incisors",
+          "canines"
+        ],
+        "ans": 1,
+        "why": "門齒(incisors)用來切。",
+        "tts": "The incisors cut food."
+      },
+      {
+        "q": "The teeth used to grind food are the ___.",
+        "opts": [
+          "incisors",
+          "molars",
+          "canines"
+        ],
+        "ans": 1,
+        "why": "臼齒(molars)用來磨。",
+        "tts": "The molars grind food."
+      },
+      {
+        "q": "Which food is healthy?",
+        "opts": [
+          "candy",
+          "vegetables",
+          "soda"
+        ],
+        "ans": 1,
+        "why": "蔬菜是健康食物。",
+        "tts": "Vegetables are healthy food."
+      },
+      {
+        "q": "Drinking clean ___ keeps our body healthy.",
+        "opts": [
+          "water",
+          "soda",
+          "oil"
+        ],
+        "ans": 0,
+        "why": "喝乾淨的水對身體好。",
+        "tts": "Drinking clean water keeps our body healthy."
+      },
+      {
+        "q": "Too much sugar is bad for our ___.",
+        "opts": [
+          "teeth",
+          "hair",
+          "nails"
+        ],
+        "ans": 0,
+        "why": "太多糖傷牙齒。",
+        "tts": "Too much sugar is bad for our teeth."
+      },
+      {
+        "q": "The teeth used to tear food are the ___.",
+        "opts": [
+          "incisors",
+          "canines",
+          "molars"
+        ],
+        "ans": 1,
+        "why": "犬齒(canines)用來撕。",
+        "tts": "The canines tear food."
+      },
+      {
+        "q": "Exercise makes our body ___.",
+        "opts": [
+          "weak",
+          "strong",
+          "sick"
+        ],
+        "ans": 1,
+        "why": "運動讓身體強壯。",
+        "tts": "Exercise makes our body strong."
+      }
+    ]
+  },
+  {
+    "id": "sci3-b",
+    "subj": "科學",
+    "year": "Y3",
+    "icon": "🧲",
+    "color": "var(--mint)",
+    "title": "Y3 Science B: Forces, Electricity, Materials & Earth",
+    "sub": "力·電·材料·地球",
+    "teach": {
+      "intro": "學『推和拉』『電』和『天然/人造材料』。",
+      "points": [
+        {
+          "r": "力 force:push 推、pull 拉;gravity 地心引力把東西往下拉。",
+          "ex": "gravity pulls down",
+          "tts": "Gravity pulls things down."
+        },
+        {
+          "r": "天然 natural:wood, cotton, wool;人造 man-made:plastic, glass。用電要安全,手濕別碰插頭。",
+          "ex": "wood is natural",
+          "tts": "Wood is natural."
+        }
+      ],
+      "worked": [
+        {
+          "q": "The force that pulls things down to the ground is ___.",
+          "opts": [
+            "gravity",
+            "wind",
+            "light"
+          ],
+          "ans": 0,
+          "why": "地心引力往下拉。",
+          "tts": "The force that pulls things down is gravity."
+        },
+        {
+          "q": "Which material is natural?",
+          "opts": [
+            "plastic",
+            "wood",
+            "glass"
+          ],
+          "ans": 1,
+          "why": "木材是天然的。",
+          "tts": "Wood is a natural material."
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "Pulling a door open is an example of a ___.",
+        "opts": [
+          "push",
+          "pull",
+          "jump"
+        ],
+        "ans": 1,
+        "why": "拉開門是『拉』。",
+        "tts": "Pulling a door open is a pull."
+      },
+      {
+        "q": "Pushing a trolley forward is an example of a ___.",
+        "opts": [
+          "pull",
+          "push",
+          "lift"
+        ],
+        "ans": 1,
+        "why": "推車向前是『推』。",
+        "tts": "Pushing a trolley is a push."
+      },
+      {
+        "q": "A torch needs a ___ to work.",
+        "opts": [
+          "battery",
+          "leaf",
+          "stone"
+        ],
+        "ans": 0,
+        "why": "手電筒要電池。",
+        "tts": "A torch needs a battery to work."
+      },
+      {
+        "q": "Which material is man-made?",
+        "opts": [
+          "cotton",
+          "plastic",
+          "wool"
+        ],
+        "ans": 1,
+        "why": "塑膠是人造的。",
+        "tts": "Plastic is a man-made material."
+      },
+      {
+        "q": "We should never touch a plug with ___ hands.",
+        "opts": [
+          "wet",
+          "clean",
+          "warm"
+        ],
+        "ans": 0,
+        "why": "手濕碰插頭很危險。",
+        "tts": "We should never touch a plug with wet hands."
+      },
+      {
+        "q": "Soil, water and rocks are found on ___.",
+        "opts": [
+          "Earth",
+          "the Sun",
+          "the Moon"
+        ],
+        "ans": 0,
+        "why": "土、水、岩石在地球上。",
+        "tts": "Soil, water and rocks are found on Earth."
+      },
+      {
+        "q": "A magnet can pull a ___.",
+        "opts": [
+          "nail",
+          "leaf",
+          "cup"
+        ],
+        "ans": 0,
+        "why": "磁鐵吸引鐵釘。",
+        "tts": "A magnet can pull a nail."
+      },
+      {
+        "q": "The Sun gives us light and ___.",
+        "opts": [
+          "heat",
+          "rain",
+          "snow"
+        ],
+        "ans": 0,
+        "why": "太陽給我們光和熱。",
+        "tts": "The Sun gives us light and heat."
+      }
+    ]
+  },
+  {
+    "id": "bm2-a",
+    "subj": "BM",
+    "year": "Y2",
+    "icon": "🇲🇾",
+    "color": "var(--tang)",
+    "title": "Bahasa Melayu Tahun 2: Penjodoh Bilangan & Antonim",
+    "sub": "量詞·反義詞",
+    "teach": {
+      "intro": "學馬來文『量詞 penjodoh bilangan』和『反義詞 antonim』。",
+      "points": [
+        {
+          "r": "量詞:動物 seekor、細長物 sebatang、大物 sebuah、圓小物 sebiji、薄片/衣物 sehelai/sekeping。",
+          "ex": "seekor kucing, sebatang pen"
+        },
+        {
+          "r": "反義詞 antonim:besar↔kecil、panjang↔pendek、tinggi↔rendah。",
+          "ex": "besar 大 ↔ kecil 小"
+        }
+      ],
+      "worked": [
+        {
+          "q": "Se___ kucing.",
+          "opts": [
+            "ekor",
+            "batang",
+            "buah"
+          ],
+          "ans": 0,
+          "why": "動物用 seekor。"
+        },
+        {
+          "q": "Lawan bagi 'besar' ialah ___.",
+          "opts": [
+            "kecil",
+            "tinggi",
+            "panjang"
+          ],
+          "ans": 0,
+          "why": "besar(大)的反義是 kecil(小)。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "Se___ pen.",
+        "opts": [
+          "helai",
+          "batang",
+          "biji"
+        ],
+        "ans": 1,
+        "why": "細長物用 sebatang。"
+      },
+      {
+        "q": "Se___ rumah.",
+        "opts": [
+          "buah",
+          "ekor",
+          "keping"
+        ],
+        "ans": 0,
+        "why": "大型物件用 sebuah。"
+      },
+      {
+        "q": "Se___ telur.",
+        "opts": [
+          "biji",
+          "helai",
+          "batang"
+        ],
+        "ans": 0,
+        "why": "圓形小物用 sebiji。"
+      },
+      {
+        "q": "Se___ baju.",
+        "opts": [
+          "helai",
+          "ekor",
+          "buah"
+        ],
+        "ans": 0,
+        "why": "衣物用 sehelai。"
+      },
+      {
+        "q": "Se___ ikan.",
+        "opts": [
+          "ekor",
+          "batang",
+          "biji"
+        ],
+        "ans": 0,
+        "why": "動物用 seekor。"
+      },
+      {
+        "q": "Lawan bagi 'panjang' ialah ___.",
+        "opts": [
+          "pendek",
+          "lebar",
+          "tinggi"
+        ],
+        "ans": 0,
+        "why": "panjang(長)反義是 pendek(短)。"
+      },
+      {
+        "q": "Lawan bagi 'siang' ialah ___.",
+        "opts": [
+          "pagi",
+          "malam",
+          "petang"
+        ],
+        "ans": 1,
+        "why": "siang(白天)反義是 malam(夜晚)。"
+      },
+      {
+        "q": "Lawan bagi 'tinggi' ialah ___.",
+        "opts": [
+          "rendah",
+          "besar",
+          "jauh"
+        ],
+        "ans": 0,
+        "why": "tinggi(高)反義是 rendah(矮/低)。"
+      }
+    ]
+  },
+  {
+    "id": "bm3-a",
+    "subj": "BM",
+    "year": "Y3",
+    "icon": "🇲🇾",
+    "color": "var(--tang)",
+    "title": "Bahasa Melayu Tahun 3: Kata Kerja, Imbuhan & Sinonim",
+    "sub": "動詞·前綴·同義詞",
+    "teach": {
+      "intro": "學『動詞 kata kerja』『前綴 imbuhan me-』和『同義詞 sinonim』。",
+      "points": [
+        {
+          "r": "動詞 kata kerja 表示動作:menendang 踢、terbang 飛、memasak 煮、belajar 學。",
+          "ex": "Ali menendang bola."
+        },
+        {
+          "r": "前綴 imbuhan:me + baca → membaca;me + masak → memasak。同義詞 sinonim:pandai=bijak。",
+          "ex": "membaca 讀"
+        }
+      ],
+      "worked": [
+        {
+          "q": "Ali ___ bola di padang.",
+          "opts": [
+            "makan",
+            "menendang",
+            "tidur"
+          ],
+          "ans": 1,
+          "why": "踢球用 menendang。"
+        },
+        {
+          "q": "Sinonim bagi 'pandai' ialah ___.",
+          "opts": [
+            "bijak",
+            "malas",
+            "nakal"
+          ],
+          "ans": 0,
+          "why": "pandai(聰明)同義是 bijak。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "Burung itu ___ di udara.",
+        "opts": [
+          "berenang",
+          "terbang",
+          "berjalan"
+        ],
+        "ans": 1,
+        "why": "鳥在空中『飛』terbang。"
+      },
+      {
+        "q": "Imbuhan awalan 'me' + 'baca' menjadi ___.",
+        "opts": [
+          "dibaca",
+          "membaca",
+          "terbaca"
+        ],
+        "ans": 1,
+        "why": "me + baca = membaca。"
+      },
+      {
+        "q": "Ibu ___ nasi di dapur.",
+        "opts": [
+          "memasak",
+          "memandu",
+          "menyanyi"
+        ],
+        "ans": 0,
+        "why": "媽媽在廚房『煮』memasak。"
+      },
+      {
+        "q": "Sinonim bagi 'cantik' ialah ___.",
+        "opts": [
+          "hodoh",
+          "indah",
+          "kotor"
+        ],
+        "ans": 1,
+        "why": "cantik(美)同義是 indah。"
+      },
+      {
+        "q": "Murid-murid ___ di dalam kelas.",
+        "opts": [
+          "belajar",
+          "terbang",
+          "berenang"
+        ],
+        "ans": 0,
+        "why": "學生在教室『學習』belajar。"
+      },
+      {
+        "q": "Lawan bagi 'rajin' ialah ___.",
+        "opts": [
+          "pandai",
+          "malas",
+          "baik"
+        ],
+        "ans": 1,
+        "why": "rajin(勤勞)反義是 malas(懶)。"
+      },
+      {
+        "q": "Ikan ___ di dalam air.",
+        "opts": [
+          "terbang",
+          "berenang",
+          "berjalan"
+        ],
+        "ans": 1,
+        "why": "魚在水裡『游』berenang。"
+      },
+      {
+        "q": "Imbuhan awalan 'me' + 'tulis' menjadi ___.",
+        "opts": [
+          "ditulis",
+          "menulis",
+          "tertulis"
+        ],
+        "ans": 1,
+        "why": "me + tulis = menulis。"
+      }
+    ]
+  },
+  {
+    "id": "en-orig-y2",
+    "subj": "英文",
+    "year": "Y2",
+    "icon": "📘",
+    "color": "var(--sky)",
+    "title": "English Grammar 原冊 · Basics",
+    "sub": "冠詞·複數·代名詞·have/has·there is/現在式",
+    "teach": {
+      "intro": "複習 Year 2 基礎文法:冠詞、複數、代名詞、have/has、there is/are、現在式。",
+      "points": [
+        {
+          "r": "a / an:子音前 a,母音前 an。",
+          "ex": "a dog · an apple"
+        },
+        {
+          "r": "複數:加 -s;s/x/ch/sh 加 -es;子音+y 改 -ies。",
+          "ex": "cat→cats · box→boxes · baby→babies"
+        },
+        {
+          "r": "he/she/it 用 has;I/you/we/they 用 have。單一個 There is,很多 There are。",
+          "ex": "She has… / They have…"
+        }
+      ],
+      "worked": [
+        {
+          "q": "She ___ a dog.",
+          "opts": [
+            "has",
+            "have",
+            "haves"
+          ],
+          "ans": 0,
+          "why": "he/she/it 用 has。"
+        },
+        {
+          "q": "___ an apple on the plate.",
+          "opts": [
+            "There is",
+            "There are",
+            "There am"
+          ],
+          "ans": 0,
+          "why": "單數用 There is。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "This is ___ orange.",
+        "opts": [
+          "a",
+          "an",
+          "the"
+        ],
+        "ans": 1,
+        "why": "母音開頭用 an。"
+      },
+      {
+        "q": "I have ___ car.",
+        "opts": [
+          "a",
+          "an",
+          "the"
+        ],
+        "ans": 0,
+        "why": "子音開頭用 a。"
+      },
+      {
+        "q": "She holds ___ umbrella.",
+        "opts": [
+          "a",
+          "an",
+          "the"
+        ],
+        "ans": 1,
+        "why": "umbrella 母音音,用 an。"
+      },
+      {
+        "q": "He eats ___ banana.",
+        "opts": [
+          "a",
+          "an",
+          "the"
+        ],
+        "ans": 0,
+        "why": "banana 子音音,用 a。"
+      },
+      {
+        "q": "I see ___ elephant.",
+        "opts": [
+          "a",
+          "an",
+          "the"
+        ],
+        "ans": 1,
+        "why": "elephant 母音音,用 an。"
+      },
+      {
+        "q": "Plural of 'book' is ___.",
+        "opts": [
+          "books",
+          "bookes",
+          "bookies"
+        ],
+        "ans": 0,
+        "why": "一般加 -s。"
+      },
+      {
+        "q": "Plural of 'box' is ___.",
+        "opts": [
+          "boxs",
+          "boxes",
+          "boxies"
+        ],
+        "ans": 1,
+        "why": "x 結尾加 -es。"
+      },
+      {
+        "q": "Plural of 'baby' is ___.",
+        "opts": [
+          "babys",
+          "babies",
+          "babyes"
+        ],
+        "ans": 1,
+        "why": "子音+y 改 -ies。"
+      },
+      {
+        "q": "Plural of 'dish' is ___.",
+        "opts": [
+          "dishs",
+          "dishes",
+          "dishies"
+        ],
+        "ans": 1,
+        "why": "sh 結尾加 -es。"
+      },
+      {
+        "q": "Plural of 'boy' is ___.",
+        "opts": [
+          "boys",
+          "boies",
+          "boyes"
+        ],
+        "ans": 0,
+        "why": "母音+y 直接加 -s。"
+      },
+      {
+        "q": "The boy kicked the ball. Subject = ___",
+        "opts": [
+          "The boy",
+          "the ball",
+          "kicked"
+        ],
+        "ans": 0,
+        "why": "主詞是做動作的人。"
+      },
+      {
+        "q": "The boy kicked the ball. Object = ___",
+        "opts": [
+          "The boy",
+          "the ball",
+          "kicked"
+        ],
+        "ans": 1,
+        "why": "受詞是被踢的東西。"
+      },
+      {
+        "q": "Sara reads a book. Subject = ___",
+        "opts": [
+          "Sara",
+          "a book",
+          "reads"
+        ],
+        "ans": 0,
+        "why": "主詞是 Sara。"
+      },
+      {
+        "q": "Sara reads a book. Object = ___",
+        "opts": [
+          "Sara",
+          "a book",
+          "reads"
+        ],
+        "ans": 1,
+        "why": "受詞是 a book。"
+      },
+      {
+        "q": "I like Mary. → I like ___.",
+        "opts": [
+          "her",
+          "she",
+          "hers"
+        ],
+        "ans": 0,
+        "why": "受格用 her。"
+      },
+      {
+        "q": "He helps the boys. → He helps ___.",
+        "opts": [
+          "they",
+          "them",
+          "their"
+        ],
+        "ans": 1,
+        "why": "受格用 them。"
+      },
+      {
+        "q": "She calls you and me. → She calls ___.",
+        "opts": [
+          "we",
+          "us",
+          "our"
+        ],
+        "ans": 1,
+        "why": "受格用 us。"
+      },
+      {
+        "q": "We watch the dog. → We watch ___.",
+        "opts": [
+          "it",
+          "its",
+          "he"
+        ],
+        "ans": 0,
+        "why": "動物受格用 it。"
+      },
+      {
+        "q": "They know John. → They know ___.",
+        "opts": [
+          "he",
+          "him",
+          "his"
+        ],
+        "ans": 1,
+        "why": "受格用 him。"
+      },
+      {
+        "q": "___ apple here is red.",
+        "opts": [
+          "This",
+          "These",
+          "That"
+        ],
+        "ans": 0,
+        "why": "近+單用 This。"
+      },
+      {
+        "q": "___ apples here are red.",
+        "opts": [
+          "This",
+          "These",
+          "Those"
+        ],
+        "ans": 1,
+        "why": "近+多用 These。"
+      },
+      {
+        "q": "___ bird over there is small.",
+        "opts": [
+          "This",
+          "That",
+          "Those"
+        ],
+        "ans": 1,
+        "why": "遠+單用 That。"
+      },
+      {
+        "q": "___ birds over there are small.",
+        "opts": [
+          "These",
+          "That",
+          "Those"
+        ],
+        "ans": 2,
+        "why": "遠+多用 Those。"
+      },
+      {
+        "q": "She ___ a cat.",
+        "opts": [
+          "has",
+          "have",
+          "haves"
+        ],
+        "ans": 0,
+        "why": "she 用 has。"
+      },
+      {
+        "q": "They ___ books.",
+        "opts": [
+          "has",
+          "have",
+          "haves"
+        ],
+        "ans": 1,
+        "why": "they 用 have。"
+      },
+      {
+        "q": "I ___ a pen.",
+        "opts": [
+          "has",
+          "have",
+          "haves"
+        ],
+        "ans": 1,
+        "why": "I 用 have。"
+      },
+      {
+        "q": "He ___ a bike.",
+        "opts": [
+          "has",
+          "have",
+          "haves"
+        ],
+        "ans": 0,
+        "why": "he 用 has。"
+      },
+      {
+        "q": "We ___ lunch.",
+        "opts": [
+          "has",
+          "have",
+          "haves"
+        ],
+        "ans": 1,
+        "why": "we 用 have。"
+      },
+      {
+        "q": "___ a book on the table.",
+        "opts": [
+          "There is",
+          "There are",
+          "There am"
+        ],
+        "ans": 0,
+        "why": "單數用 There is。"
+      },
+      {
+        "q": "___ three cats.",
+        "opts": [
+          "There is",
+          "There are",
+          "There am"
+        ],
+        "ans": 1,
+        "why": "複數用 There are。"
+      },
+      {
+        "q": "___ an apple.",
+        "opts": [
+          "There is",
+          "There are",
+          "There am"
+        ],
+        "ans": 0,
+        "why": "單數用 There is。"
+      },
+      {
+        "q": "___ many stars.",
+        "opts": [
+          "There is",
+          "There are",
+          "There am"
+        ],
+        "ans": 1,
+        "why": "複數用 There are。"
+      },
+      {
+        "q": "She ___ (play) tennis.",
+        "opts": [
+          "play",
+          "plays",
+          "playing"
+        ],
+        "ans": 1,
+        "why": "she 第三人稱加 -s。"
+      },
+      {
+        "q": "I ___ (go) to school.",
+        "opts": [
+          "go",
+          "goes",
+          "going"
+        ],
+        "ans": 0,
+        "why": "I 用原形 go。"
+      },
+      {
+        "q": "He ___ (eat) rice.",
+        "opts": [
+          "eat",
+          "eats",
+          "eating"
+        ],
+        "ans": 1,
+        "why": "he 加 -s。"
+      },
+      {
+        "q": "They ___ (read) books.",
+        "opts": [
+          "read",
+          "reads",
+          "reading"
+        ],
+        "ans": 0,
+        "why": "they 用原形 read。"
+      },
+      {
+        "q": "The sun ___ (rise) in the east.",
+        "opts": [
+          "rise",
+          "rises",
+          "rising"
+        ],
+        "ans": 1,
+        "why": "the sun 第三人稱加 -s。"
+      }
+    ]
+  },
+  {
+    "id": "en-orig-y3",
+    "subj": "英文",
+    "year": "Y3",
+    "icon": "📙",
+    "color": "var(--sky)",
+    "title": "English Grammar 原冊 · Advanced",
+    "sub": "過去式·was/were·形容詞副詞·連接詞·疑問句",
+    "teach": {
+      "intro": "複習 Year 3 文法:過去式、was/were、形容詞副詞、連接詞、標點與疑問句。",
+      "points": [
+        {
+          "r": "過去式:規則動詞加 -ed;不規則變形(go→went,eat→ate)。",
+          "ex": "walked · went · ate"
+        },
+        {
+          "r": "was 配 I/he/she/it;were 配 you/we/they。副詞多以 -ly 結尾。",
+          "ex": "I was · They were · quickly"
+        },
+        {
+          "r": "and 連接、or 選擇;疑問句用助動詞開頭(Is/Are/Do/Does/Can)。",
+          "ex": "tea and coffee / Can you swim?"
+        }
+      ],
+      "worked": [
+        {
+          "q": "Yesterday I ___ (walk) home.",
+          "opts": [
+            "walk",
+            "walked",
+            "walking"
+          ],
+          "ans": 1,
+          "why": "過去式加 -ed。"
+        },
+        {
+          "q": "They ___ at home.",
+          "opts": [
+            "was",
+            "were",
+            "is"
+          ],
+          "ans": 1,
+          "why": "they 用 were。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "Yesterday I ___ (walk) to school.",
+        "opts": [
+          "walk",
+          "walked",
+          "walking"
+        ],
+        "ans": 1,
+        "why": "規則動詞加 -ed。"
+      },
+      {
+        "q": "She ___ (go) home.",
+        "opts": [
+          "goed",
+          "went",
+          "gone"
+        ],
+        "ans": 1,
+        "why": "go 的過去式是 went。"
+      },
+      {
+        "q": "We ___ (play) football.",
+        "opts": [
+          "play",
+          "played",
+          "plaid"
+        ],
+        "ans": 1,
+        "why": "規則動詞加 -ed。"
+      },
+      {
+        "q": "He ___ (eat) an apple.",
+        "opts": [
+          "eated",
+          "ate",
+          "eaten"
+        ],
+        "ans": 1,
+        "why": "eat 的過去式是 ate。"
+      },
+      {
+        "q": "They ___ (watch) TV.",
+        "opts": [
+          "watch",
+          "watched",
+          "watchd"
+        ],
+        "ans": 1,
+        "why": "規則動詞加 -ed。"
+      },
+      {
+        "q": "I ___ happy.",
+        "opts": [
+          "was",
+          "were",
+          "is"
+        ],
+        "ans": 0,
+        "why": "I 用 was。"
+      },
+      {
+        "q": "They ___ at home.",
+        "opts": [
+          "was",
+          "were",
+          "is"
+        ],
+        "ans": 1,
+        "why": "they 用 were。"
+      },
+      {
+        "q": "She ___ tired.",
+        "opts": [
+          "was",
+          "were",
+          "are"
+        ],
+        "ans": 0,
+        "why": "she 用 was。"
+      },
+      {
+        "q": "We ___ late.",
+        "opts": [
+          "was",
+          "were",
+          "is"
+        ],
+        "ans": 1,
+        "why": "we 用 were。"
+      },
+      {
+        "q": "It ___ cold.",
+        "opts": [
+          "was",
+          "were",
+          "are"
+        ],
+        "ans": 0,
+        "why": "it 用 was。"
+      },
+      {
+        "q": "She has a beautiful dress. Adjective = ___",
+        "opts": [
+          "beautiful",
+          "dress",
+          "has"
+        ],
+        "ans": 0,
+        "why": "形容詞修飾名詞。"
+      },
+      {
+        "q": "The big dog barks. Adjective = ___",
+        "opts": [
+          "big",
+          "dog",
+          "barks"
+        ],
+        "ans": 0,
+        "why": "big 形容 dog。"
+      },
+      {
+        "q": "I see a yellow flower. Adjective = ___",
+        "opts": [
+          "yellow",
+          "flower",
+          "see"
+        ],
+        "ans": 0,
+        "why": "顏色是形容詞。"
+      },
+      {
+        "q": "He is a happy boy. Adjective = ___",
+        "opts": [
+          "happy",
+          "boy",
+          "is"
+        ],
+        "ans": 0,
+        "why": "happy 形容 boy。"
+      },
+      {
+        "q": "She sings loudly. Adverb = ___",
+        "opts": [
+          "loudly",
+          "sings",
+          "she"
+        ],
+        "ans": 0,
+        "why": "副詞修飾動詞。"
+      },
+      {
+        "q": "He runs quickly. Adverb = ___",
+        "opts": [
+          "quickly",
+          "runs",
+          "he"
+        ],
+        "ans": 0,
+        "why": "quickly 修飾 runs。"
+      },
+      {
+        "q": "They came yesterday. Adverb = ___",
+        "opts": [
+          "yesterday",
+          "came",
+          "they"
+        ],
+        "ans": 0,
+        "why": "表時間的副詞。"
+      },
+      {
+        "q": "The cat sleeps here. Adverb = ___",
+        "opts": [
+          "here",
+          "sleeps",
+          "cat"
+        ],
+        "ans": 0,
+        "why": "表地點的副詞。"
+      },
+      {
+        "q": "quick → ___",
+        "opts": [
+          "quickly",
+          "quicky",
+          "quikly"
+        ],
+        "ans": 0,
+        "why": "形容詞加 -ly。"
+      },
+      {
+        "q": "slow → ___",
+        "opts": [
+          "slowly",
+          "slowy",
+          "slowely"
+        ],
+        "ans": 0,
+        "why": "形容詞加 -ly。"
+      },
+      {
+        "q": "happy → ___",
+        "opts": [
+          "happily",
+          "happyly",
+          "happaly"
+        ],
+        "ans": 0,
+        "why": "y 改 i 加 -ly。"
+      },
+      {
+        "q": "careful → ___",
+        "opts": [
+          "carefully",
+          "carefuly",
+          "carefull"
+        ],
+        "ans": 0,
+        "why": "加 -ly。"
+      },
+      {
+        "q": "loud → ___",
+        "opts": [
+          "loudly",
+          "loudy",
+          "louderly"
+        ],
+        "ans": 0,
+        "why": "加 -ly。"
+      },
+      {
+        "q": "I like tea ___ coffee. (both)",
+        "opts": [
+          "and",
+          "or",
+          "but"
+        ],
+        "ans": 0,
+        "why": "表相加用 and。"
+      },
+      {
+        "q": "Do you want tea ___ coffee? (choose one)",
+        "opts": [
+          "and",
+          "or",
+          "but"
+        ],
+        "ans": 1,
+        "why": "表選擇用 or。"
+      },
+      {
+        "q": "Tom ___ Sam are friends.",
+        "opts": [
+          "and",
+          "or",
+          "but"
+        ],
+        "ans": 0,
+        "why": "連接兩者用 and。"
+      },
+      {
+        "q": "Is it black ___ white?",
+        "opts": [
+          "and",
+          "or",
+          "but"
+        ],
+        "ans": 1,
+        "why": "二選一用 or。"
+      },
+      {
+        "q": "The cat is ___ the box. (inside)",
+        "opts": [
+          "in",
+          "on",
+          "under"
+        ],
+        "ans": 0,
+        "why": "裡面用 in。"
+      },
+      {
+        "q": "The book is ___ the table. (top)",
+        "opts": [
+          "in",
+          "on",
+          "under"
+        ],
+        "ans": 1,
+        "why": "上面用 on。"
+      },
+      {
+        "q": "The ball is ___ the chair. (below)",
+        "opts": [
+          "in",
+          "on",
+          "under"
+        ],
+        "ans": 2,
+        "why": "下面用 under。"
+      },
+      {
+        "q": "The bag is ___ the door. (at the back)",
+        "opts": [
+          "behind",
+          "under",
+          "on"
+        ],
+        "ans": 0,
+        "why": "後面用 behind。"
+      },
+      {
+        "q": "What is your name___",
+        "opts": [
+          "?",
+          ",",
+          "."
+        ],
+        "ans": 0,
+        "why": "問句用問號。"
+      },
+      {
+        "q": "I bought apples___ pears and grapes.",
+        "opts": [
+          ",",
+          "?",
+          "!"
+        ],
+        "ans": 0,
+        "why": "並列用逗號。"
+      },
+      {
+        "q": "Where are you going___",
+        "opts": [
+          "?",
+          ",",
+          "."
+        ],
+        "ans": 0,
+        "why": "問句用問號。"
+      },
+      {
+        "q": "We need pens___ books and rulers.",
+        "opts": [
+          ",",
+          "?",
+          "!"
+        ],
+        "ans": 0,
+        "why": "並列用逗號。"
+      },
+      {
+        "q": "___ is your teacher? (person)",
+        "opts": [
+          "Who",
+          "Where",
+          "What"
+        ],
+        "ans": 0,
+        "why": "問人用 Who。"
+      },
+      {
+        "q": "___ do you live? (place)",
+        "opts": [
+          "Who",
+          "Where",
+          "When"
+        ],
+        "ans": 1,
+        "why": "問地點用 Where。"
+      },
+      {
+        "q": "___ is your birthday? (time)",
+        "opts": [
+          "Where",
+          "When",
+          "Why"
+        ],
+        "ans": 1,
+        "why": "問時間用 When。"
+      },
+      {
+        "q": "___ are you sad? (reason)",
+        "opts": [
+          "When",
+          "Why",
+          "How"
+        ],
+        "ans": 1,
+        "why": "問原因用 Why。"
+      },
+      {
+        "q": "___ old are you?",
+        "opts": [
+          "Why",
+          "How",
+          "What"
+        ],
+        "ans": 1,
+        "why": "問程度用 How。"
+      },
+      {
+        "q": "___ you a student?",
+        "opts": [
+          "Are",
+          "Do",
+          "Is"
+        ],
+        "ans": 0,
+        "why": "you 用 Are。"
+      },
+      {
+        "q": "___ she like apples?",
+        "opts": [
+          "Do",
+          "Does",
+          "Is"
+        ],
+        "ans": 1,
+        "why": "she 用 Does。"
+      },
+      {
+        "q": "___ they playing?",
+        "opts": [
+          "Is",
+          "Are",
+          "Do"
+        ],
+        "ans": 1,
+        "why": "they 用 Are。"
+      },
+      {
+        "q": "___ you swim?",
+        "opts": [
+          "Can",
+          "Does",
+          "Is"
+        ],
+        "ans": 0,
+        "why": "問能力用 Can。"
+      },
+      {
+        "q": "___ it a dog?",
+        "opts": [
+          "Is",
+          "Are",
+          "Do"
+        ],
+        "ans": 0,
+        "why": "it 用 Is。"
+      }
+    ]
+  },
+  {
+    "id": "ma-orig-ops-y2",
+    "subj": "數學",
+    "year": "Y2",
+    "icon": "🔢",
+    "color": "var(--tang)",
+    "title": "Mathematics 原冊 · 數與運算",
+    "sub": "1000內·加減·乘除·錢 RM",
+    "teach": {
+      "intro": "複習 1000 以內的數、加減法、乘除法、錢(RM)。",
+      "points": [
+        {
+          "r": "位值:百位、十位、個位。258 = 200 + 50 + 8。"
+        },
+        {
+          "r": "乘法是重複相加;除法是平分。"
+        },
+        {
+          "r": "錢:1 RM = 100 sen。買東西用減法算找零。"
+        }
+      ],
+      "worked": [
+        {
+          "q": "5 × 7 = ?",
+          "opts": [
+            "30",
+            "35",
+            "40"
+          ],
+          "ans": 1,
+          "why": "五七三十五。"
+        },
+        {
+          "q": "RM10 − RM4 = RM ?",
+          "opts": [
+            "4",
+            "6",
+            "14"
+          ],
+          "ans": 1,
+          "why": "10 − 4 = 6。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "In 356, the value of 3 = ?",
+        "opts": [
+          "3",
+          "30",
+          "300"
+        ],
+        "ans": 2,
+        "why": "3 在百位,值是 300。"
+      },
+      {
+        "q": "7 tens 4 ones = ?",
+        "opts": [
+          "47",
+          "74",
+          "704"
+        ],
+        "ans": 1,
+        "why": "7 個十加 4 個一 = 74。"
+      },
+      {
+        "q": "200 + 50 + 8 = ?",
+        "opts": [
+          "258",
+          "268",
+          "2508"
+        ],
+        "ans": 0,
+        "why": "合起來 258。"
+      },
+      {
+        "q": "The number after 499 is ?",
+        "opts": [
+          "409",
+          "500",
+          "4910"
+        ],
+        "ans": 1,
+        "why": "499 的下一個是 500。"
+      },
+      {
+        "q": "245 + 132 = ?",
+        "opts": [
+          "367",
+          "377",
+          "477"
+        ],
+        "ans": 1,
+        "why": "逐位相加 = 377。"
+      },
+      {
+        "q": "560 − 240 = ?",
+        "opts": [
+          "300",
+          "320",
+          "820"
+        ],
+        "ans": 1,
+        "why": "560 − 240 = 320。"
+      },
+      {
+        "q": "408 + 367 = ?",
+        "opts": [
+          "765",
+          "775",
+          "875"
+        ],
+        "ans": 1,
+        "why": "408 + 367 = 775。"
+      },
+      {
+        "q": "700 − 256 = ?",
+        "opts": [
+          "444",
+          "454",
+          "544"
+        ],
+        "ans": 0,
+        "why": "700 − 256 = 444。"
+      },
+      {
+        "q": "2 × 6 = ?",
+        "opts": [
+          "10",
+          "12",
+          "14"
+        ],
+        "ans": 1,
+        "why": "二六十二。"
+      },
+      {
+        "q": "5 × 7 = ?",
+        "opts": [
+          "30",
+          "35",
+          "40"
+        ],
+        "ans": 1,
+        "why": "五七三十五。"
+      },
+      {
+        "q": "10 × 4 = ?",
+        "opts": [
+          "14",
+          "40",
+          "400"
+        ],
+        "ans": 1,
+        "why": "乘 10 加一個 0。"
+      },
+      {
+        "q": "2 × 9 = ?",
+        "opts": [
+          "16",
+          "18",
+          "20"
+        ],
+        "ans": 1,
+        "why": "二九十八。"
+      },
+      {
+        "q": "14 ÷ 2 = ?",
+        "opts": [
+          "6",
+          "7",
+          "8"
+        ],
+        "ans": 1,
+        "why": "2 × 7 = 14。"
+      },
+      {
+        "q": "30 ÷ 5 = ?",
+        "opts": [
+          "5",
+          "6",
+          "7"
+        ],
+        "ans": 1,
+        "why": "5 × 6 = 30。"
+      },
+      {
+        "q": "50 ÷ 10 = ?",
+        "opts": [
+          "5",
+          "10",
+          "50"
+        ],
+        "ans": 0,
+        "why": "10 × 5 = 50。"
+      },
+      {
+        "q": "18 ÷ 2 = ?",
+        "opts": [
+          "8",
+          "9",
+          "10"
+        ],
+        "ans": 1,
+        "why": "2 × 9 = 18。"
+      },
+      {
+        "q": "3 × 6 = ?",
+        "opts": [
+          "15",
+          "18",
+          "21"
+        ],
+        "ans": 1,
+        "why": "三六十八。"
+      },
+      {
+        "q": "4 × 7 = ?",
+        "opts": [
+          "24",
+          "28",
+          "32"
+        ],
+        "ans": 1,
+        "why": "四七二十八。"
+      },
+      {
+        "q": "3 × 8 = ?",
+        "opts": [
+          "21",
+          "24",
+          "27"
+        ],
+        "ans": 1,
+        "why": "三八二十四。"
+      },
+      {
+        "q": "4 × 9 = ?",
+        "opts": [
+          "32",
+          "36",
+          "40"
+        ],
+        "ans": 1,
+        "why": "四九三十六。"
+      },
+      {
+        "q": "21 ÷ 3 = ?",
+        "opts": [
+          "6",
+          "7",
+          "8"
+        ],
+        "ans": 1,
+        "why": "3 × 7 = 21。"
+      },
+      {
+        "q": "28 ÷ 4 = ?",
+        "opts": [
+          "6",
+          "7",
+          "8"
+        ],
+        "ans": 1,
+        "why": "4 × 7 = 28。"
+      },
+      {
+        "q": "24 ÷ 3 = ?",
+        "opts": [
+          "7",
+          "8",
+          "9"
+        ],
+        "ans": 1,
+        "why": "3 × 8 = 24。"
+      },
+      {
+        "q": "36 ÷ 4 = ?",
+        "opts": [
+          "8",
+          "9",
+          "10"
+        ],
+        "ans": 1,
+        "why": "4 × 9 = 36。"
+      },
+      {
+        "q": "RM1 = ? sen",
+        "opts": [
+          "10",
+          "100",
+          "1000"
+        ],
+        "ans": 1,
+        "why": "1 RM = 100 sen。"
+      },
+      {
+        "q": "RM2 + RM3 = RM ?",
+        "opts": [
+          "5",
+          "6",
+          "23"
+        ],
+        "ans": 0,
+        "why": "2 + 3 = 5。"
+      },
+      {
+        "q": "RM10 − RM4 = RM ?",
+        "opts": [
+          "4",
+          "6",
+          "14"
+        ],
+        "ans": 1,
+        "why": "10 − 4 = 6。"
+      },
+      {
+        "q": "50 sen + 50 sen = RM ?",
+        "opts": [
+          "1",
+          "2",
+          "100"
+        ],
+        "ans": 0,
+        "why": "100 sen = RM1。"
+      }
+    ]
+  },
+  {
+    "id": "ma-orig-measure-y2",
+    "subj": "數學",
+    "year": "Y2",
+    "icon": "📐",
+    "color": "var(--tang)",
+    "title": "Mathematics 原冊 · 測量與圖形",
+    "sub": "長度·質量·圖形·分數·時間·容量·圖表",
+    "teach": {
+      "intro": "複習長度、質量、平面/立體圖形、分數、時間、容量、象形圖。",
+      "points": [
+        {
+          "r": "換算:1 m = 100 cm、1 kg = 1000 g、1 ℓ = 1000 mℓ。"
+        },
+        {
+          "r": "三角形 3 邊、正方形 4 邊;圓沒有直邊。球=sphere、正方體=cube。"
+        },
+        {
+          "r": "1 hour = 60 min、1 day = 24 hours;½ = 兩份中的一份。"
+        }
+      ],
+      "worked": [
+        {
+          "q": "1 m = ? cm",
+          "opts": [
+            "10",
+            "100",
+            "1000"
+          ],
+          "ans": 1,
+          "why": "1 m = 100 cm。"
+        },
+        {
+          "q": "A triangle has ? sides.",
+          "opts": [
+            "3",
+            "4",
+            "5"
+          ],
+          "ans": 0,
+          "why": "三角形有 3 邊。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "1 m = ? cm",
+        "opts": [
+          "10",
+          "100",
+          "1000"
+        ],
+        "ans": 1,
+        "why": "1 m = 100 cm。"
+      },
+      {
+        "q": "2 m = ? cm",
+        "opts": [
+          "20",
+          "200",
+          "2000"
+        ],
+        "ans": 1,
+        "why": "2 × 100 = 200 cm。"
+      },
+      {
+        "q": "100 cm = ? m",
+        "opts": [
+          "1",
+          "10",
+          "100"
+        ],
+        "ans": 0,
+        "why": "100 cm = 1 m。"
+      },
+      {
+        "q": "A short pencil is measured in ? (m / cm)",
+        "opts": [
+          "m",
+          "cm",
+          "km"
+        ],
+        "ans": 1,
+        "why": "短鉛筆用 cm。"
+      },
+      {
+        "q": "1 kg = ? g",
+        "opts": [
+          "10",
+          "100",
+          "1000"
+        ],
+        "ans": 2,
+        "why": "1 kg = 1000 g。"
+      },
+      {
+        "q": "2 kg = ? g",
+        "opts": [
+          "20",
+          "200",
+          "2000"
+        ],
+        "ans": 2,
+        "why": "2 × 1000 = 2000 g。"
+      },
+      {
+        "q": "Heavier: 1 kg or 500 g?",
+        "opts": [
+          "1 kg",
+          "500 g",
+          "same"
+        ],
+        "ans": 0,
+        "why": "1 kg = 1000 g,較重。"
+      },
+      {
+        "q": "We find mass using a ___",
+        "opts": [
+          "scale",
+          "ruler",
+          "clock"
+        ],
+        "ans": 0,
+        "why": "用磅秤(scale)量質量。"
+      },
+      {
+        "q": "A triangle has ? sides.",
+        "opts": [
+          "3",
+          "4",
+          "5"
+        ],
+        "ans": 0,
+        "why": "三角形 3 邊。"
+      },
+      {
+        "q": "A square has ? sides.",
+        "opts": [
+          "3",
+          "4",
+          "5"
+        ],
+        "ans": 1,
+        "why": "正方形 4 邊。"
+      },
+      {
+        "q": "A circle has ? straight sides.",
+        "opts": [
+          "0",
+          "1",
+          "2"
+        ],
+        "ans": 0,
+        "why": "圓沒有直邊。"
+      },
+      {
+        "q": "Half a circle is a ___",
+        "opts": [
+          "semicircle",
+          "triangle",
+          "oval"
+        ],
+        "ans": 0,
+        "why": "半圓 = semicircle。"
+      },
+      {
+        "q": "A ball is a ___",
+        "opts": [
+          "sphere",
+          "cube",
+          "cone"
+        ],
+        "ans": 0,
+        "why": "球是 sphere。"
+      },
+      {
+        "q": "A dice is a ___",
+        "opts": [
+          "cube",
+          "sphere",
+          "cylinder"
+        ],
+        "ans": 0,
+        "why": "骰子是 cube。"
+      },
+      {
+        "q": "A can is a ___",
+        "opts": [
+          "cylinder",
+          "cube",
+          "cone"
+        ],
+        "ans": 0,
+        "why": "罐子是 cylinder。"
+      },
+      {
+        "q": "A shape that can roll is a ___",
+        "opts": [
+          "sphere",
+          "cube",
+          "cuboid"
+        ],
+        "ans": 0,
+        "why": "球會滾。"
+      },
+      {
+        "q": "1 of 2 equal parts = ?",
+        "opts": [
+          "½",
+          "¼",
+          "⅓"
+        ],
+        "ans": 0,
+        "why": "兩份取一 = ½。"
+      },
+      {
+        "q": "1 of 4 equal parts = ?",
+        "opts": [
+          "½",
+          "¼",
+          "¾"
+        ],
+        "ans": 1,
+        "why": "四份取一 = ¼。"
+      },
+      {
+        "q": "¼ + ¼ = ?",
+        "opts": [
+          "½",
+          "¼",
+          "¾"
+        ],
+        "ans": 0,
+        "why": "兩個 ¼ = ½。"
+      },
+      {
+        "q": "¾ means ? parts out of 4 are shaded.",
+        "opts": [
+          "1",
+          "3",
+          "4"
+        ],
+        "ans": 1,
+        "why": "¾ = 4 份中的 3 份。"
+      },
+      {
+        "q": "1 hour = ? minutes",
+        "opts": [
+          "30",
+          "60",
+          "100"
+        ],
+        "ans": 1,
+        "why": "1 小時 = 60 分。"
+      },
+      {
+        "q": "half past 3 = ?",
+        "opts": [
+          "3:00",
+          "3:15",
+          "3:30"
+        ],
+        "ans": 2,
+        "why": "三點半 = 3:30。"
+      },
+      {
+        "q": "a.m. is before ___",
+        "opts": [
+          "noon",
+          "midnight",
+          "morning"
+        ],
+        "ans": 0,
+        "why": "a.m. 在中午前。"
+      },
+      {
+        "q": "1 day = ? hours",
+        "opts": [
+          "12",
+          "24",
+          "60"
+        ],
+        "ans": 1,
+        "why": "一天 24 小時。"
+      },
+      {
+        "q": "1 ℓ = ? mℓ",
+        "opts": [
+          "10",
+          "100",
+          "1000"
+        ],
+        "ans": 2,
+        "why": "1 ℓ = 1000 mℓ。"
+      },
+      {
+        "q": "More: 1 ℓ or 500 mℓ?",
+        "opts": [
+          "1 ℓ",
+          "500 mℓ",
+          "same"
+        ],
+        "ans": 0,
+        "why": "1 ℓ = 1000 mℓ,較多。"
+      },
+      {
+        "q": "2 ℓ = ? mℓ",
+        "opts": [
+          "20",
+          "200",
+          "2000"
+        ],
+        "ans": 2,
+        "why": "2 × 1000 = 2000 mℓ。"
+      },
+      {
+        "q": "We measure water in ___",
+        "opts": [
+          "litres",
+          "grams",
+          "metres"
+        ],
+        "ans": 0,
+        "why": "水用公升(litres)量。"
+      },
+      {
+        "q": "Each ⭐ = 2. 3 stars = ?",
+        "opts": [
+          "5",
+          "6",
+          "8"
+        ],
+        "ans": 1,
+        "why": "3 × 2 = 6。"
+      },
+      {
+        "q": "Each ⭐ = 5. 4 stars = ?",
+        "opts": [
+          "9",
+          "20",
+          "25"
+        ],
+        "ans": 1,
+        "why": "4 × 5 = 20。"
+      },
+      {
+        "q": "The scale tells what each picture ___ for.",
+        "opts": [
+          "stands",
+          "looks",
+          "goes"
+        ],
+        "ans": 0,
+        "why": "scale 說明每圖代表多少(stands for)。"
+      },
+      {
+        "q": "Picture graphs help us ___ data.",
+        "opts": [
+          "compare",
+          "eat",
+          "hide"
+        ],
+        "ans": 0,
+        "why": "象形圖幫我們比較(compare)資料。"
+      }
+    ]
+  },
+  {
+    "id": "sci-orig-y2",
+    "subj": "科學",
+    "year": "Y2",
+    "icon": "🌿",
+    "color": "var(--mint)",
+    "title": "Science 原冊 · Living, Body & Materials",
+    "sub": "生物與環境·人與動物·材料",
+    "teach": {
+      "intro": "複習生物與環境、人類與動物、物質與材料。",
+      "points": [
+        {
+          "r": "生物會生長、進食、呼吸、感覺、繁殖;棲息地 habitat 是動植物的家。"
+        },
+        {
+          "r": "牙齒:incisors 門齒切、canines 犬齒撕、molars 臼齒磨;dentist 是牙醫。"
+        },
+        {
+          "r": "材料分 natural 天然(木、棉、岩石)與 man-made 人造(塑膠、玻璃);性質有 hard/soft/flexible/transparent。"
+        }
+      ],
+      "worked": [
+        {
+          "q": "A ___ is the home of an animal.",
+          "opts": [
+            "habitat",
+            "desert",
+            "school"
+          ],
+          "ans": 0,
+          "why": "家 = habitat。"
+        },
+        {
+          "q": "Wood is a ___ material.",
+          "opts": [
+            "natural",
+            "man-made",
+            "plastic"
+          ],
+          "ans": 0,
+          "why": "木材是天然的。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "Living things can grow, eat, breathe and ___ (make babies).",
+        "opts": [
+          "reproduce",
+          "sleep",
+          "melt"
+        ],
+        "ans": 0,
+        "why": "生物會繁殖(reproduce)。"
+      },
+      {
+        "q": "A ___ is the home of a plant or animal.",
+        "opts": [
+          "habitat",
+          "environment",
+          "school"
+        ],
+        "ans": 0,
+        "why": "家 = habitat。"
+      },
+      {
+        "q": "The ___ is everything around a living thing.",
+        "opts": [
+          "environment",
+          "habitat",
+          "forest"
+        ],
+        "ans": 0,
+        "why": "周圍一切 = environment。"
+      },
+      {
+        "q": "Fish live in ___.",
+        "opts": [
+          "water",
+          "sand",
+          "trees"
+        ],
+        "ans": 0,
+        "why": "魚住在水裡。"
+      },
+      {
+        "q": "A cactus lives in the dry ___.",
+        "opts": [
+          "desert",
+          "ocean",
+          "forest"
+        ],
+        "ans": 0,
+        "why": "仙人掌住在沙漠。"
+      },
+      {
+        "q": "A polar bear lives in a cold, ___ place.",
+        "opts": [
+          "icy",
+          "hot",
+          "dry"
+        ],
+        "ans": 0,
+        "why": "北極熊住在冰冷的地方。"
+      },
+      {
+        "q": "Plants need sunlight, water and ___ to grow.",
+        "opts": [
+          "air",
+          "sugar",
+          "plastic"
+        ],
+        "ans": 0,
+        "why": "植物需要空氣。"
+      },
+      {
+        "q": "Something that is not alive is ___.",
+        "opts": [
+          "non-living",
+          "living",
+          "growing"
+        ],
+        "ans": 0,
+        "why": "沒生命的是非生物。"
+      },
+      {
+        "q": "Animals get their ___ from their habitat.",
+        "opts": [
+          "food",
+          "homework",
+          "toys"
+        ],
+        "ans": 0,
+        "why": "動物從棲息地取得食物。"
+      },
+      {
+        "q": "A frog lives near a ___ (water place).",
+        "opts": [
+          "pond",
+          "desert",
+          "mountain"
+        ],
+        "ans": 0,
+        "why": "青蛙住在池塘邊。"
+      },
+      {
+        "q": "A baby animal is called an ___.",
+        "opts": [
+          "offspring",
+          "adult",
+          "egg"
+        ],
+        "ans": 0,
+        "why": "幼獸叫 offspring。"
+      },
+      {
+        "q": "Offspring often look like their ___.",
+        "opts": [
+          "parents",
+          "friends",
+          "teachers"
+        ],
+        "ans": 0,
+        "why": "後代常像父母。"
+      },
+      {
+        "q": "We stay healthy with a balanced ___.",
+        "opts": [
+          "diet",
+          "toy",
+          "game"
+        ],
+        "ans": 0,
+        "why": "均衡飲食 balanced diet。"
+      },
+      {
+        "q": "Running and jumping are types of ___.",
+        "opts": [
+          "exercise",
+          "sleep",
+          "food"
+        ],
+        "ans": 0,
+        "why": "跑跳是運動。"
+      },
+      {
+        "q": "Washing hands removes ___ (tiny things that cause illness).",
+        "opts": [
+          "germs",
+          "toys",
+          "water"
+        ],
+        "ans": 0,
+        "why": "洗手去除細菌 germs。"
+      },
+      {
+        "q": "A fever is a sign of ___.",
+        "opts": [
+          "illness",
+          "health",
+          "hunger"
+        ],
+        "ans": 0,
+        "why": "發燒是生病的徵兆。"
+      },
+      {
+        "q": "Front teeth that cut food are ___.",
+        "opts": [
+          "incisors",
+          "canines",
+          "molars"
+        ],
+        "ans": 0,
+        "why": "門齒 incisors 切食物。"
+      },
+      {
+        "q": "Pointed teeth that tear food are ___.",
+        "opts": [
+          "incisors",
+          "canines",
+          "molars"
+        ],
+        "ans": 1,
+        "why": "犬齒 canines 撕食物。"
+      },
+      {
+        "q": "Flat back teeth that grind food are ___.",
+        "opts": [
+          "incisors",
+          "canines",
+          "molars"
+        ],
+        "ans": 2,
+        "why": "臼齒 molars 磨食物。"
+      },
+      {
+        "q": "A ___ is a doctor for our teeth.",
+        "opts": [
+          "dentist",
+          "nurse",
+          "vet"
+        ],
+        "ans": 0,
+        "why": "牙醫 dentist。"
+      },
+      {
+        "q": "Everything around us is made of ___.",
+        "opts": [
+          "materials",
+          "water",
+          "air"
+        ],
+        "ans": 0,
+        "why": "萬物由材料構成。"
+      },
+      {
+        "q": "Wood and cotton are ___ materials.",
+        "opts": [
+          "natural",
+          "man-made",
+          "plastic"
+        ],
+        "ans": 0,
+        "why": "木、棉是天然的。"
+      },
+      {
+        "q": "Plastic and glass are ___ materials.",
+        "opts": [
+          "manufactured",
+          "natural",
+          "soft"
+        ],
+        "ans": 0,
+        "why": "塑膠、玻璃是人造的。"
+      },
+      {
+        "q": "A material you can bend easily is ___.",
+        "opts": [
+          "flexible",
+          "hard",
+          "strong"
+        ],
+        "ans": 0,
+        "why": "易彎的是有彈性 flexible。"
+      },
+      {
+        "q": "A material that does not break easily is ___.",
+        "opts": [
+          "strong",
+          "weak",
+          "soft"
+        ],
+        "ans": 0,
+        "why": "不易斷的是堅固 strong。"
+      },
+      {
+        "q": "A rock is ___ ; a sponge is soft.",
+        "opts": [
+          "hard",
+          "soft",
+          "bendy"
+        ],
+        "ans": 0,
+        "why": "岩石是硬的。"
+      },
+      {
+        "q": "Glass is used for windows because it is ___ (see-through).",
+        "opts": [
+          "transparent",
+          "dark",
+          "soft"
+        ],
+        "ans": 0,
+        "why": "玻璃透明 transparent。"
+      },
+      {
+        "q": "Wool is used to make warm ___.",
+        "opts": [
+          "clothes",
+          "windows",
+          "cars"
+        ],
+        "ans": 0,
+        "why": "羊毛做保暖衣物。"
+      },
+      {
+        "q": "Heating or bending can ___ a material.",
+        "opts": [
+          "change",
+          "eat",
+          "hide"
+        ],
+        "ans": 0,
+        "why": "加熱或彎折能改變材料。"
+      },
+      {
+        "q": "Rubber is flexible, so it is used for ___.",
+        "opts": [
+          "tyres",
+          "windows",
+          "paper"
+        ],
+        "ans": 0,
+        "why": "橡膠有彈性,用來做輪胎。"
+      }
+    ]
+  },
+  {
+    "id": "sci-orig-y3",
+    "subj": "科學",
+    "year": "Y3",
+    "icon": "🌍",
+    "color": "var(--mint)",
+    "title": "Science 原冊 · Forces, Light & Earth",
+    "sub": "力·光與電·地殼",
+    "teach": {
+      "intro": "複習力、光與電、地殼。",
+      "points": [
+        {
+          "r": "力 force = push 推 或 pull 拉;gravity 地心引力把東西往下拉。"
+        },
+        {
+          "r": "光源:太陽、燈、手電筒;物體擋光形成 shadow 影子。"
+        },
+        {
+          "r": "電路 circuit 需要 battery 電池、wires 電線、bulb 燈泡,switch 開關控制通斷;電要遠離水。"
+        }
+      ],
+      "worked": [
+        {
+          "q": "The force that pulls things down is ___.",
+          "opts": [
+            "gravity",
+            "wind",
+            "light"
+          ],
+          "ans": 0,
+          "why": "地心引力往下拉。"
+        },
+        {
+          "q": "A ___ turns a circuit on and off.",
+          "opts": [
+            "switch",
+            "battery",
+            "wire"
+          ],
+          "ans": 0,
+          "why": "開關 switch 控制通斷。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "A force is a push or a ___.",
+        "opts": [
+          "pull",
+          "jump",
+          "run"
+        ],
+        "ans": 0,
+        "why": "力是推或拉。"
+      },
+      {
+        "q": "Kicking a ball is a ___.",
+        "opts": [
+          "push",
+          "pull",
+          "lift"
+        ],
+        "ans": 0,
+        "why": "踢球是推。"
+      },
+      {
+        "q": "Opening a drawer is a ___.",
+        "opts": [
+          "push",
+          "pull",
+          "drop"
+        ],
+        "ans": 1,
+        "why": "拉開抽屜是拉。"
+      },
+      {
+        "q": "A force can make a still object ___.",
+        "opts": [
+          "move",
+          "sleep",
+          "melt"
+        ],
+        "ans": 0,
+        "why": "力能讓靜止物移動。"
+      },
+      {
+        "q": "Brakes make a car ___ down.",
+        "opts": [
+          "slow",
+          "speed",
+          "turn"
+        ],
+        "ans": 0,
+        "why": "煞車讓車減速。"
+      },
+      {
+        "q": "Pressing the pedal makes a bicycle ___ up.",
+        "opts": [
+          "speed",
+          "slow",
+          "stop"
+        ],
+        "ans": 0,
+        "why": "踩踏板讓車加速。"
+      },
+      {
+        "q": "A force can change the ___ of a moving ball.",
+        "opts": [
+          "direction",
+          "colour",
+          "name"
+        ],
+        "ans": 0,
+        "why": "力能改變方向。"
+      },
+      {
+        "q": "Squeezing clay changes its ___.",
+        "opts": [
+          "shape",
+          "colour",
+          "smell"
+        ],
+        "ans": 0,
+        "why": "捏黏土改變形狀。"
+      },
+      {
+        "q": "A bigger force makes a ___ change.",
+        "opts": [
+          "bigger",
+          "smaller",
+          "slower"
+        ],
+        "ans": 0,
+        "why": "力越大改變越大。"
+      },
+      {
+        "q": "The force that pulls things down is ___.",
+        "opts": [
+          "gravity",
+          "wind",
+          "light"
+        ],
+        "ans": 0,
+        "why": "地心引力往下拉。"
+      },
+      {
+        "q": "The ___ is our main natural source of light.",
+        "opts": [
+          "Sun",
+          "lamp",
+          "torch"
+        ],
+        "ans": 0,
+        "why": "太陽是主要天然光源。"
+      },
+      {
+        "q": "A lamp and a torch are ___ (made by people) light sources.",
+        "opts": [
+          "man-made",
+          "natural",
+          "dark"
+        ],
+        "ans": 0,
+        "why": "燈與手電筒是人造光源。"
+      },
+      {
+        "q": "We cannot see in the ___.",
+        "opts": [
+          "dark",
+          "light",
+          "sun"
+        ],
+        "ans": 0,
+        "why": "黑暗中看不見。"
+      },
+      {
+        "q": "A ___ forms when an object blocks light.",
+        "opts": [
+          "shadow",
+          "rainbow",
+          "cloud"
+        ],
+        "ans": 0,
+        "why": "擋光形成影子。"
+      },
+      {
+        "q": "A torch stores electricity in a ___.",
+        "opts": [
+          "battery",
+          "wire",
+          "bulb"
+        ],
+        "ans": 0,
+        "why": "手電筒把電存在電池。"
+      },
+      {
+        "q": "Electricity flows around a ___.",
+        "opts": [
+          "circuit",
+          "room",
+          "box"
+        ],
+        "ans": 0,
+        "why": "電在電路中流動。"
+      },
+      {
+        "q": "A circuit needs a battery, wires and a ___.",
+        "opts": [
+          "bulb",
+          "leaf",
+          "stone"
+        ],
+        "ans": 0,
+        "why": "電路需要燈泡。"
+      },
+      {
+        "q": "A ___ turns a circuit on and off.",
+        "opts": [
+          "switch",
+          "battery",
+          "wire"
+        ],
+        "ans": 0,
+        "why": "開關控制通斷。"
+      },
+      {
+        "q": "The bulb lights only when the circuit is ___ (not broken).",
+        "opts": [
+          "complete",
+          "broken",
+          "wet"
+        ],
+        "ans": 0,
+        "why": "電路完整才會亮。"
+      },
+      {
+        "q": "For safety, keep electricity away from ___.",
+        "opts": [
+          "water",
+          "books",
+          "toys"
+        ],
+        "ans": 0,
+        "why": "電要遠離水。"
+      },
+      {
+        "q": "The hard outer layer of the Earth is the ___.",
+        "opts": [
+          "crust",
+          "core",
+          "sky"
+        ],
+        "ans": 0,
+        "why": "地球外層是地殼 crust。"
+      },
+      {
+        "q": "The crust is made of ___.",
+        "opts": [
+          "rocks",
+          "water",
+          "air"
+        ],
+        "ans": 0,
+        "why": "地殼由岩石組成。"
+      },
+      {
+        "q": "There are many different ___ of rocks.",
+        "opts": [
+          "types",
+          "colours",
+          "names"
+        ],
+        "ans": 0,
+        "why": "岩石有許多種類 types。"
+      },
+      {
+        "q": "We take rocks and minerals from the ground by ___.",
+        "opts": [
+          "mining",
+          "cooking",
+          "flying"
+        ],
+        "ans": 0,
+        "why": "採礦 mining 取出岩石礦物。"
+      },
+      {
+        "q": "___ and gold are mined from the Earth.",
+        "opts": [
+          "Coal",
+          "Milk",
+          "Paper"
+        ],
+        "ans": 0,
+        "why": "煤與金從地球開採。"
+      },
+      {
+        "q": "Rocks can be used to build houses and ___.",
+        "opts": [
+          "roads",
+          "clouds",
+          "songs"
+        ],
+        "ans": 0,
+        "why": "岩石可建房子和道路。"
+      },
+      {
+        "q": "Sand is used to make glass and ___.",
+        "opts": [
+          "concrete",
+          "bread",
+          "water"
+        ],
+        "ans": 0,
+        "why": "沙可做玻璃和混凝土。"
+      },
+      {
+        "q": "A useful material from the Earth is a ___.",
+        "opts": [
+          "resource",
+          "rubbish",
+          "toy"
+        ],
+        "ans": 0,
+        "why": "有用的地球材料是資源 resource。"
+      },
+      {
+        "q": "Madagascar is a country where people do ___.",
+        "opts": [
+          "mining",
+          "skiing",
+          "surfing"
+        ],
+        "ans": 0,
+        "why": "馬達加斯加有採礦。"
+      },
+      {
+        "q": "We should use the Earth's resources ___.",
+        "opts": [
+          "carefully",
+          "quickly",
+          "wastefully"
+        ],
+        "ans": 0,
+        "why": "應謹慎使用資源。"
+      }
+    ]
+  },
+  {
+    "id": "bm2-b",
+    "subj": "BM",
+    "year": "Y2",
+    "icon": "🗣️",
+    "color": "var(--tang)",
+    "title": "Bahasa Melayu Tahun 2: Ganti Nama & Kata Tanya",
+    "sub": "人稱代名詞·疑問詞",
+    "teach": {
+      "intro": "學馬來文的『人稱代名詞』和『疑問詞 kata tanya』。",
+      "points": [
+        {
+          "r": "人稱:Saya 我、Awak/Kamu 你、Dia 他/她、Kami/Kita 我們、Mereka 他們。"
+        },
+        {
+          "r": "疑問詞:Siapa 誰(問人)、Apa 什麼(問物)、Bila 何時、Mana 何處、Berapa 多少。"
+        }
+      ],
+      "worked": [
+        {
+          "q": "'I' dalam Bahasa Melayu ialah ___.",
+          "opts": [
+            "Saya",
+            "Dia",
+            "Mereka"
+          ],
+          "ans": 0,
+          "why": "我 = Saya。"
+        },
+        {
+          "q": "Kata tanya untuk orang ialah ___.",
+          "opts": [
+            "Siapa",
+            "Apa",
+            "Bila"
+          ],
+          "ans": 0,
+          "why": "問人用 Siapa。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "'I' dalam Bahasa Melayu ialah ___.",
+        "opts": [
+          "Saya",
+          "Awak",
+          "Dia"
+        ],
+        "ans": 0,
+        "why": "我 = Saya。"
+      },
+      {
+        "q": "'You' dalam Bahasa Melayu ialah ___.",
+        "opts": [
+          "Saya",
+          "Awak",
+          "Dia"
+        ],
+        "ans": 1,
+        "why": "你 = Awak / Kamu。"
+      },
+      {
+        "q": "'He / She' dalam Bahasa Melayu ialah ___.",
+        "opts": [
+          "Saya",
+          "Dia",
+          "Kami"
+        ],
+        "ans": 1,
+        "why": "他/她 = Dia。"
+      },
+      {
+        "q": "'They' dalam Bahasa Melayu ialah ___.",
+        "opts": [
+          "Kami",
+          "Kita",
+          "Mereka"
+        ],
+        "ans": 2,
+        "why": "他們 = Mereka。"
+      },
+      {
+        "q": "Kata tanya untuk orang ialah ___.",
+        "opts": [
+          "Apa",
+          "Siapa",
+          "Mana"
+        ],
+        "ans": 1,
+        "why": "問人用 Siapa。"
+      },
+      {
+        "q": "Kata tanya untuk benda ialah ___.",
+        "opts": [
+          "Apa",
+          "Siapa",
+          "Bila"
+        ],
+        "ans": 0,
+        "why": "問物用 Apa。"
+      },
+      {
+        "q": "Kata tanya untuk masa ialah ___.",
+        "opts": [
+          "Bila",
+          "Mana",
+          "Berapa"
+        ],
+        "ans": 0,
+        "why": "問時間用 Bila。"
+      },
+      {
+        "q": "Kata tanya untuk tempat ialah ___.",
+        "opts": [
+          "Mana",
+          "Apa",
+          "Berapa"
+        ],
+        "ans": 0,
+        "why": "問地點用 Mana(Di mana)。"
+      }
+    ]
+  },
+  {
+    "id": "bm2-c",
+    "subj": "BM",
+    "year": "Y2",
+    "icon": "🔤",
+    "color": "var(--tang)",
+    "title": "Bahasa Melayu Tahun 2: Jenis Kata",
+    "sub": "名詞·動詞·形容詞",
+    "teach": {
+      "intro": "學分辨三種詞:kata nama 名詞、kata kerja 動詞、kata adjektif 形容詞。",
+      "points": [
+        {
+          "r": "Kata nama 名詞:人、事、物。",
+          "ex": "kucing, meja, buku"
+        },
+        {
+          "r": "Kata kerja 動詞:動作。",
+          "ex": "lari, makan, tidur"
+        },
+        {
+          "r": "Kata adjektif 形容詞:樣子、感覺。",
+          "ex": "besar, cantik, panas"
+        }
+      ],
+      "worked": [
+        {
+          "q": "'kucing' ialah kata ___.",
+          "opts": [
+            "nama",
+            "kerja",
+            "adjektif"
+          ],
+          "ans": 0,
+          "why": "kucing 貓是名詞。"
+        },
+        {
+          "q": "'lari' ialah kata ___.",
+          "opts": [
+            "nama",
+            "kerja",
+            "adjektif"
+          ],
+          "ans": 1,
+          "why": "lari 跑是動詞。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "'kucing' ialah kata ___.",
+        "opts": [
+          "nama",
+          "kerja",
+          "adjektif"
+        ],
+        "ans": 0,
+        "why": "貓 kucing 是名詞。"
+      },
+      {
+        "q": "'meja' ialah kata ___.",
+        "opts": [
+          "nama",
+          "kerja",
+          "adjektif"
+        ],
+        "ans": 0,
+        "why": "桌子 meja 是名詞。"
+      },
+      {
+        "q": "'buku' ialah kata ___.",
+        "opts": [
+          "nama",
+          "kerja",
+          "adjektif"
+        ],
+        "ans": 0,
+        "why": "書 buku 是名詞。"
+      },
+      {
+        "q": "'lari' ialah kata ___.",
+        "opts": [
+          "nama",
+          "kerja",
+          "adjektif"
+        ],
+        "ans": 1,
+        "why": "跑 lari 是動詞。"
+      },
+      {
+        "q": "'makan' ialah kata ___.",
+        "opts": [
+          "nama",
+          "kerja",
+          "adjektif"
+        ],
+        "ans": 1,
+        "why": "吃 makan 是動詞。"
+      },
+      {
+        "q": "'tidur' ialah kata ___.",
+        "opts": [
+          "nama",
+          "kerja",
+          "adjektif"
+        ],
+        "ans": 1,
+        "why": "睡 tidur 是動詞。"
+      },
+      {
+        "q": "'cantik' ialah kata ___.",
+        "opts": [
+          "nama",
+          "kerja",
+          "adjektif"
+        ],
+        "ans": 2,
+        "why": "漂亮 cantik 是形容詞。"
+      },
+      {
+        "q": "'besar' ialah kata ___.",
+        "opts": [
+          "nama",
+          "kerja",
+          "adjektif"
+        ],
+        "ans": 2,
+        "why": "大 besar 是形容詞。"
+      }
+    ]
+  },
+  {
+    "id": "bm3-b",
+    "subj": "BM",
+    "year": "Y3",
+    "icon": "🧩",
+    "color": "var(--tang)",
+    "title": "Bahasa Melayu Tahun 3: Imbuhan & Kata Sendi",
+    "sub": "前綴 me-·介系詞",
+    "teach": {
+      "intro": "學前綴 imbuhan『me-』和介系詞 kata sendi nama。",
+      "points": [
+        {
+          "r": "me + kata dasar:me+baca→membaca、me+tulis→menulis、me+lukis→melukis。"
+        },
+        {
+          "r": "Kata sendi:di 在(位置)、ke 去(方向)、dari 從(地方)、kepada 給(人)。"
+        }
+      ],
+      "worked": [
+        {
+          "q": "me + baca = ___",
+          "opts": [
+            "membaca",
+            "dibaca",
+            "terbaca"
+          ],
+          "ans": 0,
+          "why": "me + baca = membaca。"
+        },
+        {
+          "q": "Saya pergi ___ sekolah.",
+          "opts": [
+            "di",
+            "ke",
+            "dari"
+          ],
+          "ans": 1,
+          "why": "去某地用 ke。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "me + baca = ___",
+        "opts": [
+          "membaca",
+          "dibaca",
+          "terbaca"
+        ],
+        "ans": 0,
+        "why": "me + baca = membaca(讀)。"
+      },
+      {
+        "q": "me + tulis = ___",
+        "opts": [
+          "menulis",
+          "ditulis",
+          "tertulis"
+        ],
+        "ans": 0,
+        "why": "me + tulis = menulis(寫)。"
+      },
+      {
+        "q": "me + lukis = ___",
+        "opts": [
+          "melukis",
+          "dilukis",
+          "terlukis"
+        ],
+        "ans": 0,
+        "why": "me + lukis = melukis(畫)。"
+      },
+      {
+        "q": "me + nyanyi = ___",
+        "opts": [
+          "menyanyi",
+          "dinyanyi",
+          "bernyanyi"
+        ],
+        "ans": 0,
+        "why": "me + nyanyi = menyanyi(唱)。"
+      },
+      {
+        "q": "Buku itu ada ___ atas meja.",
+        "opts": [
+          "di",
+          "ke",
+          "dari"
+        ],
+        "ans": 0,
+        "why": "表位置用 di(di atas meja)。"
+      },
+      {
+        "q": "Saya pergi ___ sekolah.",
+        "opts": [
+          "di",
+          "ke",
+          "dari"
+        ],
+        "ans": 1,
+        "why": "去某地用 ke(pergi ke sekolah)。"
+      },
+      {
+        "q": "Dia datang ___ rumah.",
+        "opts": [
+          "di",
+          "ke",
+          "dari"
+        ],
+        "ans": 2,
+        "why": "從某地用 dari(datang dari rumah)。"
+      },
+      {
+        "q": "Saya memberi hadiah ___ ibu.",
+        "opts": [
+          "kepada",
+          "ke",
+          "di"
+        ],
+        "ans": 0,
+        "why": "給某人用 kepada。"
+      }
+    ]
+  },
+  {
+    "id": "bm3-c",
+    "subj": "BM",
+    "year": "Y3",
+    "icon": "🔁",
+    "color": "var(--tang)",
+    "title": "Bahasa Melayu Tahun 3: Sinonim, Antonim & Kata Hubung",
+    "sub": "同義·反義·連接詞",
+    "teach": {
+      "intro": "學同義詞 sinonim、反義詞 antonim、連接詞 kata hubung。",
+      "points": [
+        {
+          "r": "Sinonim 同義:pandai=bijak、cantik=indah、gembira=riang。"
+        },
+        {
+          "r": "Antonim 反義:tinggi↔rendah、panas↔sejuk、gembira↔sedih。"
+        },
+        {
+          "r": "Kata hubung:dan(和)、tetapi(但是)、atau(或)。"
+        }
+      ],
+      "worked": [
+        {
+          "q": "Sinonim 'pandai' ialah ___.",
+          "opts": [
+            "bijak",
+            "bodoh",
+            "malas"
+          ],
+          "ans": 0,
+          "why": "pandai 聰明 = bijak。"
+        },
+        {
+          "q": "Antonim 'tinggi' ialah ___.",
+          "opts": [
+            "rendah",
+            "besar",
+            "jauh"
+          ],
+          "ans": 0,
+          "why": "tinggi 高 ↔ rendah 低。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "Sinonim 'pandai' ialah ___.",
+        "opts": [
+          "bijak",
+          "bodoh",
+          "malas"
+        ],
+        "ans": 0,
+        "why": "聰明 pandai = bijak。"
+      },
+      {
+        "q": "Sinonim 'cantik' ialah ___.",
+        "opts": [
+          "indah",
+          "hodoh",
+          "kotor"
+        ],
+        "ans": 0,
+        "why": "美 cantik = indah。"
+      },
+      {
+        "q": "Sinonim 'gembira' ialah ___.",
+        "opts": [
+          "riang",
+          "sedih",
+          "marah"
+        ],
+        "ans": 0,
+        "why": "快樂 gembira = riang。"
+      },
+      {
+        "q": "Antonim 'tinggi' ialah ___.",
+        "opts": [
+          "rendah",
+          "besar",
+          "jauh"
+        ],
+        "ans": 0,
+        "why": "高 tinggi ↔ 低 rendah。"
+      },
+      {
+        "q": "Antonim 'panas' ialah ___.",
+        "opts": [
+          "sejuk",
+          "cerah",
+          "basah"
+        ],
+        "ans": 0,
+        "why": "熱 panas ↔ 冷 sejuk。"
+      },
+      {
+        "q": "Antonim 'gembira' ialah ___.",
+        "opts": [
+          "sedih",
+          "riang",
+          "suka"
+        ],
+        "ans": 0,
+        "why": "快樂 gembira ↔ 傷心 sedih。"
+      },
+      {
+        "q": "Saya suka nasi ___ ayam.",
+        "opts": [
+          "dan",
+          "tetapi",
+          "atau"
+        ],
+        "ans": 0,
+        "why": "表相加用 dan(和)。"
+      },
+      {
+        "q": "Dia kecil ___ kuat.",
+        "opts": [
+          "dan",
+          "tetapi",
+          "atau"
+        ],
+        "ans": 1,
+        "why": "前後相反用 tetapi(但是)。"
+      }
+    ]
+  },
+  {
+    "id": "health-y2",
+    "subj": "健康",
+    "year": "Y2",
+    "icon": "❤️",
+    "color": "var(--coral)",
+    "title": "Pendidikan Kesihatan Tahun 2",
+    "sub": "牙齒·飲食·衛生·安全",
+    "teach": {
+      "intro": "複習健康好習慣:刷牙、健康飲食、洗手、安全。",
+      "points": [
+        {
+          "r": "每天刷牙 2 次,吃蔬菜水果,多喝白開水。"
+        },
+        {
+          "r": "吃東西前先洗手;過馬路先看兩邊;咳嗽掩口。"
+        }
+      ],
+      "worked": [
+        {
+          "q": "How many times a day should we brush our teeth?",
+          "opts": [
+            "once",
+            "twice",
+            "never"
+          ],
+          "ans": 1,
+          "why": "每天刷牙 2 次。"
+        },
+        {
+          "q": "Which drink is the healthiest?",
+          "opts": [
+            "water",
+            "soda",
+            "sweet juice"
+          ],
+          "ans": 0,
+          "why": "白開水最健康。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "How many times a day should we brush our teeth?",
+        "opts": [
+          "once",
+          "twice",
+          "never"
+        ],
+        "ans": 1,
+        "why": "每天刷牙 2 次。"
+      },
+      {
+        "q": "Which food helps us grow strong?",
+        "opts": [
+          "candy",
+          "vegetables",
+          "chips"
+        ],
+        "ans": 1,
+        "why": "蔬菜幫助長高長壯。"
+      },
+      {
+        "q": "We should wash our hands before we ___.",
+        "opts": [
+          "eat",
+          "run",
+          "sing"
+        ],
+        "ans": 0,
+        "why": "吃東西前要洗手。"
+      },
+      {
+        "q": "Which drink is the healthiest?",
+        "opts": [
+          "water",
+          "soda",
+          "sweet juice"
+        ],
+        "ans": 0,
+        "why": "白開水最健康。"
+      },
+      {
+        "q": "Before crossing the road, we should look ___.",
+        "opts": [
+          "both ways",
+          "up",
+          "at a phone"
+        ],
+        "ans": 0,
+        "why": "過馬路先看左右兩邊。"
+      },
+      {
+        "q": "Children need about ___ of sleep at night.",
+        "opts": [
+          "2 hours",
+          "9 hours",
+          "20 hours"
+        ],
+        "ans": 1,
+        "why": "小孩每晚約睡 9–10 小時。"
+      },
+      {
+        "q": "Eating too many sweets is bad for our ___.",
+        "opts": [
+          "teeth",
+          "hair",
+          "shoes"
+        ],
+        "ans": 0,
+        "why": "糖太多會傷牙齒。"
+      },
+      {
+        "q": "To stay clean, we should take a ___ every day.",
+        "opts": [
+          "bath",
+          "nap",
+          "walk"
+        ],
+        "ans": 0,
+        "why": "每天洗澡保持乾淨。"
+      },
+      {
+        "q": "Which is a healthy habit?",
+        "opts": [
+          "sitting all day",
+          "exercise every day",
+          "eating only sweets"
+        ],
+        "ans": 1,
+        "why": "每天運動是好習慣。"
+      },
+      {
+        "q": "We cover our mouth when we ___.",
+        "opts": [
+          "cough",
+          "read",
+          "walk"
+        ],
+        "ans": 0,
+        "why": "咳嗽時掩住口。"
+      }
+    ]
+  },
+  {
+    "id": "health-y3",
+    "subj": "健康",
+    "year": "Y3",
+    "icon": "💪",
+    "color": "var(--coral)",
+    "title": "Pendidikan Kesihatan Tahun 3",
+    "sub": "營養·情緒·安全·身體",
+    "teach": {
+      "intro": "複習均衡飲食、情緒、身體與安全。",
+      "points": [
+        {
+          "r": "米飯麵包給能量;蔬果給維生素;要均衡。"
+        },
+        {
+          "r": "生氣時深呼吸;陌生人要說不並告訴大人;抽菸有害健康。"
+        }
+      ],
+      "worked": [
+        {
+          "q": "Fruits and vegetables give us ___ to stay healthy.",
+          "opts": [
+            "vitamins",
+            "sugar",
+            "fat"
+          ],
+          "ans": 0,
+          "why": "蔬果提供維生素。"
+        },
+        {
+          "q": "When we feel angry, a good thing to do is ___.",
+          "opts": [
+            "hit someone",
+            "take deep breaths",
+            "break things"
+          ],
+          "ans": 1,
+          "why": "生氣時可以深呼吸。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "Rice and bread give us ___.",
+        "opts": [
+          "energy",
+          "water",
+          "sleep"
+        ],
+        "ans": 0,
+        "why": "米飯麵包提供能量。"
+      },
+      {
+        "q": "Fruits and vegetables give us ___ to stay healthy.",
+        "opts": [
+          "vitamins",
+          "sugar",
+          "fat"
+        ],
+        "ans": 0,
+        "why": "蔬果提供維生素。"
+      },
+      {
+        "q": "When we feel angry, a good thing to do is ___.",
+        "opts": [
+          "hit someone",
+          "take deep breaths",
+          "break things"
+        ],
+        "ans": 1,
+        "why": "生氣時深呼吸。"
+      },
+      {
+        "q": "If a stranger asks you to go with them, you should ___.",
+        "opts": [
+          "go with them",
+          "say no and tell an adult",
+          "keep it secret"
+        ],
+        "ans": 1,
+        "why": "說不並告訴信任的大人。"
+      },
+      {
+        "q": "Smoking is ___ for our health.",
+        "opts": [
+          "good",
+          "bad",
+          "tasty"
+        ],
+        "ans": 1,
+        "why": "抽菸對健康有害。"
+      },
+      {
+        "q": "We should exercise to keep our ___ strong.",
+        "opts": [
+          "body",
+          "toys",
+          "homework"
+        ],
+        "ans": 0,
+        "why": "運動讓身體強壯。"
+      },
+      {
+        "q": "Germs spread when we do not wash our ___.",
+        "opts": [
+          "hands",
+          "hair",
+          "shoes"
+        ],
+        "ans": 0,
+        "why": "不洗手會傳播細菌。"
+      },
+      {
+        "q": "A helmet protects our ___ when cycling.",
+        "opts": [
+          "head",
+          "feet",
+          "hands"
+        ],
+        "ans": 0,
+        "why": "安全帽保護頭部。"
+      },
+      {
+        "q": "Feeling sad sometimes is ___.",
+        "opts": [
+          "normal",
+          "bad",
+          "dangerous"
+        ],
+        "ans": 0,
+        "why": "偶爾難過是正常的。"
+      },
+      {
+        "q": "A balanced meal has many ___ of food.",
+        "opts": [
+          "kinds",
+          "colours",
+          "boxes"
+        ],
+        "ans": 0,
+        "why": "均衡的一餐有多種食物。"
+      }
+    ]
+  },
+  {
+    "id": "bm-ayat",
+    "subj": "BM",
+    "year": "Y3",
+    "icon": "💬",
+    "color": "var(--tang)",
+    "title": "Bahasa Melayu: Jenis Ayat",
+    "sub": "句型:陳述·疑問·命令·感嘆",
+    "teach": {
+      "intro": "學四種句子 jenis ayat 與標點。",
+      "points": [
+        {
+          "r": "penyata 陳述(.)、tanya 疑問(?)、perintah 命令、seruan 感嘆(!)。"
+        }
+      ],
+      "worked": [
+        {
+          "q": "'Saya suka nasi.' ialah ayat ___.",
+          "opts": [
+            "penyata",
+            "tanya",
+            "perintah"
+          ],
+          "ans": 0,
+          "why": "陳述句 penyata。"
+        },
+        {
+          "q": "'Awak sihat?' ialah ayat ___.",
+          "opts": [
+            "penyata",
+            "tanya",
+            "seruan"
+          ],
+          "ans": 1,
+          "why": "疑問句 tanya。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "'Saya suka nasi.' ialah ayat ___.",
+        "opts": [
+          "penyata",
+          "tanya",
+          "perintah"
+        ],
+        "ans": 0,
+        "why": "陳述句 = penyata。"
+      },
+      {
+        "q": "'Awak sihat?' ialah ayat ___.",
+        "opts": [
+          "penyata",
+          "tanya",
+          "seruan"
+        ],
+        "ans": 1,
+        "why": "疑問句 = tanya。"
+      },
+      {
+        "q": "'Duduk di sini!' ialah ayat ___.",
+        "opts": [
+          "tanya",
+          "perintah",
+          "penyata"
+        ],
+        "ans": 1,
+        "why": "命令句 = perintah。"
+      },
+      {
+        "q": "'Wah, cantiknya!' ialah ayat ___.",
+        "opts": [
+          "seruan",
+          "tanya",
+          "penyata"
+        ],
+        "ans": 0,
+        "why": "感嘆句 = seruan。"
+      },
+      {
+        "q": "Ayat tanya diakhiri dengan tanda ___.",
+        "opts": [
+          "?",
+          ".",
+          "!"
+        ],
+        "ans": 0,
+        "why": "疑問句用問號。"
+      },
+      {
+        "q": "Ayat penyata diakhiri dengan tanda ___.",
+        "opts": [
+          ".",
+          "?",
+          "!"
+        ],
+        "ans": 0,
+        "why": "陳述句用句號。"
+      },
+      {
+        "q": "'Tolong tutup pintu.' ialah ayat ___.",
+        "opts": [
+          "perintah",
+          "tanya",
+          "seruan"
+        ],
+        "ans": 0,
+        "why": "請求/命令 = perintah。"
+      },
+      {
+        "q": "'Mereka bermain bola.' ialah ayat ___.",
+        "opts": [
+          "penyata",
+          "tanya",
+          "perintah"
+        ],
+        "ans": 0,
+        "why": "陳述句 = penyata。"
+      }
+    ]
+  },
+  {
+    "id": "bm-suku",
+    "subj": "BM",
+    "year": "Y2",
+    "icon": "🔡",
+    "color": "var(--tang)",
+    "title": "Bahasa Melayu: Suku Kata & Ejaan",
+    "sub": "音節·拼字",
+    "teach": {
+      "intro": "學數音節 suku kata 和拼合成詞 ejaan。",
+      "points": [
+        {
+          "r": "每個音節一拍:bo-la(2)、ke-re-ta(3)。"
+        },
+        {
+          "r": "拼音:ba + ju = baju。"
+        }
+      ],
+      "worked": [
+        {
+          "q": "Bilangan suku kata 'bola' ialah ___.",
+          "opts": [
+            "1",
+            "2",
+            "3"
+          ],
+          "ans": 1,
+          "why": "bo-la = 2 音節。"
+        },
+        {
+          "q": "'ba' + 'ju' = ___",
+          "opts": [
+            "baju",
+            "buja",
+            "jabu"
+          ],
+          "ans": 0,
+          "why": "拼成 baju(衣服)。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "Bilangan suku kata 'bola' ialah ___.",
+        "opts": [
+          "1",
+          "2",
+          "3"
+        ],
+        "ans": 1,
+        "why": "bo-la = 2。"
+      },
+      {
+        "q": "Bilangan suku kata 'meja' ialah ___.",
+        "opts": [
+          "2",
+          "3",
+          "4"
+        ],
+        "ans": 0,
+        "why": "me-ja = 2。"
+      },
+      {
+        "q": "Bilangan suku kata 'kereta' ialah ___.",
+        "opts": [
+          "2",
+          "3",
+          "4"
+        ],
+        "ans": 1,
+        "why": "ke-re-ta = 3。"
+      },
+      {
+        "q": "Bilangan suku kata 'buku' ialah ___.",
+        "opts": [
+          "1",
+          "2",
+          "3"
+        ],
+        "ans": 1,
+        "why": "bu-ku = 2。"
+      },
+      {
+        "q": "Bilangan suku kata 'sekolah' ialah ___.",
+        "opts": [
+          "2",
+          "3",
+          "4"
+        ],
+        "ans": 1,
+        "why": "se-ko-lah = 3。"
+      },
+      {
+        "q": "'ba' + 'ju' = ___",
+        "opts": [
+          "baju",
+          "buja",
+          "jabu"
+        ],
+        "ans": 0,
+        "why": "baju 衣服。"
+      },
+      {
+        "q": "'ka' + 'ki' = ___",
+        "opts": [
+          "kaki",
+          "kika",
+          "akik"
+        ],
+        "ans": 0,
+        "why": "kaki 腳。"
+      },
+      {
+        "q": "'bu' + 'nga' = ___",
+        "opts": [
+          "bunga",
+          "ngabu",
+          "gabun"
+        ],
+        "ans": 0,
+        "why": "bunga 花。"
+      }
+    ]
+  },
+  {
+    "id": "bm-penjodoh2",
+    "subj": "BM",
+    "year": "Y2",
+    "icon": "🧮",
+    "color": "var(--tang)",
+    "title": "Bahasa Melayu: Penjodoh Bilangan (2)",
+    "sub": "量詞進階",
+    "teach": {
+      "intro": "學更多量詞 penjodoh bilangan。",
+      "points": [
+        {
+          "r": "gelas 杯(水)、cawan 杯(咖啡)、keping 片(紙)、kuntum 朵(花)、pasang 雙(鞋)。"
+        }
+      ],
+      "worked": [
+        {
+          "q": "Se___ air.",
+          "opts": [
+            "gelas",
+            "ekor",
+            "batang"
+          ],
+          "ans": 0,
+          "why": "一杯水 = segelas。"
+        },
+        {
+          "q": "Se___ bunga.",
+          "opts": [
+            "kuntum",
+            "ekor",
+            "biji"
+          ],
+          "ans": 0,
+          "why": "一朵花 = sekuntum。"
+        }
+      ]
+    },
+    "bank": [
+      {
+        "q": "Se___ air.",
+        "opts": [
+          "gelas",
+          "ekor",
+          "batang"
+        ],
+        "ans": 0,
+        "why": "一杯水 = segelas air。"
+      },
+      {
+        "q": "Se___ kertas.",
+        "opts": [
+          "keping",
+          "ekor",
+          "batang"
+        ],
+        "ans": 0,
+        "why": "一張紙 = sekeping kertas。"
+      },
+      {
+        "q": "Se___ bunga.",
+        "opts": [
+          "kuntum",
+          "ekor",
+          "biji"
+        ],
+        "ans": 0,
+        "why": "一朵花 = sekuntum bunga。"
+      },
+      {
+        "q": "Se___ kasut.",
+        "opts": [
+          "pasang",
+          "helai",
+          "ekor"
+        ],
+        "ans": 0,
+        "why": "一雙鞋 = sepasang kasut。"
+      },
+      {
+        "q": "Se___ kopi.",
+        "opts": [
+          "cawan",
+          "biji",
+          "ekor"
+        ],
+        "ans": 0,
+        "why": "一杯咖啡 = secawan kopi。"
+      },
+      {
+        "q": "Se___ kereta.",
+        "opts": [
+          "buah",
+          "ekor",
+          "batang"
+        ],
+        "ans": 0,
+        "why": "一輛車 = sebuah kereta。"
+      },
+      {
+        "q": "Se___ epal.",
+        "opts": [
+          "biji",
+          "ekor",
+          "helai"
+        ],
+        "ans": 0,
+        "why": "一顆蘋果 = sebiji epal。"
+      },
+      {
+        "q": "Se___ ayam.",
+        "opts": [
+          "ekor",
+          "biji",
+          "batang"
+        ],
+        "ans": 0,
+        "why": "一隻雞 = seekor ayam。"
+      }
+    ]
+  },
+  {
+    "id": "think-math",
+    "subj": "思考",
+    "year": "",
+    "icon": "🧠",
+    "color": "var(--grape)",
+    "title": "思考題 · 數學(多解 & 找錯)",
+    "sub": "開放題,無標準答案",
+    "think": true,
+    "bank": [
+      {
+        "q": "Which two numbers add up to 10? Write 3 ways. 哪兩個數字加起來是 10?寫 3 種。",
+        "sample": "1+9、2+8、3+7、4+6、5+5、0+10…(任 3 種都對)",
+        "hint": "先鼓勵數量,再鼓勵不同種類。"
+      },
+      {
+        "q": "Ali has RM10. He buys 2 things. What could they be? Ali 有 RM10,買 2 樣東西,可能是什麼?(Pencil RM2·Ruler RM3·Book RM5·Eraser RM1·Bread RM4·Milk RM6)",
+        "sample": "例:Book RM5 + Eraser RM1;Bread RM4 + Ruler RM3…很多組合。",
+        "hint": "問:還有別的買法嗎?"
+      },
+      {
+        "q": "A number is smaller than 20 and bigger than 10. Name 3. 比 20 小、比 10 大,寫 3 個。",
+        "sample": "11、12、13…19(任 3 個)。",
+        "hint": "問:最多能寫幾個?"
+      },
+      {
+        "q": "12 = ___ + ___ . Write 4 different ways. 寫 4 種不同寫法。",
+        "sample": "6+6、5+7、8+4、10+2、11+1、0+12…",
+        "hint": "接受任何正確拆法。"
+      },
+      {
+        "q": "You pay RM5 and get some change. What could you have bought? 你付 RM5 有找錢,可能買了什麼?",
+        "sample": "Eraser RM1(找 RM4)、Pencil RM2(找 RM3)…只要合理。",
+        "hint": "重點是聽理由。"
+      },
+      {
+        "q": "Lee says 14 + 8 = 21. Is he right? Fix it. 對嗎?改正。",
+        "sample": "錯。14 + 8 = 22,不是 21。",
+        "hint": "找錯比解題更練批判思考。"
+      },
+      {
+        "q": "May says 30 − 12 = 22. Is she right? 對嗎?",
+        "sample": "錯。30 − 12 = 18。",
+        "hint": "請孩子說哪裡錯。"
+      },
+      {
+        "q": "A shop says RM3 + RM4 = RM8. Is it right? 對嗎?",
+        "sample": "錯。RM3 + RM4 = RM7。",
+        "hint": ""
+      },
+      {
+        "q": "Tom says 5 × 3 = 15, so 5 × 4 = 18. Where is the mistake? 哪裡錯了?",
+        "sample": "錯。5 × 4 = 20(要加 5,不是加 3)。",
+        "hint": ""
+      },
+      {
+        "q": "Amy says half of 10 is 6. Is she right? 對嗎?",
+        "sample": "錯。10 的一半是 5。",
+        "hint": ""
+      }
+    ]
+  },
+  {
+    "id": "think-sci",
+    "subj": "思考",
+    "year": "",
+    "icon": "🧠",
+    "color": "var(--grape)",
+    "title": "思考題 · 科學與創意",
+    "sub": "找不同·假設·分類·一物多用",
+    "think": true,
+    "bank": [
+      {
+        "q": "Apple · Banana · Carrot — which is different? Give 2 reasons. 哪個不同?給 2 個理由。",
+        "sample": "Carrot(是蔬菜);或 Banana(顏色/形狀不同)。不同標準有不同答案,都對!",
+        "hint": "重點:同一組用不同標準會有不同答案。"
+      },
+      {
+        "q": "Bird · Butterfly · Dog — which is different? Why? 哪個不同?為什麼?",
+        "sample": "Dog(不會飛);或 Butterfly(是昆蟲)。",
+        "hint": ""
+      },
+      {
+        "q": "Sun · Torch · Moon — which gives its own light? 哪個會自己發光?",
+        "sample": "Sun 和 Torch 會自己發光;Moon 只反射光。",
+        "hint": ""
+      },
+      {
+        "q": "Wood · Glass · Plastic — which is natural? 哪個是天然的?",
+        "sample": "Wood 木材是天然的;glass、plastic 是人造。",
+        "hint": ""
+      },
+      {
+        "q": "Fish · Frog · Snake — group them 2 different ways. 用 2 種方法分組。",
+        "sample": "依住處(水/陸)、依有無腳…很多分法。",
+        "hint": ""
+      },
+      {
+        "q": "What if you put ice under the hot sun? 把冰放在大太陽下會怎樣?",
+        "sample": "冰融化成水,因為熱讓它變暖。",
+        "hint": "只要理由合理都算對。"
+      },
+      {
+        "q": "What if there is no gravity for one minute? 一分鐘沒有重力會怎樣?",
+        "sample": "東西會飄起來,因為沒有重力往下拉。",
+        "hint": ""
+      },
+      {
+        "q": "What if plants get no sunlight? 植物沒有陽光會怎樣?",
+        "sample": "會變黃枯死,因為需要光造食物。",
+        "hint": ""
+      },
+      {
+        "q": "What if you never brush your teeth? 都不刷牙會怎樣?",
+        "sample": "牙齒會髒、蛀牙,因為細菌累積。",
+        "hint": ""
+      },
+      {
+        "q": "Sort: Cow, Chicken, Fish, Duck. What rules can you use? 用什麼標準分?",
+        "sample": "依腳數(2/4)、依住處、依大小…很多。",
+        "hint": "找到新分類標準要多鼓勵。"
+      },
+      {
+        "q": "Which of these are living? Tree, Car, Cat, Stone. 哪些是生物?",
+        "sample": "生物:Tree、Cat。非生物:Car、Stone。",
+        "hint": ""
+      },
+      {
+        "q": "How many uses can you find for a paper clip? 迴紋針有多少用途?",
+        "sample": "開放題,數點子。種類越多、越罕見越好。",
+        "hint": "評 3 項:數量、種類、獨特。"
+      },
+      {
+        "q": "Draw or list 5 uses for a plastic bottle. 塑膠瓶的 5 種用途。",
+        "sample": "裝水、種花、當筆筒、做樂器、當漏斗…",
+        "hint": "鼓勵越多越好。"
+      }
+    ]
+  }
+]
+));
+
+/* ---------- 儲存層（try/catch，無 localStorage 時退回記憶體） ---------- */
+let LS_OK=true, MEM={};
+try{ localStorage.setItem("__t","1"); localStorage.removeItem("__t"); }catch(e){ LS_OK=false; }
+if(!LS_OK) document.getElementById("lsWarn").style.display="block";
+function lsGet(k){ try{ return LS_OK? localStorage.getItem(k) : (MEM[k]??null);}catch(e){ return MEM[k]??null; } }
+function lsSet(k,v){ try{ LS_OK? localStorage.setItem(k,v) : (MEM[k]=v);}catch(e){ MEM[k]=v; } }
+
+/* ---------- 小孩 ---------- */
+function getChildren(){
+  const raw=lsGet("lh-children");
+  if(raw){ try{ return JSON.parse(raw);}catch(e){} }
+  const def=[{id:"c1",name:"小孩一",emoji:"👦"},{id:"c2",name:"小孩二",emoji:"👧"}];
+  lsSet("lh-children",JSON.stringify(def)); return def;
+}
+function setChildren(list){ lsSet("lh-children",JSON.stringify(list)); }
+let CHILDREN=getChildren();
+let CUR=lsGet("lh-current")||null;
+
+const emptyProg=()=>({stars:0,packs:{},wrong:[],notes:[]});
+function progKey(id){ return "lh-prog-"+id; }
+function loadProg(id){ const raw=lsGet(progKey(id)); if(raw){try{return JSON.parse(raw);}catch(e){}} return emptyProg(); }
+function saveProg(){ if(CUR&&PROG) lsSet(progKey(CUR),JSON.stringify(PROG)); }
+let PROG=null;
+
+/* ---------- 自訂（匯入）題庫 ---------- */
+function getCustom(){ const raw=lsGet("lh-custom"); if(raw){try{return JSON.parse(raw);}catch(e){}} return []; }
+function setCustom(list){ lsSet("lh-custom",JSON.stringify(list)); }
+function allPacks(){ return [...BUILTIN, ...getCustom()]; }
+function packById(id){ return allPacks().find(p=>p.id===id); }
+
+/* ---------- 語音（中英雙語） ---------- */
+function getVoice(prefs){ try{ const vs=speechSynthesis.getVoices();
+  for(const p of prefs){ const v=vs.find(x=>x.lang.replace("_","-").toLowerCase().startsWith(p)); if(v)return v; } }catch(e){} return null; }
+function revealNoZh(){ const el=document.getElementById("zhWarn"); if(el)el.style.display="block"; }
+// 只講英文（用於題目整句朗讀）
+function speak(t){ try{ if(!("speechSynthesis"in window))return; speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(t); const v=getVoice(["en-gb","en-us","en"]);
+  u.lang=v?v.lang:"en-GB"; if(v)u.voice=v; u.rate=0.8; u.pitch=1.1; speechSynthesis.speak(u);}catch(e){} }
+// 先中文詳解，停頓，再英文例句
+function speakBilingual(zh,en){ try{ if(!("speechSynthesis"in window))return; speechSynthesis.cancel();
+  const vs=speechSynthesis.getVoices();
+  const zhV=getVoice(["zh-tw","zh-hk","zh-cn","zh"]);
+  const enV=getVoice(["en-gb","en-us","en"]);
+  const q=[];
+  if(zh){ if(zhV) q.push({t:zh,voice:zhV,lang:zhV.lang,rate:0.82,pitch:1.05});
+    else if(vs.length===0) q.push({t:zh,voice:null,lang:"zh-TW",rate:0.82,pitch:1.05}); // 語音尚未載入，盡力嘗試
+    else revealNoZh(); }                                                                 // 確定沒有中文語音 → 只顯示文字
+  if(en) q.push({t:en,voice:enV,lang:enV?enV.lang:"en-GB",rate:0.8,pitch:1.1});
+  let i=0; (function nxt(){ if(i>=q.length)return; const it=q[i++];
+    const u=new SpeechSynthesisUtterance(it.t); u.lang=it.lang; if(it.voice)u.voice=it.voice; u.rate=it.rate; u.pitch=it.pitch;
+    u.onend=()=>setTimeout(nxt,350); u.onerror=()=>setTimeout(nxt,100); speechSynthesis.speak(u); })();
+}catch(e){} }
+if("speechSynthesis"in window){ speechSynthesis.onvoiceschanged=()=>{}; try{ speechSynthesis.getVoices(); }catch(e){} }
+
+/* ---------- 正向回饋語 ---------- */
+const YAY=["太棒了！","做得好！","你好厲害！","答對囉！","繼續保持！","真聰明！"];
+const OOPS=["差一點點，再看看！","沒關係，我們再想想～","再試一次會更好！","動動腦，你可以的！"];
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+
+/* ---------- 狀態 ---------- */
+let TAB="home";
+let SCREEN="who";     // who | home | learn | quiz | result
+let FILTER="all";
+let THINKPACK=null, THINKIDX=0, THINKREVEAL=false;
+let LEARNPACK=null;
+let SESSION=null;     // {packId,qs,idx,correct,mode,picked,flagged}
+
+/* ---------- 工具 ---------- */
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function sattr(s){return JSON.stringify(String(s)).replace(/"/g,"&quot;");} // 安全放進雙引號屬性
+function download(name,text){ try{ const b=new Blob([text],{type:"application/json;charset=utf-8"});
+  const u=URL.createObjectURL(b); const a=document.createElement("a"); a.href=u; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),1500);}catch(e){ alert("下載失敗，請改用「複製」按鈕。"); } }
+
+/* ============ 導覽 ============ */
+function setTab(t){ TAB=t; SCREEN="home"; SESSION=null; render(); }
+function goHome(){ SCREEN="home"; SESSION=null; render(); }
+
+function chooseChild(id){ CUR=id; lsSet("lh-current",id); PROG=loadProg(id); SCREEN="home"; TAB="home"; render(); }
+
+/* ============ 教學 → 練習 ============ */
+function openLearn(pid){ LEARNPACK=pid; SCREEN="learn"; render(); }
+function startBank(pid){ const p=packById(pid); if(!p)return;
+  SESSION={packId:pid, qs:shuffle(p.bank).slice(0,8), idx:0, correct:0, mode:"題庫練習", picked:null, flagged:false};
+  SCREEN="quiz"; render(); }
+function startWrong(){ if(!PROG.wrong.length)return;
+  SESSION={packId:null, qs:shuffle(PROG.wrong).slice(0,8), idx:0, correct:0, mode:"錯題重練", picked:null, flagged:false};
+  SCREEN="quiz"; TAB="home"; render(); }
+
+function choose(i){
+  if(!SESSION||SESSION.picked!==null)return;
+  SESSION.picked=i; SESSION.flagged=false;
+  const q=SESSION.qs[SESSION.idx];
+  const pid=SESSION.packId||q.packId||"misc";
+  const ok=i===q.ans;
+  PROG.packs[pid]=PROG.packs[pid]||{done:0,correct:0};
+  PROG.packs[pid].done++;
+  if(ok){ PROG.stars++; PROG.packs[pid].correct++; PROG.wrong=PROG.wrong.filter(w=>w.q!==q.q); speak(pick(["Well done!","Good job!","Excellent!"])); }
+  else{ if(!PROG.wrong.find(w=>w.q===q.q)) PROG.wrong.push({...q,packId:pid}); }
+  if(ok)SESSION.correct++;
+  saveProg(); render();
+}
+function flagIDK(){
+  if(!SESSION)return;
+  const q=SESSION.qs[SESSION.idx];
+  const pid=SESSION.packId||q.packId||"misc";
+  if(!PROG.notes.find(n=>n.q===q.q)){ PROG.notes.push({q:q.q, ans:q.opts[q.ans], why:q.why, packId:pid, when:Date.now()}); saveProg(); }
+  SESSION.flagged=true; render();
+}
+function nextQ(){
+  if(!SESSION)return;
+  if(SESSION.idx+1<SESSION.qs.length){ SESSION.idx++; SESSION.picked=null; SESSION.flagged=false; SCREEN="quiz"; }
+  else SCREEN="result";
+  render();
+}
+
+/* ============ 匯入 / 匯出 ============ */
+function doImport(){
+  const ta=document.getElementById("impText");
+  let raw=ta.value.trim(); if(!raw){ alert("請先貼上題庫 JSON。"); return; }
+  let data; try{ data=JSON.parse(raw);}catch(e){ alert("格式錯誤：不是有效的 JSON。"); return; }
+  const packs=Array.isArray(data)?data:[data];
+  const cur=getCustom(); let added=0;
+  for(const p of packs){
+    if(!p || !Array.isArray(p.bank) || !p.bank.length){ continue; }
+    const clean={ id:p.id||("cust-"+Date.now()+"-"+added), subj:p.subj||"自訂", year:p.year||"", icon:p.icon||"🌟",
+      color:p.color||"var(--lemon)", title:p.title||"匯入題庫", sub:p.sub||"", teach:p.teach||null,
+      bank:p.bank.filter(q=>q&&q.q&&Array.isArray(q.opts)&&q.opts.length>=2&&typeof q.ans==="number") };
+    if(clean.bank.length){ const idx=cur.findIndex(x=>x.id===clean.id); if(idx>=0)cur[idx]=clean; else cur.push(clean); added++; }
+  }
+  if(!added){ alert("沒有匯入任何題目，請檢查格式。"); return; }
+  setCustom(cur); alert("成功匯入 "+added+" 個題庫包！"); render();
+}
+function importFile(ev){
+  const f=ev.target.files[0]; if(!f)return;
+  const r=new FileReader(); r.onload=()=>{ document.getElementById("impText").value=r.result; }; r.readAsText(f);
+}
+function sampleJSON(){
+  const s=[{ id:"cust-science2", subj:"科學", year:"Y2", icon:"🔬", title:"Science Year 2",
+    sub:"範例：可自行修改", teach:{intro:"教學說明放這裡。", points:[{r:"規則或概念。", ex:"例子"}], worked:[{q:"示範題？",opts:["對","錯","不知道"],ans:0,why:"因為…"}]},
+    bank:[{q:"植物需要什麼才能生長？",opts:["陽光","黑暗","噪音"],ans:0,why:"植物需要陽光。"},
+          {q:"我們用哪個器官看東西？",opts:["眼睛","耳朵","鼻子"],ans:0,why:"用眼睛看。"}]}];
+  download("題庫範例.json", JSON.stringify(s,null,2));
+}
+function exportWrong(){
+  const kid=CHILDREN.find(c=>c.id===CUR);
+  const out={ child:kid?kid.name:CUR, exportedAt:new Date().toLocaleString("zh-TW"),
+    wrongCount:PROG.wrong.length, notesCount:PROG.notes.length,
+    錯題:PROG.wrong.map(w=>({題目:w.q, 正解:w.opts?w.opts[w.ans]:"", 說明:w.why})),
+    不懂的地方:PROG.notes.map(n=>({題目:n.q, 正解:n.ans, 說明:n.why})) };
+  download((kid?kid.name:"孩子")+"_錯題與不懂_"+Date.now()+".json", JSON.stringify(out,null,2));
+}
+function renameChild(id){
+  const c=CHILDREN.find(x=>x.id===id); if(!c)return;
+  const nv=prompt("輸入名字：",c.name); if(nv&&nv.trim()){ c.name=nv.trim(); setChildren(CHILDREN); render(); }
+}
+function resetChild(){
+  if(!confirm("確定清除「"+(CHILDREN.find(c=>c.id===CUR)?.name)+"」的所有進度？此動作無法復原。"))return;
+  PROG=emptyProg(); saveProg(); render();
+}
+function clearCustom(){ if(!confirm("移除所有匯入的題庫？"))return; setCustom([]); render(); }
+
+/* ============ 畫面渲染 ============ */
+const app=()=>document.getElementById("app");
+function renderWho(){
+  document.getElementById("whoBox").innerHTML="";
+  document.getElementById("nav").style.display="none";
+  app().innerHTML=`
+    <div class="card" style="text-align:center">
+      <div style="font-size:44px">🦉</div>
+      <h2 style="margin:6px 0 2px">今天是誰要學習呢？</h2>
+      <div class="lbl">每個小孩的星星、錯題、成績都分開記錄</div>
+    </div>
+    <div class="kidPick">
+      ${CHILDREN.map(c=>{const pr=loadProg(c.id);
+        return `<button class="kid" onclick="chooseChild('${c.id}')">
+          <div class="e">${c.emoji}</div><div class="n">${esc(c.name)}</div>
+          <div class="s">⭐ ${pr.stars}　📌 ${pr.wrong.length}</div></button>`;}).join("")}
+    </div>
+    <button class="ghost" style="width:100%;margin-top:12px" onclick="(function(){renameChild('c1');})()">✏️ 改第一個小孩名字</button>
+    <button class="ghost" style="width:100%;margin-top:8px" onclick="(function(){renameChild('c2');})()">✏️ 改第二個小孩名字</button>`;
+}
+function topWho(){
+  const c=CHILDREN.find(x=>x.id===CUR);
+  document.getElementById("whoBox").innerHTML=
+    `<span class="star">⭐ ${PROG.stars}</span>
+     <button class="whoBtn" onclick="SCREEN='who';render()">${c?c.emoji+" "+esc(c.name):"選人"} ⇄</button>`;
+}
+function renderHome(){
+  topWho(); document.getElementById("nav").style.display="flex";
+  document.getElementById("subhead").textContent="KSSR · "+(CHILDREN.find(c=>c.id===CUR)?.name||"");
+  const packs=allPacks();
+  const order=["英文","數學","科學","BM","健康","思考"];
+  const subjs=[...new Set(packs.map(p=>p.subj))].sort((a,b)=>{const ia=order.indexOf(a),ib=order.indexOf(b);return (ia<0?99:ia)-(ib<0?99:ib);});
+  if(!FILTER)FILTER="all";
+  const chip=(k,l)=>`<button class="fchip${FILTER===k?' on':''}" onclick="setFilter('${k}')">${esc(l)}</button>`;
+  const chips=`<div class="fbar">${chip('all','全部')}${subjs.map(s=>chip(s,s)).join("")}</div>`;
+  const shown=FILTER==="all"?packs:packs.filter(p=>p.subj===FILTER);
+  const cardHTML=(p)=>{
+    if(p.think){
+      return `<div class="card" style="border-bottom:6px solid ${p.color}">
+        <div class="pk"><span class="e">${p.icon}</span>
+          <div><div class="t">${esc(p.subj)} · ${esc(p.title)}</div><div class="s">${esc(p.sub||"")}</div></div></div>
+        <button class="big" style="background:${p.color}" onclick="startThink('${p.id}')">🧠 開始思考（不計分）</button></div>`;
+    }
+    const s=PROG.packs[p.id]; const a=s&&s.done?Math.round(100*s.correct/s.done):null;
+    return `<div class="card" style="border-bottom:6px solid ${p.color}">
+      <div class="pk"><span class="e">${p.icon}</span>
+        <div><div class="t">${esc(p.subj)} ${esc(p.year)}</div><div class="s">${esc(p.sub||"")}</div></div>
+        ${a!==null?`<div class="acc" style="color:${a>=70?'var(--mint)':'var(--tang)'}">答對率 ${a}%</div>`:""}</div>
+      <button class="big" style="background:${p.color}" onclick="openLearn('${p.id}')">📖 先學一下，再練習</button>
+      <button class="ghost" style="width:100%;margin-top:8px" onclick="startBank('${p.id}')">⚡ 我學會了，直接練習</button>
+    </div>`;
+  };
+  const section=(label,emoji,list)=>list.length?`<div class="yr-h">${emoji} ${label} <span class="yr-n">${list.length} 個</span></div>`+list.map(cardHTML).join(""):"";
+  const y2=shown.filter(p=>!p.think&&p.year==="Y2");
+  const y3=shown.filter(p=>!p.think&&p.year==="Y3");
+  const tk=shown.filter(p=>p.think);
+  const others=shown.filter(p=>!p.think&&p.year!=="Y2"&&p.year!=="Y3");
+  let html=chips
+    +section("二年級 Year 2","👦",y2)
+    +section("三年級 Year 3","👧",y3)
+    +section("思考題（親子共讀·不計分）","🧠",tk)
+    +section("其他 / 匯入","🌟",others);
+  if(!shown.length)html+=`<div class="lbl">這個科目還沒有題庫。</div>`;
+  app().innerHTML=html+`<div class="lbl" style="margin-top:4px">💡 先按「先學一下」看規則，再練習。英文可點 🔊 聽發音。🧠 思考題沒有標準答案，重點是聽孩子的理由。</div>`;
+  setNav();
+}
+function setFilter(k){ FILTER=k; render(); }
+function startThink(pid){ THINKPACK=pid; THINKIDX=0; THINKREVEAL=false; SCREEN="think"; render(); }
+function thinkNav(d){ const p=packById(THINKPACK); if(!p)return; const n=THINKIDX+d; if(n<0||n>=p.bank.length)return; THINKIDX=n; THINKREVEAL=false; render(); }
+function thinkReveal(){ THINKREVEAL=true; render(); }
+function renderThink(){
+  const p=packById(THINKPACK); if(!p){goHome();return;}
+  topWho(); document.getElementById("nav").style.display="none";
+  const q=p.bank[THINKIDX]; const last=THINKIDX===p.bank.length-1;
+  app().innerHTML=`
+    <div class="qtop"><button class="ghost" onclick="goHome()">← 回家</button>
+      <div style="font-weight:800;font-size:15px">${p.icon} ${esc(p.title)}</div>
+      <div style="margin-left:auto;font-size:13px;color:var(--grey);font-weight:800">${THINKIDX+1} / ${p.bank.length}</div></div>
+    <div class="card">
+      <div class="qtext">${esc(q.q)}</div>
+      <div class="lbl" style="margin-top:8px">🧠 這題沒有標準答案，把想到的都說出來或寫下來。</div>
+      ${THINKREVEAL?`<div class="worked" style="margin-top:10px"><div style="font-weight:800">💡 參考答案（僅範例）</div>
+         <div style="margin-top:4px;line-height:1.6">${esc(q.sample)}</div>
+         ${q.hint?`<div class="lbl" style="margin-top:6px">👪 家長：${esc(q.hint)}</div>`:""}</div>`
+        :`<button class="ghost" style="width:100%;margin-top:12px" onclick="thinkReveal()">👀 看參考答案</button>`}
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="ghost" style="flex:1" onclick="thinkNav(-1)" ${THINKIDX===0?'disabled':''}>← 上一題</button>
+      ${last?`<button class="big" style="flex:2;background:var(--mint)" onclick="goHome()">✅ 完成</button>`
+            :`<button class="big" style="flex:2;background:var(--grape)" onclick="thinkNav(1)">下一題 →</button>`}
+    </div>`;
+}
+function renderLearn(){
+  const p=packById(LEARNPACK); if(!p||!p.teach){ startBank(LEARNPACK); return; }
+  topWho(); document.getElementById("nav").style.display="none";
+  const t=p.teach;
+  app().innerHTML=`
+    <div class="qtop"><button class="ghost" onclick="goHome()">← 回家</button>
+      <div style="font-weight:800">${p.icon} ${esc(p.title)}</div></div>
+    <div class="card">
+      <div style="font-size:15.5px;font-weight:800;line-height:1.6">🦉 ${esc(t.intro)}</div>
+      ${t.points.map(pt=>`<div class="point"><div class="r">${esc(pt.r)}</div>
+        <div style="margin-top:6px">${pt.ex?`<span class="ex">${esc(pt.ex)}</span>　`:""}<button class="chip" onclick="speakBilingual(${sattr(pt.r)}, ${sattr(pt.tts||'')})">🔊 中文＋英文</button></div></div>`).join("")}
+    </div>
+    <div class="card">
+      <div style="font-weight:800;font-size:16px;margin-bottom:4px">👀 一起看兩題範例</div>
+      ${t.worked.map(w=>`<div class="worked">
+        <div style="font-weight:800;font-size:16px">${esc(w.q)}</div>
+        <div class="lbl" style="margin-top:4px">✔ 答案：<b>${esc(w.opts[w.ans])}</b>　${esc(w.why)}
+        <button class="chip" onclick="speakBilingual(${sattr('答案是「'+w.opts[w.ans]+'」。'+(w.why||''))}, ${sattr(w.tts||'')})">🔊 中文＋英文</button></div>
+      </div>`).join("")}
+    </div>
+    <button class="big" style="background:var(--mint)" onclick="startBank('${p.id}')">✅ 我懂了，開始練習！</button>`;
+}
+function renderQuiz(){
+  topWho(); document.getElementById("nav").style.display="none";
+  const q=SESSION.qs[SESSION.idx]; const picked=SESSION.picked;
+  app().innerHTML=`
+    <div class="qtop"><button class="ghost" onclick="goHome()">← 離開</button>
+      <div style="font-weight:800;font-size:15px">${esc(SESSION.mode)}</div>
+      <div style="margin-left:auto;font-size:13px;color:var(--grey);font-weight:800">${SESSION.idx+1} / ${SESSION.qs.length}</div></div>
+    <div class="bar">${SESSION.qs.map((_,i)=>`<i style="background:${i<SESSION.idx?'var(--lemon)':i===SESSION.idx?'var(--tang)':'#EFE3D3'}"></i>`).join("")}</div>
+    <div class="card">
+      <div class="qtext">${esc(q.q)}</div>
+      ${q.tts?`<button class="ghost" style="margin-top:8px" onclick="speak(${sattr(q.tts)})">🔊 聽整句</button>`:""}
+      ${["a","b","c","d"].slice(0,q.opts.length).map((lb,i)=>{
+        let cls=""; if(picked!==null){ if(i===q.ans)cls="ok"; else if(i===picked)cls="no"; }
+        return `<button class="opt ${cls}" onclick="choose(${i})"><span class="k">${lb}.</span>${esc(q.opts[i])}</button>`;}).join("")}
+      ${picked!==null?`<div class="fb" style="background:${picked===q.ans?'#EAFBF4':'#FFF6E8'}">
+        ${picked===q.ans?"✅ "+pick(YAY):"💡 "+pick(OOPS)+"　正解："+esc(q.opts[q.ans])+"。"}　${esc(q.why||"")}</div>`:""}
+      ${picked!==null?`<button class="ghost" style="width:100%;margin-top:10px" onclick="speakBilingual(${sattr('正確答案是「'+q.opts[q.ans]+'」。'+(q.why||''))}, ${sattr(q.tts||'')})">🔊 聽詳細解說（中文 ➜ 英文）</button>`:""}
+      ${picked!==null?`<button class="idk ${SESSION.flagged?'flagged':''}" onclick="flagIDK()">${SESSION.flagged?"👌 已記下「這題我不懂」":"🤔 這題我不懂（記給爸媽看）"}</button>`:""}
+      ${picked!==null?`<button class="big" style="background:var(--ink)" onclick="nextQ()">${SESSION.idx+1<SESSION.qs.length?"下一題 ▶":"看成績 🏁"}</button>`:""}
+    </div>`;
+}
+function renderResult(){
+  topWho(); document.getElementById("nav").style.display="none";
+  const c=SESSION.correct, n=SESSION.qs.length; const perfect=c===n;
+  const emo=perfect?"🏆":c>=n*0.7?"🌟":"💪";
+  speak(perfect?"Excellent! You are a star!":"Good job!");
+  app().innerHTML=`<div class="card result">
+    <div class="b">${emo}</div>
+    <h2>${perfect?"全對！你太厲害了！":c>=n*0.7?"做得很好！":"完成了，你很努力！"}</h2>
+    <div class="lbl" style="margin-bottom:14px">答對 ${c} / ${n} 題（${esc(SESSION.mode)}）</div>
+    ${SESSION.packId?`<button class="big" style="background:var(--tang)" onclick="startBank('${SESSION.packId}')">🔁 再練一輪</button>`:""}
+    ${SESSION.packId?`<button class="big" style="background:var(--sky)" onclick="openLearn('${SESSION.packId}')">📖 再看一次教學</button>`:""}
+    <button class="big" style="background:var(--ink)" onclick="goHome()">🏠 回首頁</button></div>`;
+}
+function renderWrong(){
+  topWho(); document.getElementById("nav").style.display="flex";
+  app().innerHTML=`
+    <div class="card">
+      <div style="font-weight:800;font-size:17px">📌 錯題本（${PROG.wrong.length}）</div>
+      <div class="lbl" style="margin:4px 0 8px">答對後會自動移除。可匯出給爸媽或老師看。</div>
+      ${PROG.wrong.length?`<button class="big" style="background:var(--coral)" onclick="startWrong()">🔁 錯題重練（最多 8 題）</button>`:`<div style="font-weight:800;color:var(--mint)">目前沒有錯題，太棒了！🎉</div>`}
+      <div class="row" style="margin-top:8px">
+        <button class="ghost" style="flex:1" onclick="exportWrong()">📤 匯出錯題＋不懂的地方</button>
+      </div>
+    </div>
+    ${PROG.notes.length?`<div class="card"><div style="font-weight:800">🤔 標記「不懂」的題目（${PROG.notes.length}）</div>
+      ${PROG.notes.slice(0,30).map(n=>`<div class="lbl" style="padding:6px 0;border-bottom:1px solid var(--line)"><b>${esc(n.q)}</b><br>✔ ${esc(n.ans||"")}　${esc(n.why||"")}</div>`).join("")}</div>`:""}
+    ${PROG.wrong.slice(0,30).map(w=>`<div class="card" style="padding:10px 14px"><b style="font-size:14.5px">${esc(w.q)}</b>
+      <div class="lbl" style="margin-top:2px">✔ ${esc(w.opts?w.opts[w.ans]:"")}　｜　${esc(w.why||"")}</div></div>`).join("")}`;
+  setNav();
+}
+function renderStats(){
+  topWho(); document.getElementById("nav").style.display="flex";
+  app().innerHTML=`<div class="card">
+    <div style="font-weight:800;font-size:17px;margin-bottom:6px">📊 家長成績表</div>
+    ${allPacks().map(p=>{ const s=PROG.packs[p.id]; const a=s&&s.done?Math.round(100*s.correct/s.done):null;
+      return `<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)">
+        <span style="font-size:22px">${p.icon}</span>
+        <div style="flex:1;font-weight:700;font-size:14.5px">${esc(p.subj)} ${esc(p.year)}</div>
+        <div class="lbl">${s?s.correct+"/"+s.done+" 題":"尚未練習"}</div>
+        ${a!==null?`<div style="font-weight:800;font-size:14px;color:${a>=70?'var(--mint)':'var(--tang)'}">${a}%</div>`:""}</div>`;}).join("")}
+    <div class="lbl" style="margin-top:10px">📖 教學法提醒：答對率 <b>低於 70%</b> 請退回「先學一下」陪孩子讀；<b>高於 90%</b> 可挑戰新題庫。每次 10–15 分鐘最理想。</div>
+  </div>`;
+  setNav();
+}
+function renderSettings(){
+  topWho(); document.getElementById("nav").style.display="flex";
+  const custom=getCustom();
+  app().innerHTML=`
+    <div class="card">
+      <div style="font-weight:800;font-size:17px">📥 匯入題庫</div>
+      <div class="lbl" style="margin:4px 0 8px">貼上 JSON，或選擇檔案。格式：每包含 title、bank（每題有 q、opts、ans、why）。</div>
+      <input type="file" accept=".json,application/json" onchange="importFile(event)" style="margin-bottom:8px">
+      <textarea id="impText" placeholder='貼上題庫 JSON…'></textarea>
+      <div class="row" style="margin-top:8px">
+        <button class="big" style="flex:1;background:var(--mint)" onclick="doImport()">✅ 匯入</button>
+        <button class="ghost" style="flex:1" onclick="sampleJSON()">⬇️ 下載範例格式</button>
+      </div>
+      ${custom.length?`<div class="lbl" style="margin-top:10px">已匯入 ${custom.length} 包：${custom.map(c=>esc(c.title)).join("、")}
+        <button class="ghost" style="width:100%;margin-top:6px" onclick="clearCustom()">🗑️ 移除所有匯入題庫</button></div>`:""}
+    </div>
+    <div class="card">
+      <div style="font-weight:800;font-size:17px">👦👧 小孩</div>
+      ${CHILDREN.map(c=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0">
+        <span style="font-size:22px">${c.emoji}</span><b style="flex:1">${esc(c.name)}</b>
+        <button class="chip" onclick="renameChild('${c.id}')">改名</button></div>`).join("")}
+      <button class="ghost" style="width:100%;margin-top:8px" onclick="resetChild()">🧹 清除目前小孩的進度</button>
+    </div>
+    <div class="lbl">🔒 所有資料只存在這台裝置的瀏覽器，不會上傳。換裝置或清除瀏覽器資料會消失，重要進度請用「📤 匯出」備份。</div>`;
+  setNav();
+}
+function setNav(){ document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.tab===TAB)); }
+
+function render(){
+  if(SCREEN==="who"||!CUR){ if(!CUR&&SCREEN!=="who")SCREEN="who"; if(SCREEN==="who"){renderWho();return;} }
+  if(!PROG&&CUR)PROG=loadProg(CUR);
+  if(SCREEN==="learn"){renderLearn();return;}
+  if(SCREEN==="quiz"){renderQuiz();return;}
+  if(SCREEN==="think"){renderThink();return;}
+  if(SCREEN==="result"){renderResult();return;}
+  // home-level tabs
+  if(TAB==="home")renderHome();
+  else if(TAB==="wrong")renderWrong();
+  else if(TAB==="stats")renderStats();
+  else if(TAB==="settings")renderSettings();
+}
+
+/* ---------- 啟動 ---------- */
+if(CUR){ PROG=loadProg(CUR); SCREEN="home"; } else { SCREEN="who"; }
+render();
+</script>
+</body>
+</html>
