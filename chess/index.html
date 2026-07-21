@@ -299,7 +299,7 @@ const BOARD_THEMES={
   berry :{name:'莓果紫',   light:0xf3d3e8, dark:0xa452a0, frame:0x5e3f62},
   mono  :{name:'高對比',   light:0xededed, dark:0x51565c, frame:0x33363a},
 };
-const SETTINGS={style:'round', theme:'classic', board:'wood'};
+const SETTINGS={style:'round', theme:'classic', board:'wood', labels:true};
 function pieceColor(army){return PIECE_THEMES[SETTINGS.theme][army];}
 
 function toonMat(color,emissive){const m=new THREE.MeshToonMaterial({color});if(emissive){m.emissive=new THREE.Color(emissive);}return m;}
@@ -343,6 +343,20 @@ function applyBoardTheme(){
   if(frameMesh)frameMesh.material.color.setHex(bt.frame);
   for(const t of tiles){const light=(t.userData.r+t.userData.c)%2===0;t.userData.base=light?bt.light:bt.dark;}
   paintTiles();
+}
+
+/* ---- 棋子名稱標籤 (畫在小畫布上的 sprite，永遠面向鏡頭) ---- */
+const RANK_CH={k:'王',q:'后',r:'車',b:'象',n:'馬',p:'兵'};
+function makeLabelSprite(ch,bg,fg){
+  const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d');
+  const rr=(X,Y,W,H,r)=>{x.beginPath();x.moveTo(X+r,Y);x.arcTo(X+W,Y,X+W,Y+H,r);x.arcTo(X+W,Y+H,X,Y+H,r);x.arcTo(X,Y+H,X,Y,r);x.arcTo(X,Y,X+W,Y,r);x.closePath();};
+  x.fillStyle=bg;rr(16,36,96,58,18);x.fill();
+  x.lineWidth=6;x.strokeStyle=fg;rr(16,36,96,58,18);x.stroke();
+  x.fillStyle=fg;x.font='bold 50px sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText(ch,64,66);
+  const tex=new THREE.CanvasTexture(c);tex.minFilter=THREE.LinearFilter;tex.magFilter=THREE.LinearFilter;
+  const spr=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false,depthWrite:false}));
+  spr.scale.set(0.5,0.5,0.5);spr.renderOrder=999;
+  return spr;
 }
 
 /* ---- 可愛貓咪模型 (依 SETTINGS.style 造型 / SETTINGS.theme 配色) ---- */
@@ -395,37 +409,55 @@ function makeCat(type,colorKey){
   add(sphere(0.025),toonMat(0xffffff),-0.085*W,0.78,ez+0.05);add(sphere(0.025),toonMat(0xffffff),0.135*W,0.78,ez+0.05);
   // 鼻子
   add(sphere(0.035),noseMat,0,0.69,ez+0.06);
-  // ===== 階級配件 =====
+  // ===== 階級配件 (放大、加高，讓每種棋子一眼可辨) =====
   const goldMat=toonMat(COL.gold,0x6a5210);
-  const cy=earY+S.earH*0.5; // 配件基準高度 (隨耳朵高度調整)
+  const cy=earY+S.earH*0.5+0.05; // 配件基準高度 (略高於耳朵)
   if(type==='k'){
-    const band=add(new THREE.TorusGeometry(0.17,0.05,12,24),goldMat,0,cy,0.02);band.rotation.x=Math.PI/2;
-    for(let i=0;i<5;i++){const a=(i/4-0.5)*1.6;add(new THREE.ConeGeometry(0.05,0.13,10),goldMat,Math.sin(a)*0.17,cy+0.1,Math.cos(a)*0.05+0.02);}
-    add(new THREE.BoxGeometry(0.04,0.16,0.04),goldMat,0,cy+0.22,0.02);add(new THREE.BoxGeometry(0.12,0.04,0.04),goldMat,0,cy+0.22,0.02);
-    add(sphere(0.045),toonMat(0xe36a8a),0,cy+0.32,0.02);
+    // 國王：又高又大的五刺皇冠 + 十字寶頂
+    const band=add(new THREE.TorusGeometry(0.23,0.06,12,26),goldMat,0,cy,0.02);band.rotation.x=Math.PI/2;
+    for(let i=0;i<5;i++){const a=(i/4-0.5)*1.7;const px=Math.sin(a)*0.2,pz=Math.cos(a)*0.04+0.02;
+      add(new THREE.ConeGeometry(0.075,0.26,12),goldMat,px,cy+0.15,pz);
+      add(sphere(0.045),toonMat(0xe25548),px,cy+0.3,pz);}
+    add(new THREE.BoxGeometry(0.05,0.3,0.05),goldMat,0,cy+0.46,0.02);
+    add(new THREE.BoxGeometry(0.22,0.05,0.05),goldMat,0,cy+0.46,0.02);
+    add(sphere(0.06),toonMat(0xe25548),0,cy+0.64,0.02);
   }else if(type==='q'){
-    const band=add(new THREE.TorusGeometry(0.15,0.04,12,24),goldMat,0,cy-0.03,0.02);band.rotation.x=Math.PI/2;
-    for(let i=0;i<3;i++){const x=(i-1)*0.12;add(new THREE.ConeGeometry(0.045,0.12,10),goldMat,x,cy+0.06,0.02);add(sphere(0.03),toonMat(0x7fc7e0),x,cy+0.12,0.02);}
-    add(sphere(0.05),toonMat(0xe36a8a),0,cy+0.06,0.04);
+    // 皇后：圓珍珠頭冠 + 大愛心寶石 (刻意和國王的尖刺不同)
+    const band=add(new THREE.TorusGeometry(0.2,0.055,12,26),goldMat,0,cy,0.02);band.rotation.x=Math.PI/2;
+    for(let i=0;i<5;i++){const a=(i/4-0.5)*1.7;const px=Math.sin(a)*0.18,pz=Math.cos(a)*0.04+0.02;
+      add(new THREE.ConeGeometry(0.05,0.13,10),goldMat,px,cy+0.11,pz);
+      add(sphere(0.055),toonMat(0xf3e6be),px,cy+0.19,pz);}
+    add(sphere(0.1),toonMat(0xe36a8a),0,cy+0.06,0.17);
   }else if(type==='b'){
-    add(new THREE.ConeGeometry(0.17,0.34,18),toonMat(COL.white),0,cy+0.1,0.02);
-    const ring=add(new THREE.TorusGeometry(0.16,0.025,10,20),goldMat,0,cy-0.04,0.02);ring.rotation.x=Math.PI/2;
-    add(new THREE.BoxGeometry(0.03,0.1,0.03),goldMat,0,cy+0.24,0.18);add(new THREE.BoxGeometry(0.08,0.03,0.03),goldMat,0,cy+0.26,0.18);
+    // 主教：又高又白的尖帽 + 金十字
+    add(new THREE.ConeGeometry(0.22,0.5,20),toonMat(COL.white),0,cy+0.19,0.02);
+    const ring=add(new THREE.TorusGeometry(0.21,0.04,10,22),goldMat,0,cy-0.02,0.02);ring.rotation.x=Math.PI/2;
+    add(new THREE.BoxGeometry(0.04,0.17,0.04),goldMat,0,cy+0.48,0.16);
+    add(new THREE.BoxGeometry(0.13,0.04,0.04),goldMat,0,cy+0.5,0.16);
   }else if(type==='r'){
-    add(new THREE.CylinderGeometry(0.19,0.2,0.2,16),toonMat(COL.stone),0,cy-0.02,0.02);
-    for(let i=0;i<4;i++){const a=i/4*Math.PI*2;add(new THREE.BoxGeometry(0.08,0.1,0.08),toonMat(COL.stone),Math.cos(a)*0.15,cy+0.1,Math.sin(a)*0.15+0.02);}
+    // 城堡：大城垛皇冠 + 城門
+    add(new THREE.CylinderGeometry(0.24,0.27,0.28,18),toonMat(COL.stone),0,cy+0.04,0.02);
+    for(let i=0;i<5;i++){const a=i/5*Math.PI*2;add(new THREE.BoxGeometry(0.1,0.15,0.1),toonMat(COL.stone),Math.cos(a)*0.19,cy+0.24,Math.sin(a)*0.19+0.02);}
+    add(new THREE.CylinderGeometry(0.055,0.055,0.06,12),toonMat(0x8a7350),0,cy+0.02,0.25).rotation.x=Math.PI/2;
   }else if(type==='n'){
-    // 招財貓：舉起一隻手 + 金幣圍兜
-    const arm=add(sphere(0.09),bodyMat,0.26*W,0.5,0.16,0.8,1.4,0.8);arm.rotation.z=-0.3;
-    add(sphere(0.1),bodyMat,0.3*W,0.66,0.16);
-    add(new THREE.CylinderGeometry(0.1,0.1,0.03,18),toonMat(COL.coin,0x5a3f00),0,0.42,0.3).rotation.x=Math.PI/2;
-    add(new THREE.TorusGeometry(0.16,0.03,10,22),toonMat(COL.collar),0,0.5,0.02).rotation.x=Math.PI/2.1;
-  }else{ // pawn 小貓：鈴鐺項圈
-    add(new THREE.TorusGeometry(0.17,0.028,10,22),toonMat(COL.collar),0,0.5,0.02).rotation.x=Math.PI/2.1;
-    add(sphere(0.045),toonMat(COL.coin,0x5a3f00),0,0.42,0.18);
+    // 招財貓：高舉的手掌 + 大金幣圍兜
+    const arm=add(sphere(0.1),bodyMat,0.3*W,0.52,0.16,0.85,1.5,0.85);arm.rotation.z=-0.3;
+    add(sphere(0.12),bodyMat,0.34*W,0.72,0.16);
+    add(new THREE.CylinderGeometry(0.14,0.14,0.035,20),toonMat(COL.coin,0x5a3f00),0,0.4,0.3).rotation.x=Math.PI/2;
+    add(new THREE.TorusGeometry(0.18,0.04,10,22),toonMat(COL.collar),0,0.52,0.02).rotation.x=Math.PI/2.1;
+  }else{
+    // 小兵：小鈴鐺項圈 (最樸素、最矮)
+    add(new THREE.TorusGeometry(0.17,0.032,10,22),toonMat(COL.collar),0,0.5,0.02).rotation.x=Math.PI/2.1;
+    add(sphere(0.05),toonMat(COL.coin,0x5a3f00),0,0.42,0.18);
   }
-  // 整體大小階級
-  const sc=type==='k'?0.92:type==='q'?0.88:type==='p'?0.78:0.84;
+  // 名稱標籤 (可在「🎨 樣式」關閉)
+  if(SETTINGS.labels){
+    const spr=makeLabelSprite(RANK_CH[type], isW?'#fff8ec':'#2d2d38', isW?'#8a5a2a':'#ffe1a3');
+    const up=type==='k'?0.86:type==='q'?0.55:type==='b'?0.74:type==='r'?0.5:type==='n'?0.62:0.42;
+    spr.position.set(0,cy+up,0.02);g.add(spr);
+  }
+  // 整體大小階級 (國王明顯最大)
+  const sc=type==='k'?1.02:type==='q'?0.94:type==='b'?0.88:type==='r'?0.86:type==='n'?0.84:0.74;
   g.scale.setScalar(sc);
   g.rotation.y=isW?0:Math.PI; // 兩軍面對面
   g.userData={type,color:colorKey};
@@ -828,10 +860,16 @@ function buildStyleUI(){
     h+=`<div class="opt ${on}" data-kind="board" data-k="${k}"><div class="miniboard">`;
     for(let i=0;i<16;i++){const lt=(Math.floor(i/4)+i%4)%2===0;h+=`<div style="background:${hx(lt?bt.light:bt.dark)}"></div>`;}
     h+=`</div><div class="nm">${bt.name}</div></div>`;}
+  h+=`</div>`;
+  // 名稱標籤
+  h+=`<div class="setsec">🔤 棋子名稱標籤</div><div class="optrow">`;
+  h+=`<div class="opt ${SETTINGS.labels?'on':''}" data-kind="labels" data-k="on"><div class="nm">顯示<br>王后車象馬兵</div></div>`;
+  h+=`<div class="opt ${!SETTINGS.labels?'on':''}" data-kind="labels" data-k="off"><div class="nm">隱藏<br>(只看造型)</div></div>`;
   h+=`</div><button class="btn close" id="closeStyle">完成</button>`;
   const box=document.getElementById('styleBox');box.innerHTML=h;
   box.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{
-    const kind=o.dataset.kind,k=o.dataset.k;SETTINGS[kind]=k;
+    const kind=o.dataset.kind,k=o.dataset.k;
+    if(kind==='labels')SETTINGS.labels=(k==='on');else SETTINGS[kind]=k;
     if(kind==='board')applyBoardTheme();else rebuild3D();
     buildStyleUI();
   });
